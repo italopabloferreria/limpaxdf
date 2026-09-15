@@ -1,0 +1,1 @@
+export default function NotFound(){return <main id="conteudo" className="document-page"><p className="eyebrow yellow">LIMPAX / 404</p><h1>Este caminho<br/>não continua.</h1><p>A página não foi encontrada.</p><a href="/" className="button">Voltar ao início →</a></main>}

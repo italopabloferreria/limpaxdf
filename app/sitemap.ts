@@ -1,0 +1,1 @@
+import type {MetadataRoute} from "next";import {origin,services} from "@/lib/content";export default function sitemap():MetadataRoute.Sitemap{return ["/","/check","/privacidade","/cookies",...services.map(s=>"/servicos/"+s.slug)].map(path=>({url:origin+path}))}

@@ -1,0 +1,2 @@
+import {settings} from "@/lib/config";import {createLead} from "@/lib/intake";import {requireOrigin,rateLimit,readJson,json,failure} from "@/lib/http";
+export async function POST(req:Request){try{const s=settings();requireOrigin(req,s);await rateLimit(req,s,"intake");const result=await createLead(await readJson(req),req.headers.get("idempotency-key"),s);return json(result,result.replayed?200:201)}catch(e){return failure(e)}}

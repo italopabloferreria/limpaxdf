@@ -1,0 +1,1 @@
+import sharp from "sharp";import {mkdir,stat} from "node:fs/promises";await mkdir("public/media",{recursive:true});for(const name of ["hero","operation"]){await sharp("public/media/"+name+".png").resize({width:1536,withoutEnlargement:true}).webp({quality:80}).toFile("public/media/"+name+".webp");console.log(name,(await stat("public/media/"+name+".webp")).size)}

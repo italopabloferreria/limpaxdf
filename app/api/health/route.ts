@@ -1,0 +1,1 @@
+import {settings,captureMode} from "@/lib/config";import {json} from "@/lib/http";export async function GET(){const s=settings();try{if(!s.DB)return json({status:"unavailable"},503);await s.DB.prepare("SELECT seq FROM leads LIMIT 1").all();return json({status:"ok",mode:captureMode(s)})}catch{return json({status:"unavailable"},503)}}

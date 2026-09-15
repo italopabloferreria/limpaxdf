@@ -1,0 +1,2 @@
+export function SiteHeader(){return <header className="site-header"><a className="wordmark" href="/" aria-label="Limpax, início"><img src="/media/limpax-logo-original.png" width="1808" height="636" alt="Limpax Desentupidora"/></a><nav aria-label="Principal"><a href="/#servicos">Serviços</a><a href="/#empresas">Empresas</a><a href="/#operacao">Operação</a><a href="/#sobre">Sobre</a></nav><a href="/check" className="button compact">Preciso resolver <span aria-hidden="true">↗</span></a></header>}
+
