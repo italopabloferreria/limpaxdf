@@ -27,7 +27,15 @@ JSON sem cache; erros `{error:string}`. Escritas públicas exigem Origin exato. 
 
 Payload Check: problem (fossa/gordura/entupimento/esgoto/odor/pragas/outro), location, property (residencia/condominio/empresa), urgency (agora/planejar/nao-sei), access, region, cep opcional de 8 dígitos, name, phone de 10–11 dígitos, email/notes opcionais, marketing boolean, privacy true, reviewAcknowledged boolean, website vazio. Campos extras rejeitados. Limites detalhados em lib/validation.ts.
 
-## CRM e manutenção
+## CRM operacional
+
+`/crm` é a central de atendimento protegida por login ChatGPT e pela lista `CRM_ADMIN_EMAILS`. Ela não usa token administrativo no navegador. A equipe encontra até 150 registros recentes, filtra por status, abre o contexto enviado pelo cliente e registra responsável, próxima ação, status, notas internas e tarefas. Cada alteração gera atividade com a conta que a realizou. Fotos continuam privadas e só ficam disponíveis para usuários CRM autorizados.
+
+O fluxo previsto é: novo → em contato → qualificado → orçamento → agendado → em execução → concluído/recorrência, com cancelado quando necessário. Esses estados organizam o trabalho; não geram contrato, orçamento ou agendamento por conta própria. A equipe define manualmente os valores, condições e disponibilidade depois da avaliação real.
+
+Para ativar a central, definir `CRM_ADMIN_EMAILS` com e-mails separados por vírgula. Não compartilhar conta, token ou URL de anexo. A autorização é conferida no servidor em todas as leituras e alterações do CRM.
+
+## CRM externo e manutenção
 
 Webhook recebe event=lead.created, id, createdAt, privacyVersion e data. Bearer próprio e Idempotency-Key=id. Destino deve fazer upsert por UUID e responder 2xx após persistir. Timeout 8 segundos, sem redirects, backoff até 1 hora, máximo 8 tentativas. Falha final requer investigação e reprocessamento autorizado. Exportação permite recuperação independente.
 
@@ -44,6 +52,7 @@ Agendador externo [VALIDAR] deve chamar dispatcher periodicamente e maintenance 
 | RATE_LIMIT_SECRET | Aleatório >=32 caracteres. |
 | CRM_API_TOKEN | Aleatório >=32 caracteres, somente integração administrativa. |
 | CRM_WEBHOOK_URL / CRM_WEBHOOK_SECRET | Destino HTTPS autorizado e segredo independente. |
+| CRM_ADMIN_EMAILS | Lista de e-mails da equipe autorizada a usar `/crm`, separados por vírgula. |
 | ANALYTICS_ENABLED | false padrão; true ainda exige escolha do visitante. |
 | DB / BUCKET | Bindings gerenciados D1/R2. |
 

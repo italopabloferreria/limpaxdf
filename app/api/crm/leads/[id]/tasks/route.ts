@@ -1,0 +1,7 @@
+import {requireCrmUser,toDateTime} from "@/lib/crm";
+import {database,json,failure,readJson,ApiError} from "@/lib/http";
+import {settings} from "@/lib/config";
+import {uuidSchema} from "@/lib/validation";
+import {z} from "zod";
+const schema=z.object({title:z.string().trim().min(1).max(300),dueAt:z.string().optional(),assignee:z.string().trim().max(150).optional()}).strict();
+export async function POST(req:Request,{params}:{params:Promise<{id:string}>}){try{const user=await requireCrmUser();const {id}=await params;if(!uuidSchema.safeParse(id).success)throw new ApiError(400,"Identificador inválido.");const parsed=schema.safeParse(await readJson(req));if(!parsed.success)throw new ApiError(400,"Tarefa inválida.");const db=database(settings()),taskId=crypto.randomUUID(),now=Date.now();const result=await db.prepare("INSERT INTO crm_tasks (id,lead_id,title,due_at,assignee,completed_at,created_at) SELECT ?,?,?,?,?,NULL,? WHERE EXISTS(SELECT 1 FROM leads WHERE id=?)").bind(taskId,id,parsed.data.title,toDateTime(parsed.data.dueAt),parsed.data.assignee||user.email,now,id).run();if(!result.meta.changes)throw new ApiError(404,"Solicitação não encontrada.");await db.prepare("INSERT INTO lead_activities (id,lead_id,kind,body,author,created_at) VALUES (?,?,?,?,?,?)").bind(crypto.randomUUID(),id,"task","Tarefa criada: "+parsed.data.title,user.email,now).run();return json({id:taskId},201)}catch(e){return failure(e)}}

@@ -1,0 +1,1 @@
+CREATE INDEX `idx_leads_status_updated` ON `leads` (`status`,`updated_at`);

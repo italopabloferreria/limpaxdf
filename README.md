@@ -30,4 +30,5 @@ Reutilizar o project_id de `.openai/hosting.json`. Commitar e enviar fonte ao re
 
 Rollback: publicar versão anterior; migrações destrutivas precisam de plano independente de recuperação. Antes de live: validar identidade, contato de privacidade, base legal/retenção, serviços/cobertura, CRM e agendador, realizar teste de destino e só então configurar CAPTURE_MODE=live. Remover noindex apenas após aprovação editorial. A mudança de audiência pública é separada da implantação privada.
 
-Logo original: public/media/limpax-logo-original.png. Fotos conceituais IA: hero.webp e operation.webp; substituir por mídia real aprovada preservando enquadramento/compressão. Fontes locais com OFL. Fonte exata da logo [VALIDAR], sem aproximação apresentada como fato.
+Logo original: public/media/limpax-logo-original.png. Fotos conceituais IA: hero.webp e operation.webp; substituir por mídia real aprovada preservando enquadramento/compressão. Fontes locais com OFL. Fonte do lettering da logo: 13_Misa, confirmada pelo solicitante; referência e licença pendente registradas no documento de marca.
+

@@ -24,9 +24,12 @@ Glass apenas no header, informações sobre cenas e controles. Fundo opaco quand
 Fotografia: operação primeiro. IA identificada como ilustração provisória; não atribuir modelo/capacidade ao caminhão ilustrado.
 Logo original fornecido pelo solicitante: `cropped-logo2.png`, 1808 × 636, incorporado sem redesenho em `public/media/limpax-logo-original.png`. Esta imagem substitui o nome tipográfico provisório no cabeçalho e rodapé. Preservar proporção, lettering branco e arco amarelo/branco; aplicar sobre fundo escuro.
 
-### Tipografia da logo — registro de identificação
-**Nome da família: [VALIDAR].** O arquivo raster não contém metadados que identifiquem a fonte. O lettering apresenta sans-serif de peso forte e inclinação acentuada; o L maiúsculo é envolvido por um arco elíptico. A imagem isolada não comprova se esse arco pertence ao glifo ou se foi composto separadamente. O solicitante relata que a fonte tem arcos nas maiúsculas; preservar essa informação como pista para identificação.
-A amostra “Limpax” da família SF Planetary Orbiter foi comparada visualmente em https://www.dafont.com/sf-planetary-orbiter.font?text=Limpax e **descartada**: os contornos não correspondem. Não registrar aproximação como identificação exata nem incorporar fontes de licença desconhecida. A confirmação depende do arquivo editável original ou de uma correspondência verificável de glifos. Archivo e IBM Plex Mono pertencem à interface, não são a fonte identificada da logo.
+### Tipografia da logo — identificação confirmada pelo solicitante
+**Família: 13_Misa.** Identificação informada pelo solicitante em 15/09/2026, substituindo a pendência anterior.
+Referência fornecida: [13_Misa — WhatFontIs](https://www.whatfontis.com/FF_13_Misa.font?text=impax).
+O solicitante identifica os arcos nas letras maiúsculas como característica da fonte. Preservar o lettering e o arco da logo original aprovada, com suas proporções e cores. A identificação refere-se ao lettering principal “Limpax”; não atribuir automaticamente essa fonte ao descritor “Desentupidora”.
+Archivo permanece como tipografia provisória de títulos/corpo do site e IBM Plex Mono como tipografia dos marcadores. A logo continua aplicada como imagem original.
+Licença de uso e de incorporação do arquivo tipográfico: [VALIDAR] antes de instalar ou distribuir a fonte. A referência foi registrada a partir da confirmação do solicitante; a página não pôde ser consultada pela ferramenta nesta atualização.
 
 ## Sistema verbal
 Institucional: Tudo precisa continuar fluindo.
@@ -41,3 +44,4 @@ CTA: Preciso resolver / Preparar atendimento.
 ## Registro de validação
 [VALIDAR] razão social, CNPJ, endereço, telefone/WhatsApp, email, canal de privacidade, responsável pelo atendimento, horários, cobertura por região, portfólio ativo, processo real, contratos, manutenção, licenças, destinação, equipe, capacidade/equipamento/função de cada caminhão, depoimentos, marca final, política de retenção, base legal e CRM.
 Omitir avaliações, logos de clientes, certificações, 24h, SLA, velocidade, preços e especificações até comprovação. Portfólio provisório pode aparecer com [VALIDAR], sem promessa de disponibilidade.
+

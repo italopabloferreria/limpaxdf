@@ -8,6 +8,20 @@
       "when": 1789488206525,
       "tag": "0000_fat_supernaut",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1789571007128,
+      "tag": "0001_panoramic_tarot",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1789571037992,
+      "tag": "0002_burly_blue_shield",
+      "breakpoints": true
     }
   ]
 }
