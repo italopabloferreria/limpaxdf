@@ -4,6 +4,7 @@ Site funcional em React, TypeScript, Vinext/Cloudflare Workers, D1, Drizzle e R2
 
 ## Documentação
 
+- [Retomada e plano do CRM completo](docs/crm/00-RETOMADA.md) — começar aqui para evoluir o CRM; decisões, módulos e leitura por tarefa.
 - [Marca, logo e tipografia](docs/01-brand-source-of-truth.md)
 - [Experiência, sitemap e copy](docs/02-product-experience-spec.md)
 - [Brief de implementação](docs/03-codex-master-implementation-brief.md)

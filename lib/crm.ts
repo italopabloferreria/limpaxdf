@@ -1,6 +1,6 @@
 import {getChatGPTUser,type ChatGPTUser} from "@/app/chatgpt-auth";
 import {settings} from "./config";
-import {ApiError} from "./http";
+import {ApiError,requireOrigin} from "./http";
 export {crmStatuses,statusLabels,type CrmStatus} from "./crm-shared";
 
 export async function requireCrmUser():Promise<ChatGPTUser>{
@@ -12,8 +12,11 @@ export async function requireCrmUser():Promise<ChatGPTUser>{
   return user;
 }
 
+export async function requireCrmMutation(req:Request){const s=settings();requireOrigin(req,s);return requireCrmUser()}
+
 export function toDateTime(value:string|undefined){
   if(!value)return null;
+  if(!/(?:Z|[+-]\d{2}:\d{2})$/.test(value))throw new ApiError(400,"Informe a data com fuso horário.");
   const time=Date.parse(value);
   if(!Number.isFinite(time))throw new ApiError(400,"Data inválida.");
   return time;
