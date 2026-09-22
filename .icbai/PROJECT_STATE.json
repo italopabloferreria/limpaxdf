@@ -241,7 +241,7 @@
     "build": "PASS npm run build after all changes",
     "lint": "PASS 2026-09-22: npm run lint completed with 0 errors and 0 warnings; only generated .sites-runtime is excluded.",
     "release_gate": "FAIL: archive/restore browser QA and remote migration/deploy plus production performance validation remain.",
-    "browser_qa": "PARTIAL PASS 2026-09-22: task create/complete, note, synthetic customer, link and history validated; concurrent note guard revalidated; keyboard journey, dialog focus/return and required-field validation passed; archive/restore remains.",
+    "browser_qa": "PARTIAL PASS 2026-09-22: task create/complete, note, synthetic customer, link and history validated; concurrent note guard revalidated; keyboard, dialog, required-field and 390x844 long-form responsiveness passed; archive/restore remains.",
     "recovery": "PASS local 2026-09-22: 14 files copied/restored with identical hashes; SQLite integrity ok across 16 tables. Remote recovery untested.",
     "contrast": "PASS local sample 2026-09-22: 0 failures across 54 visible text samples on /crm and /crm/clientes; minimum 4.64:1. Images, gradients and off-viewport states untested.",
     "performance": "INFO local 2026-09-22: warm dev responses 62-117 ms across /, /check, /crm and /crm/clientes. Production Core Web Vitals untested."

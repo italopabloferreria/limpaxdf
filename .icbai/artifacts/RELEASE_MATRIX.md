@@ -12,7 +12,7 @@ PASS de teste unitário não equivale a PASS do fluxo operacional.
 | Lint | PASS | `npm run lint` termina com zero erros e zero avisos; somente artefatos gerados são ignorados |
 | Erros/empty/retry | WARNING | Intake e tarefa idempotente testados; clique duplo de nota foi reproduzido, corrigido e revalidado; formulário vazio direciona foco e exibe mensagem nativa; falhas de rede e retry ainda pendentes |
 | Persistência/formulários | WARNING | Tarefa, nota, cliente, vínculo e reabertura passaram no browser com dados sintéticos; arquivar/restaurar ainda pendente |
-| Responsividade | WARNING | `/crm` autenticado validado em desktop e 390 × 844 após correção de overflow; `/crm/clientes` e formulários longos ainda pendentes |
+| Responsividade | PASS local | `/crm` e `/crm/clientes` autenticados validados em desktop e 390 × 844; sem overflow horizontal, e o formulário longo mantém rolagem interna e ações alcançáveis |
 | Navegadores/dispositivos | WARNING | Fluxos autenticados validados no navegador local integrado; cobertura cruzada de navegador permanece pendente |
 | Acessibilidade | WARNING | Teclado passou em `/crm` e `/crm/clientes`; varredura local encontrou 0 falhas AA em 54 textos visíveis, mínimo 4,64:1; imagens/gradientes, estados fora do viewport e auditoria manual completa permanecem pendentes |
 | Segurança | WARNING | A01–A03 e autorização A06b testados localmente; falta homologação autenticada e não houve pentest |

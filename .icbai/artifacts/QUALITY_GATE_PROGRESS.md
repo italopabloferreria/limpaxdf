@@ -18,11 +18,12 @@ Data: 22/09/2026. Estado: **parcial; QA local e recuperação aprovados, ciclo a
 - `/crm/clientes` permaneceu legível em 390 × 844. O primeiro `Tab` também alcança o link de salto e a ordem segue marca, Atendimentos, Ver site e Novo cliente.
 - “Novo cliente” abre por teclado com foco inicial em Tipo. `Escape` fecha o diálogo e devolve o foco ao acionador.
 - Submeter o formulário vazio não chamou a API: a validação nativa mostrou “Preencha este campo.” e moveu o foco para Nome ou razão social.
+- Em 390 × 844, `/crm/clientes` não apresentou overflow horizontal. O diálogo “Novo cliente” ocupou a largura disponível, manteve rolagem interna e permitiu alcançar Cancelar e Salvar cliente.
 
 ## Ainda pendente
 
 - Ciclo arquivar/restaurar no navegador e validação visual do estado arquivado.
-- Cobertura cruzada de navegador, contraste e medição de performance.
+- Cobertura cruzada de navegador e medição de produção.
 - Validação remota de migrações, ambiente e deploy em etapa autorizada posterior.
 
 ## QA autenticado — lote 1
