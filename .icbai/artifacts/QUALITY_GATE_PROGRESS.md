@@ -21,8 +21,16 @@ Data: 22/09/2026. Estado: **parcial; lint concluído, QA autenticado ainda pende
 ## Ainda pendente
 
 - Jornada completa por teclado e mensagens de erro.
-- Fluxos mutáveis autenticados: tarefas, notas, vínculo/desvínculo e ciclo de clientes.
-- Ensaio local de backup/restauração.
+- Ciclo arquivar/restaurar no navegador e validação visual do estado arquivado.
 - Validação remota de migrações, ambiente e deploy em etapa autorizada posterior.
+
+## QA autenticado — lote 1
+
+- PASS: criação e conclusão de tarefa em atendimento sintético.
+- PASS: criação de nota e atualização do histórico.
+- PASS: criação de cliente sintético com contato e local.
+- PASS: vínculo do atendimento ao cliente, contato e local; histórico exibiu o atendimento e seu deep link.
+- Defeito corrigido: dois envios concorrentes podiam duplicar uma nota. Um guard síncrono de mutação foi adicionado e um clique duplo passou a gerar uma única ocorrência.
+- PASS: `npm run qa:recovery` criou backup e restauração isolada, comparou hashes de 14 arquivos e aprovou `PRAGMA integrity_check` no banco restaurado, com 16 tabelas.
 
 Esta evidência não autoriza deploy nem transforma o G13 em PASS.

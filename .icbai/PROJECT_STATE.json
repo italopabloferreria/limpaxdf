@@ -212,15 +212,15 @@
   "blockers": [
     {
       "id": "G13",
-      "description": "Authenticated mutable-flow and keyboard QA; recovery validation; remote migration/deploy validation."
+      "description": "Remaining keyboard and archive/restore browser QA; remote migration/deploy validation."
     }
   ],
   "accepted_risks": [],
   "last_updated": "2026-09-22",
-  "next_action": "Execute G13-QA-01: authenticated mutable-flow, keyboard and local backup/restore QA; do not begin Supabase migration yet.",
+  "next_action": "Continue G13-QA-01 with keyboard and archive/restore browser QA, then repeat the full verification line.",
   "baseline": {
-    "head": "98c0bbf3590536b9b078f5ae0611302ae5fd8393",
-    "working_tree": "dirty; existing work preserved; canonical path C:/Users/italo/Programação/Limpax",
+    "head": "1bf9702f",
+    "working_tree": "dirty; G13-QA-01 mutation guard and recovery verifier in progress; canonical path C:/Users/italo/Programação/Limpax",
     "source_modified_by_audit": true,
     "deployment": "known private version 3; no deploy in this audit",
     "migration_0003": "local; remote application unverified",
@@ -240,7 +240,9 @@
     "typescript": "PASS tsc --noEmit",
     "build": "PASS npm run build after all changes",
     "lint": "PASS 2026-09-22: npm run lint completed with 0 errors and 0 warnings; only generated .sites-runtime is excluded.",
-    "release_gate": "FAIL: authenticated mutable-flow/keyboard QA, recovery, and remote migration/deploy validation remain."
+    "release_gate": "FAIL: keyboard and archive/restore browser QA plus remote migration/deploy validation remain.",
+    "browser_qa": "PARTIAL PASS 2026-09-22: task create/complete, note, synthetic customer, link and history validated; concurrent note guard revalidated; archive/restore and full keyboard journey remain.",
+    "recovery": "PASS local 2026-09-22: 14 files copied/restored with identical hashes; SQLite integrity ok across 16 tables. Remote recovery untested."
   },
   "resume_protocol": [
     "Read this file, AUDIT.md and current increment plan",

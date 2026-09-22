@@ -40,7 +40,7 @@ npm run lint
 npm run build
 ```
 
-O lint global ainda inclui artefatos gerados em `.sites-runtime`; consulte `docs/CURRENT_TASK.md` antes de interpretar seu resultado. Não esconda erros próprios por exclusões amplas.
+O lint global ignora `.sites-runtime`, `dist` e `.next`, que são artefatos gerados. Não esconda erros próprios por exclusões amplas.
 
 ## Padrões obrigatórios
 

@@ -39,8 +39,8 @@ O lint foi encerrado em 22/09/2026 com zero erros e zero avisos. As oito suítes
 
 ## Estado
 
-`ready`.
+`in-progress`.
 
 ## Próximo passo
 
-Executar o QA autenticado em pequenos lotes e atualizar a matriz do G13. Não iniciar Supabase nem deploy.
+Concluir a jornada de teclado e o ciclo arquivar/restaurar no navegador; depois repetir os checks completos e atualizar a decisão do G13. Não iniciar Supabase nem deploy.

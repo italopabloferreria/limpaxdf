@@ -6,6 +6,8 @@ Atualizado em 22/09/2026. Repositório canônico: `C:/Users/italo/Programação/
 
 `G13-LINT-01` foi concluído. O ESLint ignora `.sites-runtime/**`, artefato gerado, e termina com zero erros e zero avisos sem desativação global de regras. Foram corrigidos links internos, efeitos React e tipos nos handlers, componentes, utilitários e testes. As oito suítes somam 47/47 testes aprovados; TypeScript e build também passam. G13 continua FAIL apenas pelos itens de QA e recuperação ainda pendentes.
 
+`G13-QA-01` foi iniciado no repositório canônico. No navegador local autenticado, foram validados criação e conclusão de tarefa, nota, criação de cliente sintético, vínculo com contato/local e histórico com deep link. Um clique duplo reproduziu nota duplicada; `CrmWorkspace` agora bloqueia mutações concorrentes e o mesmo teste gerou uma única nota. O ensaio `npm run qa:recovery` copiou e restaurou 14 arquivos, comparou hashes e aprovou a integridade SQLite de 16 tabelas. O ciclo arquivar/restaurar e a jornada completa de teclado continuam pendentes.
+
 ## Fase atual
 
 `EXISTING PROJECT → AUDIT & RESUME`. O núcleo A01–A08 está implementado localmente. O gate ativo é **G13 / Release Gate**, ainda reprovado. Não há autorização de deploy, migração remota ou uso de dados reais.
@@ -39,7 +41,7 @@ Executar `G13-QA-01`, descrita em `docs/CURRENT_TASK.md`, validando fluxos auten
 ## Bloqueios
 
 - QA autenticado completo de fluxos mutáveis, teclado e formulários longos pendente.
-- Backup/restauração e upgrade de migração ainda não ensaiados.
+- Backup/restauração local aprovado; upgrade e recuperação remotos ainda não ensaiados.
 - Migrações e configuração remotas não verificadas.
 - Dados oficiais, domínio exato, contas Google, política de retenção, planilhas, modelo contratual e emissor fiscal permanecem `[VALIDAR]`.
 
