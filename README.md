@@ -40,4 +40,5 @@ Rollback: publicar versão anterior; migrações destrutivas precisam de plano i
 
 Logo original: public/media/limpax-logo-original.png. Fotos conceituais IA: hero.webp e operation.webp; substituir por mídia real aprovada preservando enquadramento/compressão. Fontes locais com OFL. Fonte do lettering da logo: 13_Misa, confirmada pelo solicitante; referência e licença pendente registradas no documento de marca.
 # limpax
+# limpaxdf
 
