@@ -1,0 +1,19 @@
+# Decisões preservadas e retomada
+- 2026-09-16: incorporar projeto existente ao ICB-AI, sem reescrita ou reinício.
+- Pasta canônica: C:/Users/italo/Programação/Limpax. Cópias antigas são backup, não segunda fonte de edição.
+- Manter React/TypeScript e preservar D1/Drizzle/R2 durante a transição. A arquitetura alvo aprovada é Supabase PostgreSQL + Auth Google + RLS + Storage privado, por migração reversível após G13.
+- Manter projeto Sites e project_id existentes. Não criar outro projeto/deploy nesta auditoria.
+- Manter marca, logo fornecido, 13_Misa como fonte identificada pelo usuário para o logo; Archivo e IBM Plex Mono para interface. Não presumir licença de redistribuição da fonte.
+- Tudo precisa continuar fluindo; Infrastructure in Motion + Industrial Glass; Safety Yellow/Asphalt/Concrete; Flow Line; IA visual provisória identificada.
+- Fatos: Limpax, DF, desde 2005, três caminhões LXP/01–03. Sem inventar especificações, SLA, licenças ou cobertura.
+- Uma atendente e dois administradores individuais. WhatsApp via wa.me; nenhuma API paga de mensagens.
+- Excel/CSV, contratos por modelo, agenda, operação, financeiro e fiscal permanecem escopo aprovado, com entregas por lotes.
+- O rótulo anterior “Lote 1 concluído” não equivale a conclusão verificada. Esta auditoria o classifica como parcial.
+- Não remover exemplos, componentes de biblioteca ou código de integração apenas por parecerem não utilizados.
+- Não aplicar migrações remotas, importar clientes reais, emitir notas, enviar mensagens ou mudar audiência como efeito colateral da auditoria.
+- Estado de gates refere-se ao próximo incremento; gates de planejamento herdados não certificam módulos futuros nem produção.
+- 2026-09-22: o repositório passa a ser fonte de verdade multiagente por `AGENTS.md`, `PROJECT_STATE.json`, `docs/AI_HANDOFF.md` e `docs/CURRENT_TASK.md`.
+- 2026-09-22: a empresa possui domínio próprio; endereço, registrador/DNS e subdomínios `[VALIDAR]` antes de publicação ou callbacks OAuth.
+- 2026-09-22: Supabase Free é aceito para desenvolvimento/homologação inicial. Produção depende de volume, backup, pausa por inatividade, logs e suporte; não presumir que Free será suficiente indefinidamente.
+- 2026-09-22: sidebar compacta por permissão é direção aprovada, após migração/auth. Google Calendar começa unidirecional CRM→Google; Drive guarda cópias, Sheets apoia importação, Maps/Routes e Gmail entram por fases.
+- 2026-09-22: Life360 é o processo atual informado para acompanhar caminhões. Qualquer rastreamento futuro exige finalidade, permissão, retenção e segurança; não improvisar coleta.

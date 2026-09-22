@@ -1,0 +1,106 @@
+{
+  "schema_version": "2.0",
+  "project_name": "Limpax",
+  "project_type": "internal-system",
+  "secondary_project_types": [
+    "institutional-site"
+  ],
+  "mode": "audit-and-resume",
+  "canonical_path": "C:/Users/italo/Programação/Limpax",
+  "features": {
+    "public_web": true,
+    "discoverability_required": true,
+    "lead_capture": true,
+    "user_accounts": true,
+    "database": true,
+    "roles_permissions": true,
+    "sensitive_data": true,
+    "payments": false,
+    "external_api": true,
+    "ai_features": false,
+    "motion_level": "light",
+    "webgl_3d": false,
+    "realtime": false,
+    "multi_language": false,
+    "cms": false,
+    "product_growth": true,
+    "existing_project": true
+  },
+  "business_goal": "Substituir planilhas por operação organizada de atendimento, clientes, serviços e gestão, preservando o site e a marca.",
+  "primary_user_outcome": "Atendente registra e acompanha demandas; dois administradores controlam acessos e gestão, com rastreabilidade.",
+  "primary_conversion": "Check persistido e atendimento acompanhado; métricas comerciais futuras reconciliáveis.",
+  "audiences": [
+    "B2C e B2B no contexto DF [cobertura detalhada VALIDAR]",
+    "uma atendente",
+    "dono administrador",
+    "responsável técnico administrador"
+  ],
+  "constraints": [
+    "Preservar implementação e decisões válidas",
+    "Não inventar dados empresariais, técnicos, fiscais ou SLAs",
+    "Projeto privado e intake revisão até validações",
+    "Não alterar schema remoto/importar PII como efeito colateral",
+    "WhatsApp somente wa.me",
+    "Fonte de logo 13_Misa informada pelo usuário; licença de embedding não confirmada"
+  ],
+  "non_goals": [
+    "Reescrever stack ou home por preferência",
+    "Criar outro projeto Sites",
+    "IA em runtime",
+    "Integração WhatsApp paga",
+    "Declarar fiscal pronto sem emissor/homologação"
+  ],
+  "enabled_phases": [
+    "intake",
+    "discovery",
+    "process-mapping",
+    "strategy",
+    "product",
+    "experience",
+    "content-copy",
+    "creative",
+    "technical",
+    "seo",
+    "data",
+    "security",
+    "analytics",
+    "performance",
+    "accessibility",
+    "implementation-plan",
+    "implementation",
+    "verification",
+    "deployment",
+    "launch",
+    "growth"
+  ],
+  "disabled_phases": [
+    "content-strategy",
+    "motion",
+    "webgl",
+    "technical-light",
+    "ai-architecture",
+    "ai-security",
+    "scope-spike"
+  ],
+  "assumptions": [
+    "public_web é destino planejado; audiência atual privada",
+    "payments=false significa sem gateway; recebimentos/financeiro interno continuam no escopo",
+    "growth é futuro após lançamento",
+    "a empresa possui domínio próprio; valor exato e DNS permanecem [VALIDAR]",
+    "Supabase Free é candidato para desenvolvimento/homologação; adequação à produção permanece [VALIDAR]"
+  ],
+  "current_architecture": {
+    "application": "React/TypeScript + Vinext/Vite + Cloudflare Workers",
+    "database": "Cloudflare D1/SQLite + Drizzle",
+    "storage": "Cloudflare R2",
+    "authentication": "identidade do hosting + perfis internos"
+  },
+  "target_architecture": {
+    "database": "Supabase PostgreSQL",
+    "authentication": "Supabase Auth + Google Login + perfis internos",
+    "authorization": "Row Level Security e autorização servidor",
+    "storage": "Supabase Storage privado",
+    "migration_policy": "reversível; D1/R2 preservados até cutover validado"
+  },
+  "last_updated": "2026-09-22"
+}

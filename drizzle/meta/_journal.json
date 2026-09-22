@@ -22,6 +22,27 @@
       "when": 1789571037992,
       "tag": "0002_burly_blue_shield",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1789573170753,
+      "tag": "0003_hot_the_order",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1789653151593,
+      "tag": "0004_faulty_thanos",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1790008508624,
+      "tag": "0005_task_idempotency",
+      "breakpoints": true
     }
   ]
 }

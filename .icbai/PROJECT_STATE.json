@@ -1,0 +1,353 @@
+{
+  "schema_version": "2.0",
+  "current_phase": "verification",
+  "status": "active",
+  "mode": "audit-and-resume",
+  "phases": {
+    "intake": {
+      "status": "passed",
+      "gate": "G0_PROJECT_CLASSIFIED",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md"
+      ]
+    },
+    "discovery": {
+      "status": "passed",
+      "gate": "G1_PROBLEM_UNDERSTOOD",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md"
+      ]
+    },
+    "process-mapping": {
+      "status": "passed",
+      "gate": "G1B_PROCESS_UNDERSTOOD",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md"
+      ]
+    },
+    "strategy": {
+      "status": "passed",
+      "gate": "G2_STRATEGY_DEFINED",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md"
+      ]
+    },
+    "product": {
+      "status": "passed",
+      "gate": "G2B_PRODUCT_DEFINED",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md"
+      ]
+    },
+    "experience": {
+      "status": "passed",
+      "gate": "G3_EXPERIENCE_MAPPED",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md"
+      ]
+    },
+    "content-copy": {
+      "status": "passed",
+      "gate": "G4_MESSAGE_READY",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md"
+      ]
+    },
+    "creative": {
+      "status": "passed",
+      "gate": "G5_VISUAL_DIRECTION_READY",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md"
+      ]
+    },
+    "technical": {
+      "status": "passed",
+      "gate": "G7_ARCHITECTURE_READY",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md"
+      ]
+    },
+    "seo": {
+      "status": "passed",
+      "gate": "G10B_DISCOVERABILITY_READY",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md"
+      ]
+    },
+    "data": {
+      "status": "passed",
+      "gate": "G8_DATA_READY",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md",
+        "artifacts/DATA_MODEL.md"
+      ],
+      "scope": "Planning for access increment; operational completion remains G13"
+    },
+    "security": {
+      "status": "passed",
+      "gate": "G9_SECURITY_READY",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md",
+        "artifacts/SECURITY_MODEL.md"
+      ],
+      "scope": "Planning for access increment; operational completion remains G13"
+    },
+    "analytics": {
+      "status": "passed",
+      "gate": "G10_MEASUREMENT_READY",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md",
+        "artifacts/ANALYTICS_PLAN.md"
+      ],
+      "scope": "Planning for access increment; operational completion remains G13"
+    },
+    "performance": {
+      "status": "passed",
+      "gate": "G10C_PERFORMANCE_BUDGET",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md",
+        "artifacts/PERFORMANCE_BUDGET.md"
+      ],
+      "scope": "Planning for access increment; operational completion remains G13"
+    },
+    "accessibility": {
+      "status": "passed",
+      "gate": "G10D_ACCESSIBILITY_BASELINE",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md",
+        "artifacts/ACCESSIBILITY_PLAN.md"
+      ],
+      "scope": "Planning for access increment; operational completion remains G13"
+    },
+    "implementation-plan": {
+      "status": "passed",
+      "gate": "G11_CODE_GATE",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md",
+        "artifacts/ACCESS_INCREMENT.md"
+      ],
+      "scope": "Planning for access increment; operational completion remains G13"
+    },
+    "implementation": {
+      "status": "passed",
+      "gate": "G12_INCREMENT_VERIFIED",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md",
+        "artifacts/ACCESS_INCREMENT_RESULT.md",
+        "artifacts/LEAD_CUSTOMER_LINK_RESULT.md",
+        "artifacts/LIFECYCLE_PARTITION_RESULT.md",
+        "artifacts/CUSTOMER_LIFECYCLE_RESULT.md",
+        "artifacts/INTEGRITY_INCREMENT_RESULT.md"
+      ],
+      "existing_work": "A01-A08 base increment completed locally, including review/live partition, audited customer archive/restore and integrity protections. Broader CRM modules are future increments."
+    },
+    "verification": {
+      "status": "in-progress",
+      "gate": "G13_RELEASE_GATE",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md",
+        "artifacts/RELEASE_MATRIX.md",
+        "artifacts/QUALITY_GATE_PROGRESS.md",
+        "artifacts/HANDOFF_AUDIT_2026-09-22.md"
+      ]
+    },
+    "deployment": {
+      "status": "blocked",
+      "gate": "G14_DEPLOYMENT",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md"
+      ]
+    },
+    "launch": {
+      "status": "blocked",
+      "gate": "G14_LAUNCH",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md"
+      ]
+    },
+    "growth": {
+      "status": "deferred",
+      "gate": "G15_GROWTH_LOOP",
+      "evidence": [
+        "artifacts/GATE_EVIDENCE.md"
+      ]
+    },
+    "content-strategy": {
+      "status": "not-enabled",
+      "gate": null,
+      "evidence": []
+    },
+    "motion": {
+      "status": "not-enabled",
+      "gate": null,
+      "evidence": []
+    },
+    "webgl": {
+      "status": "not-enabled",
+      "gate": null,
+      "evidence": []
+    },
+    "technical-light": {
+      "status": "not-enabled",
+      "gate": null,
+      "evidence": []
+    },
+    "ai-architecture": {
+      "status": "not-enabled",
+      "gate": null,
+      "evidence": []
+    },
+    "ai-security": {
+      "status": "not-enabled",
+      "gate": null,
+      "evidence": []
+    },
+    "scope-spike": {
+      "status": "not-enabled",
+      "gate": null,
+      "evidence": []
+    }
+  },
+  "active_gate": "G13_RELEASE_GATE",
+  "blockers": [
+    {
+      "id": "G13",
+      "description": "Authenticated mutable-flow and keyboard QA; recovery validation; remote migration/deploy validation."
+    }
+  ],
+  "accepted_risks": [],
+  "last_updated": "2026-09-22",
+  "next_action": "Execute G13-QA-01: authenticated mutable-flow, keyboard and local backup/restore QA; do not begin Supabase migration yet.",
+  "baseline": {
+    "head": "98c0bbf3590536b9b078f5ae0611302ae5fd8393",
+    "working_tree": "dirty; existing work preserved; canonical path C:/Users/italo/Programação/Limpax",
+    "source_modified_by_audit": true,
+    "deployment": "known private version 3; no deploy in this audit",
+    "migration_0003": "local; remote application unverified",
+    "migration_0004": "local; remote application unverified",
+    "migration_0005": "local; remote application unverified",
+    "source_change_note": "Audit itself was documentation-only; subsequent authorized increment corrected A01/A02."
+  },
+  "checks": {
+    "business_tests": "PASS 16/16 re-run 2026-09-22; public leads persist origin public_check",
+    "access_tests": "PASS 15/15; includes admin-only, origin-protected customer lifecycle",
+    "deep_link_tests": "PASS 2/2; valid selected lead forwarded, malformed ignored",
+    "selection_state_tests": "PASS 2/2; stale detail/update responses rejected",
+    "customer_link_tests": "PASS 5/5; search, defaults, link/unlink, API errors and accessible states",
+    "lifecycle_tests": "PASS 2/2; incompatible modes rejected and legacy migration defaults to review/unknown",
+    "customer_lifecycle_tests": "PASS 2/2; archive/restore preserves relations, separates listings and audits transitions",
+    "integrity_tests": "PASS 3/3; legacy status history, task idempotency, date and tax ID validation",
+    "typescript": "PASS tsc --noEmit",
+    "build": "PASS npm run build after all changes",
+    "lint": "PASS 2026-09-22: npm run lint completed with 0 errors and 0 warnings; only generated .sites-runtime is excluded.",
+    "release_gate": "FAIL: authenticated mutable-flow/keyboard QA, recovery, and remote migration/deploy validation remain."
+  },
+  "resume_protocol": [
+    "Read this file, AUDIT.md and current increment plan",
+    "Inspect git diff for intervening changes",
+    "Read only affected modules",
+    "Update evidence after each verified increment"
+  ],
+  "skills_used": [
+    "icbai-project-director",
+    "api-security-review (manual checklist; referenced play missing)",
+    "icbai-quality-gate",
+    "supabase (planning only; no remote project or migration)"
+  ],
+  "target_transition": {
+    "status": "planned-after-g13",
+    "architecture": "Supabase PostgreSQL + Auth/Google + RLS + private Storage",
+    "preserve_until_cutover": [
+      "D1",
+      "R2",
+      "existing APIs",
+      "Sites deployment identity"
+    ],
+    "evidence": [
+      "../docs/SUPABASE_MIGRATION_PLAN.md",
+      "../docs/ROADMAP.md"
+    ],
+    "production_plan": "[VALIDAR] Free is accepted for development/homologation; production adequacy requires backup, pause, volume and support review"
+  },
+  "increments": [
+    {
+      "id": "access-01",
+      "scope": [
+        "A01",
+        "A02"
+      ],
+      "status": "passed",
+      "gate": "G12_INCREMENT_VERIFIED",
+      "evidence": "artifacts/ACCESS_INCREMENT_RESULT.md",
+      "deployment": "not deployed; G13 remains FAIL"
+    },
+    {
+      "id": "access-02",
+      "scope": [
+        "A03"
+      ],
+      "status": "passed",
+      "gate": "G12_INCREMENT_VERIFIED",
+      "evidence": "artifacts/ADMIN_INVARIANT_RESULT.md",
+      "deployment": "not deployed; G13 remains FAIL"
+    },
+    {
+      "id": "journey-01",
+      "scope": [
+        "A04 deep link",
+        "A05 stale responses"
+      ],
+      "status": "passed",
+      "gate": "G12_INCREMENT_VERIFIED",
+      "evidence": "artifacts/CRM_SELECTION_RESULT.md",
+      "deployment": "not deployed; creation UI completed by journey-02"
+    },
+    {
+      "id": "journey-02",
+      "scope": [
+        "A04b lead-customer search",
+        "link/unlink UI"
+      ],
+      "status": "passed",
+      "gate": "G12_INCREMENT_VERIFIED",
+      "evidence": "artifacts/LEAD_CUSTOMER_LINK_RESULT.md",
+      "deployment": "not deployed; G13 remains FAIL"
+    },
+    {
+      "id": "lifecycle-01",
+      "scope": [
+        "A06a review/live partition",
+        "origin and import batch fields",
+        "cross-mode link prevention"
+      ],
+      "status": "passed",
+      "gate": "G12_INCREMENT_VERIFIED",
+      "evidence": "artifacts/LIFECYCLE_PARTITION_RESULT.md",
+      "deployment": "not deployed; migration 0004 is local only"
+    },
+    {
+      "id": "lifecycle-02",
+      "scope": [
+        "A06b audited customer archive/restore",
+        "active/archived admin views",
+        "operational mode filtering"
+      ],
+      "status": "passed",
+      "gate": "G12_INCREMENT_VERIFIED",
+      "evidence": "artifacts/CUSTOMER_LIFECYCLE_RESULT.md",
+      "deployment": "not deployed; G13 remains FAIL"
+    },
+    {
+      "id": "integrity-01",
+      "scope": [
+        "A08 legacy status history",
+        "task creation idempotency",
+        "strict date and tax ID validation"
+      ],
+      "status": "passed",
+      "gate": "G12_INCREMENT_VERIFIED",
+      "evidence": "artifacts/INTEGRITY_INCREMENT_RESULT.md",
+      "deployment": "not deployed; migration 0005 is local only"
+    }
+  ]
+}

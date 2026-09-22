@@ -46,3 +46,5 @@ next-env.d.ts
 /outputs/
 /work/
 !/.env.example
+
+# `.icbai/` is versioned project state and must travel with the repository.

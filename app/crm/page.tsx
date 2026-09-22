@@ -1,7 +1,19 @@
-import {getChatGPTUser,chatGPTSignInPath} from "@/app/chatgpt-auth";
 import {settings} from "@/lib/config";
 import {database} from "@/lib/http";
 import {CrmWorkspace} from "@/components/crm-workspace";
+import {CrmAccessGate} from "@/components/crm-access-gate";
 import {listCrmLeads} from "@/lib/crm-data";
+import {crmPageAccess} from "@/lib/crm-page-access";
+import {uuidSchema} from "@/lib/validation";
+
 export const dynamic="force-dynamic";
-export default async function CrmPage(){const user=await getChatGPTUser();const allowed=(settings().CRM_ADMIN_EMAILS||"").split(",").map(value=>value.trim().toLowerCase()).filter(Boolean);if(!user)return <main className="crm-gate"><p className="eyebrow">LIMPAX / CRM</p><h1>Acesso da equipe.</h1><p>Entre com uma conta autorizada para abrir a central de atendimentos.</p><a className="button" href={chatGPTSignInPath("/crm")}>Entrar no CRM</a></main>;if(!allowed.length||!allowed.includes(user.email.toLowerCase()))return <main className="crm-gate"><p className="eyebrow">LIMPAX / CRM</p><h1>CRM protegido.</h1><p>{allowed.length?"Esta conta não está na lista autorizada.":"Defina CRM_ADMIN_EMAILS nas configurações de produção para liberar a equipe."}</p></main>;const initial=await listCrmLeads(database(settings()),{page:1,pageSize:50});return <CrmWorkspace initial={initial} operator={user.displayName}/>}
+type CrmPageProps={searchParams?:Promise<{selected?:string|string[]}>};
+export default async function CrmPage({searchParams}:CrmPageProps={}){
+  const access=await crmPageAccess();
+  if(!access.actor)return <CrmAccessGate status={access.status} returnTo="/crm"/>;
+  const query=await searchParams;
+  const requested=typeof query?.selected==="string"?query.selected:null;
+  const initialSelected=requested&&uuidSchema.safeParse(requested).success?requested:null;
+  const initial=await listCrmLeads(database(settings()),{page:1,pageSize:50});
+  return <CrmWorkspace initial={initial} initialSelected={initialSelected} operator={access.actor.displayName} role={access.actor.role}/>;
+}

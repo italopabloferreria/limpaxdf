@@ -1,10 +1,12 @@
 # CRM Limpax — ponto de entrada
 
+> **Retomada vigente — 22/09/2026:** pasta canônica `C:/Users/italo/Programação/Limpax`. Começar por `AGENTS.md`, `.icbai/PROJECT_STATE.json`, `docs/AI_HANDOFF.md` e `docs/CURRENT_TASK.md`. A01–A08 foram corrigidos e testados localmente. G13 ainda FAIL; nenhum deploy novo. Supabase é arquitetura alvo após o fechamento da base, não implementação atual.
+
 Atualizado em 16/09/2026. Objetivo deste pacote: preservar decisões, reduzir releituras e orientar uma implementação grande em entregas verificáveis.
 
 ## Pedido vigente
 
-Evoluir o CRM para gestão profissional de atendimento, vendas, operação, documentos, agenda e recebimentos, migrando o histórico hoje em Excel/CSV. Nesta etapa o usuário pediu **somente documentação em Markdown**. Não interpretar este pacote como autorização para alterar acessos externos, contratar serviços, enviar mensagens, emitir notas ou importar dados reais automaticamente.
+Evoluir o CRM para gestão profissional de atendimento, vendas, operação, documentos, agenda e recebimentos, migrando o histórico hoje em Excel/CSV. A implementação foi autorizada e iniciada; em 16/09/2026 o usuário pediu pausa aqui e continuidade pelo IDE Antigravity. Começar por `06-HANDOFF-ANTIGRAVITY.md` para o estado exato e as pendências da interrupção. Não interpretar este pacote como autorização para alterar acessos externos, contratar serviços, enviar mensagens, emitir notas ou importar dados reais automaticamente.
 
 ## Decisões confirmadas
 
@@ -30,7 +32,7 @@ Evoluir o CRM para gestão profissional de atendimento, vendas, operação, docu
 
 Existe site privado publicado e CRM inicial em `/crm`. Implementação: React/TypeScript, Vinext/Workers, D1/Drizzle e R2. Manifest: `.openai/hosting.json`; reutilizar seu `project_id`. Há Check persistente, anexos privados, APIs, fila inicial, status, notas e tarefas. Isso **não equivale ao escopo completo deste pacote**.
 
-O CRM atual usa login ChatGPT com lista de e-mails autorizados. Não existe ainda o conjunto completo de papéis, clientes independentes, agenda operacional, propostas, contratos, financeiro, importador ou emissor fiscal. Não presumir que a conta do dono ou da atendente já tenha sido criada.
+O CRM atual usa identidade do hosting com lista/perfis de e-mails autorizados. Clientes, contatos, locais e papéis básicos existem localmente; Google Login, agenda operacional, propostas, contratos, financeiro, importador e emissor fiscal ainda não existem. Não presumir que contas reais tenham sido criadas.
 
 O site permanece privado e o Check em revisão. Não apagar `[VALIDAR]` nem ativar captação real apenas para retirar a aparência de beta.
 
@@ -44,4 +46,4 @@ O site permanece privado e o Check em revisão. Não apagar `[VALIDAR]` nem ativ
 
 ## Próximo passo
 
-Receber amostra anonimizada das planilhas, preservando colunas e formatos, e mapear o histórico antes de fechar o importador. A revisão técnica da base e o desenho dos papéis podem avançar independentemente disso quando a implementação for retomada.
+Executar somente a tarefa em `docs/CURRENT_TASK.md`, atualmente `G13-LINT-01` e aguardando aprovação. O roadmap e o plano de migração ficam em `docs/ROADMAP.md` e `docs/SUPABASE_MIGRATION_PLAN.md`.
