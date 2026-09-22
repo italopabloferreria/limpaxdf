@@ -1,6 +1,6 @@
 # G13 — progresso do Release Gate
 
-Data: 22/09/2026. Estado: **parcial; lint concluído, QA autenticado ainda pendente**.
+Data: 22/09/2026. Estado: **parcial; QA local e recuperação aprovados, ciclo arquivar/restaurar e validações remotas ainda pendentes**.
 
 ## Linha de base automatizada
 
@@ -14,14 +14,15 @@ Data: 22/09/2026. Estado: **parcial; lint concluído, QA autenticado ainda pende
 
 - `/crm` foi inspecionado em desktop e em 390 × 844 com dados sintéticos.
 - A correção responsiva eliminou rolagem horizontal e manteve indicadores, lista e detalhe legíveis.
-- O primeiro `Tab` alcança “Pular para o conteúdo”.
-- `/crm/clientes` permaneceu legível em 390 × 844.
-- O diálogo “Novo cliente” recebeu foco inicial; `Escape` fechou e devolveu o foco ao acionador.
+- Em `/crm`, o primeiro `Tab` alcança “Pular para o conteúdo”; após o salto, a ordem observada foi marca, Clientes, Ver site, busca, status e primeiro atendimento.
+- `/crm/clientes` permaneceu legível em 390 × 844. O primeiro `Tab` também alcança o link de salto e a ordem segue marca, Atendimentos, Ver site e Novo cliente.
+- “Novo cliente” abre por teclado com foco inicial em Tipo. `Escape` fecha o diálogo e devolve o foco ao acionador.
+- Submeter o formulário vazio não chamou a API: a validação nativa mostrou “Preencha este campo.” e moveu o foco para Nome ou razão social.
 
 ## Ainda pendente
 
-- Jornada completa por teclado e mensagens de erro.
 - Ciclo arquivar/restaurar no navegador e validação visual do estado arquivado.
+- Cobertura cruzada de navegador, contraste e medição de performance.
 - Validação remota de migrações, ambiente e deploy em etapa autorizada posterior.
 
 ## QA autenticado — lote 1
@@ -32,5 +33,6 @@ Data: 22/09/2026. Estado: **parcial; lint concluído, QA autenticado ainda pende
 - PASS: vínculo do atendimento ao cliente, contato e local; histórico exibiu o atendimento e seu deep link.
 - Defeito corrigido: dois envios concorrentes podiam duplicar uma nota. Um guard síncrono de mutação foi adicionado e um clique duplo passou a gerar uma única ocorrência.
 - PASS: `npm run qa:recovery` criou backup e restauração isolada, comparou hashes de 14 arquivos e aprovou `PRAGMA integrity_check` no banco restaurado, com 16 tabelas.
+- PASS: navegação principal por teclado em `/crm` e `/crm/clientes`, abertura/fechamento do diálogo e validação obrigatória sem criação de registro.
 
 Esta evidência não autoriza deploy nem transforma o G13 em PASS.

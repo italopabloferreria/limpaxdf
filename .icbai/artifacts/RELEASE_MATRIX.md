@@ -10,11 +10,11 @@ PASS de teste unitário não equivale a PASS do fluxo operacional.
 | TypeScript | PASS | tsc --noEmit --incremental false executado após correções; exit 0 |
 | Build | PASS | npm run build executado após correções; exit 0. Wrapper da skill falhou na resolução do npm; comando do projeto aprovado |
 | Lint | PASS | `npm run lint` termina com zero erros e zero avisos; somente artefatos gerados são ignorados |
-| Erros/empty/retry | WARNING | Intake e tarefa idempotente testados; clique duplo de nota foi reproduzido, corrigido e revalidado; mensagens de erro ainda precisam da jornada completa |
+| Erros/empty/retry | WARNING | Intake e tarefa idempotente testados; clique duplo de nota foi reproduzido, corrigido e revalidado; formulário vazio direciona foco e exibe mensagem nativa; falhas de rede e retry ainda pendentes |
 | Persistência/formulários | WARNING | Tarefa, nota, cliente, vínculo e reabertura passaram no browser com dados sintéticos; arquivar/restaurar ainda pendente |
 | Responsividade | WARNING | `/crm` autenticado validado em desktop e 390 × 844 após correção de overflow; `/crm/clientes` e formulários longos ainda pendentes |
 | Navegadores/dispositivos | WARNING | Fluxos autenticados validados no navegador local integrado; cobertura cruzada de navegador permanece pendente |
-| Acessibilidade | WARNING | Primeiro Tab de `/crm` alcança o skip link; jornada completa, dialogs, erros, contraste e `/crm/clientes` ainda pendentes |
+| Acessibilidade | WARNING | Teclado passou em `/crm` e `/crm/clientes`: skip link, ordem de foco, diálogo, retorno ao gatilho e campo obrigatório; contraste automatizado/manual ainda pendente |
 | Segurança | WARNING | A01–A03 e autorização A06b testados localmente; falta homologação autenticada e não houve pentest |
 | Performance | WARNING | Orçamento definido em PERFORMANCE_BUDGET; medições pendentes, build não mede experiência |
 | SEO/AEO | WARNING | Noindex intencional para privado; ativação pública e dados/schema precisam validação |

@@ -39,8 +39,8 @@ O lint foi encerrado em 22/09/2026 com zero erros e zero avisos. As oito suítes
 
 ## Estado
 
-`in-progress`.
+`in-progress` — QA local funcional, teclado e recuperação aprovados. G13 permanece reprovado pelos itens abaixo.
 
 ## Próximo passo
 
-Concluir a jornada de teclado e o ciclo arquivar/restaurar no navegador; depois repetir os checks completos e atualizar a decisão do G13. Não iniciar Supabase nem deploy.
+Concluir o ciclo arquivar/restaurar no navegador com confirmação explícita para o diálogo de alteração de estado. Em seguida validar contraste/performance e planejar a etapa remota autorizada. Não iniciar Supabase nem deploy.

@@ -6,7 +6,7 @@ Atualizado em 22/09/2026. Repositório canônico: `C:/Users/italo/Programação/
 
 `G13-LINT-01` foi concluído. O ESLint ignora `.sites-runtime/**`, artefato gerado, e termina com zero erros e zero avisos sem desativação global de regras. Foram corrigidos links internos, efeitos React e tipos nos handlers, componentes, utilitários e testes. As oito suítes somam 47/47 testes aprovados; TypeScript e build também passam. G13 continua FAIL apenas pelos itens de QA e recuperação ainda pendentes.
 
-`G13-QA-01` foi iniciado no repositório canônico. No navegador local autenticado, foram validados criação e conclusão de tarefa, nota, criação de cliente sintético, vínculo com contato/local e histórico com deep link. Um clique duplo reproduziu nota duplicada; `CrmWorkspace` agora bloqueia mutações concorrentes e o mesmo teste gerou uma única nota. O ensaio `npm run qa:recovery` copiou e restaurou 14 arquivos, comparou hashes e aprovou a integridade SQLite de 16 tabelas. O ciclo arquivar/restaurar e a jornada completa de teclado continuam pendentes.
+`G13-QA-01` foi iniciado no repositório canônico. No navegador local autenticado, foram validados criação e conclusão de tarefa, nota, criação de cliente sintético, vínculo com contato/local e histórico com deep link. Um clique duplo reproduziu nota duplicada; `CrmWorkspace` agora bloqueia mutações concorrentes e o mesmo teste gerou uma única nota. O ensaio `npm run qa:recovery` copiou e restaurou 14 arquivos, comparou hashes e aprovou a integridade SQLite de 16 tabelas. A jornada de teclado passou em `/crm` e `/crm/clientes`, incluindo skip link, ordem de foco, diálogo, retorno ao gatilho e validação de campo obrigatório. O ciclo arquivar/restaurar continua pendente.
 
 ## Fase atual
 
@@ -26,7 +26,7 @@ Handoff multiagente e auditoria reconciliados. Foram confirmados:
 
 ## Próxima tarefa única
 
-Executar `G13-QA-01`, descrita em `docs/CURRENT_TASK.md`, validando fluxos autenticados, teclado e recuperação local. Não iniciar Supabase.
+Continuar `G13-QA-01`, descrita em `docs/CURRENT_TASK.md`, pelo ciclo arquivar/restaurar e pelas verificações restantes de contraste/performance. Não iniciar Supabase.
 
 ## Decisões recentes
 
@@ -40,7 +40,8 @@ Executar `G13-QA-01`, descrita em `docs/CURRENT_TASK.md`, validando fluxos auten
 
 ## Bloqueios
 
-- QA autenticado completo de fluxos mutáveis, teclado e formulários longos pendente.
+- Ciclo arquivar/restaurar no navegador e validação visual do estado arquivado pendentes.
+- Contraste, performance e cobertura cruzada de navegador ainda sem evidência final.
 - Backup/restauração local aprovado; upgrade e recuperação remotos ainda não ensaiados.
 - Migrações e configuração remotas não verificadas.
 - Dados oficiais, domínio exato, contas Google, política de retenção, planilhas, modelo contratual e emissor fiscal permanecem `[VALIDAR]`.
@@ -51,7 +52,7 @@ Executar `G13-QA-01`, descrita em `docs/CURRENT_TASK.md`, validando fluxos auten
 2. Leia `.icbai/PROJECT_STATE.json`.
 3. Leia este arquivo.
 4. Leia `docs/CURRENT_TASK.md`.
-5. Confira `git status`; a árvore contém trabalho válido não commitado desde `98c0bbf`.
+5. Confira `git status`; o último commit de código verificado antes desta atualização documental é `08cb5e4`.
 6. Leia apenas o código da tarefa e preserve alterações alheias.
 
 Arquivos-chave: `.icbai/artifacts/RELEASE_MATRIX.md`, `.icbai/artifacts/QUALITY_GATE_PROGRESS.md`, `docs/ROADMAP.md`, `docs/SUPABASE_MIGRATION_PLAN.md`, `db/schema.ts`, `drizzle/`, `lib/crm.ts`, `lib/crm-customers.ts`, `components/crm-workspace.tsx` e `components/customer-workspace.tsx`.
