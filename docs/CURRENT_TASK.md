@@ -43,4 +43,4 @@ O lint foi encerrado em 22/09/2026 com zero erros e zero avisos. As oito suítes
 
 ## Próximo passo
 
-Concluir o ciclo arquivar/restaurar no navegador com confirmação explícita para o diálogo de alteração de estado. Em seguida validar contraste/performance e planejar a etapa remota autorizada. Não iniciar Supabase nem deploy.
+Concluir o ciclo arquivar/restaurar no navegador com confirmação explícita para o diálogo de alteração de estado. Depois planejar a validação remota e a medição de produção em etapa autorizada. Não iniciar Supabase nem deploy.

@@ -6,7 +6,7 @@ Atualizado em 22/09/2026. Repositório canônico: `C:/Users/italo/Programação/
 
 `G13-LINT-01` foi concluído. O ESLint ignora `.sites-runtime/**`, artefato gerado, e termina com zero erros e zero avisos sem desativação global de regras. Foram corrigidos links internos, efeitos React e tipos nos handlers, componentes, utilitários e testes. As oito suítes somam 47/47 testes aprovados; TypeScript e build também passam. G13 continua FAIL apenas pelos itens de QA e recuperação ainda pendentes.
 
-`G13-QA-01` foi iniciado no repositório canônico. No navegador local autenticado, foram validados criação e conclusão de tarefa, nota, criação de cliente sintético, vínculo com contato/local e histórico com deep link. Um clique duplo reproduziu nota duplicada; `CrmWorkspace` agora bloqueia mutações concorrentes e o mesmo teste gerou uma única nota. O ensaio `npm run qa:recovery` copiou e restaurou 14 arquivos, comparou hashes e aprovou a integridade SQLite de 16 tabelas. A jornada de teclado passou em `/crm` e `/crm/clientes`, incluindo skip link, ordem de foco, diálogo, retorno ao gatilho e validação de campo obrigatório. O ciclo arquivar/restaurar continua pendente.
+`G13-QA-01` foi iniciado no repositório canônico. No navegador local autenticado, foram validados criação e conclusão de tarefa, nota, criação de cliente sintético, vínculo com contato/local e histórico com deep link. Um clique duplo reproduziu nota duplicada; `CrmWorkspace` agora bloqueia mutações concorrentes e o mesmo teste gerou uma única nota. O ensaio `npm run qa:recovery` copiou e restaurou 14 arquivos, comparou hashes e aprovou a integridade SQLite de 16 tabelas. A jornada de teclado passou em `/crm` e `/crm/clientes`, incluindo skip link, ordem de foco, diálogo, retorno ao gatilho e validação de campo obrigatório. A varredura local de 54 textos visíveis não encontrou falha AA e o menor contraste foi 4,64:1. As quatro rotas responderam entre 62 ms e 117 ms em rodada aquecida do servidor de desenvolvimento; isso não equivale a Core Web Vitals de produção. O ciclo arquivar/restaurar continua pendente.
 
 ## Fase atual
 
@@ -26,7 +26,7 @@ Handoff multiagente e auditoria reconciliados. Foram confirmados:
 
 ## Próxima tarefa única
 
-Continuar `G13-QA-01`, descrita em `docs/CURRENT_TASK.md`, pelo ciclo arquivar/restaurar e pelas verificações restantes de contraste/performance. Não iniciar Supabase.
+Continuar `G13-QA-01`, descrita em `docs/CURRENT_TASK.md`, pelo ciclo arquivar/restaurar. Depois preparar a validação remota e a medição de produção sem iniciar Supabase nesta tarefa.
 
 ## Decisões recentes
 
@@ -41,7 +41,7 @@ Continuar `G13-QA-01`, descrita em `docs/CURRENT_TASK.md`, pelo ciclo arquivar/r
 ## Bloqueios
 
 - Ciclo arquivar/restaurar no navegador e validação visual do estado arquivado pendentes.
-- Contraste, performance e cobertura cruzada de navegador ainda sem evidência final.
+- Contraste e tempo de resposta possuem evidência local limitada; Core Web Vitals, imagens/gradientes, estados fora do viewport e cobertura cruzada de navegador ainda não têm evidência final.
 - Backup/restauração local aprovado; upgrade e recuperação remotos ainda não ensaiados.
 - Migrações e configuração remotas não verificadas.
 - Dados oficiais, domínio exato, contas Google, política de retenção, planilhas, modelo contratual e emissor fiscal permanecem `[VALIDAR]`.

@@ -14,9 +14,9 @@ PASS de teste unitário não equivale a PASS do fluxo operacional.
 | Persistência/formulários | WARNING | Tarefa, nota, cliente, vínculo e reabertura passaram no browser com dados sintéticos; arquivar/restaurar ainda pendente |
 | Responsividade | WARNING | `/crm` autenticado validado em desktop e 390 × 844 após correção de overflow; `/crm/clientes` e formulários longos ainda pendentes |
 | Navegadores/dispositivos | WARNING | Fluxos autenticados validados no navegador local integrado; cobertura cruzada de navegador permanece pendente |
-| Acessibilidade | WARNING | Teclado passou em `/crm` e `/crm/clientes`: skip link, ordem de foco, diálogo, retorno ao gatilho e campo obrigatório; contraste automatizado/manual ainda pendente |
+| Acessibilidade | WARNING | Teclado passou em `/crm` e `/crm/clientes`; varredura local encontrou 0 falhas AA em 54 textos visíveis, mínimo 4,64:1; imagens/gradientes, estados fora do viewport e auditoria manual completa permanecem pendentes |
 | Segurança | WARNING | A01–A03 e autorização A06b testados localmente; falta homologação autenticada e não houve pentest |
-| Performance | WARNING | Orçamento definido em PERFORMANCE_BUDGET; medições pendentes, build não mede experiência |
+| Performance | WARNING | Servidor local aquecido respondeu quatro rotas em 62–117 ms; orçamento definido em PERFORMANCE_BUDGET; faltam Core Web Vitals e medição do ambiente publicado |
 | SEO/AEO | WARNING | Noindex intencional para privado; ativação pública e dados/schema precisam validação |
 | Analytics | WARNING | Consentimento/eventos presentes; métricas empresariais e reconciliação não implementadas |
 | Privacidade | FAIL | Partição e arquivamento implementados localmente; retenção/expurgo e dados oficiais permanecem [VALIDAR] |

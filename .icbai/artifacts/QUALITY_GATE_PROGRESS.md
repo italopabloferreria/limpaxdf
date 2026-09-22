@@ -35,4 +35,10 @@ Data: 22/09/2026. Estado: **parcial; QA local e recuperação aprovados, ciclo a
 - PASS: `npm run qa:recovery` criou backup e restauração isolada, comparou hashes de 14 arquivos e aprovou `PRAGMA integrity_check` no banco restaurado, com 16 tabelas.
 - PASS: navegação principal por teclado em `/crm` e `/crm/clientes`, abertura/fechamento do diálogo e validação obrigatória sem criação de registro.
 
+## QA local — contraste e tempo de resposta
+
+- PASS local: varredura computada dos textos visíveis encontrou 0 falhas WCAG AA em 25 amostras de `/crm` e 29 de `/crm/clientes`, no viewport 818 × 912. Menor razão observada: 4,64:1.
+- INFO local: em segunda rodada aquecida no servidor de desenvolvimento, `/`, `/check`, `/crm` e `/crm/clientes` responderam HTTP 200 entre 62 ms e 117 ms.
+- Limite: a varredura não avalia pixels sobre imagens/gradientes nem estados fora do viewport; os tempos não são Core Web Vitals nem representam rede, cache e runtime de produção.
+
 Esta evidência não autoriza deploy nem transforma o G13 em PASS.
