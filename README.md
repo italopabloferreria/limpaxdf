@@ -2,9 +2,16 @@
 
 Site funcional em React, TypeScript, Vinext/Cloudflare Workers, D1, Drizzle e R2. Publicação inicial privada em modo de revisão; registros de teste não são encaminhados ao CRM.
 
+## Retomada por agentes
+
+Este repositório é a fonte de verdade. Qualquer agente deve começar por `AGENTS.md`, `.icbai/PROJECT_STATE.json`, `docs/AI_HANDOFF.md` e `docs/CURRENT_TASK.md`. O backend atual continua D1/R2; Supabase é a arquitetura alvo documentada para migração reversível após o G13.
+
 ## Documentação
 
 - [Retomada e plano do CRM completo](docs/crm/00-RETOMADA.md) — começar aqui para evoluir o CRM; decisões, módulos e leitura por tarefa.
+- [Handoff atual](docs/AI_HANDOFF.md) e [tarefa única](docs/CURRENT_TASK.md)
+- [Prompt padrão para outros agentes](docs/AGENT_RESUME_PROMPT.md)
+- [Roadmap por dependências](docs/ROADMAP.md) e [plano Supabase](docs/SUPABASE_MIGRATION_PLAN.md)
 - [Marca, logo e tipografia](docs/01-brand-source-of-truth.md)
 - [Experiência, sitemap e copy](docs/02-product-experience-spec.md)
 - [Brief de implementação](docs/03-codex-master-implementation-brief.md)
@@ -32,4 +39,5 @@ Reutilizar o project_id de `.openai/hosting.json`. Commitar e enviar fonte ao re
 Rollback: publicar versão anterior; migrações destrutivas precisam de plano independente de recuperação. Antes de live: validar identidade, contato de privacidade, base legal/retenção, serviços/cobertura, CRM e agendador, realizar teste de destino e só então configurar CAPTURE_MODE=live. Remover noindex apenas após aprovação editorial. A mudança de audiência pública é separada da implantação privada.
 
 Logo original: public/media/limpax-logo-original.png. Fotos conceituais IA: hero.webp e operation.webp; substituir por mídia real aprovada preservando enquadramento/compressão. Fontes locais com OFL. Fonte do lettering da logo: 13_Misa, confirmada pelo solicitante; referência e licença pendente registradas no documento de marca.
+# limpax
 
