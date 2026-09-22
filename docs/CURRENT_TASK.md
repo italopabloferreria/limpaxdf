@@ -39,8 +39,17 @@ O lint foi encerrado em 22/09/2026 com zero erros e zero avisos. As oito suítes
 
 ## Estado
 
-`in-progress` — QA local funcional, teclado e recuperação aprovados. G13 permanece reprovado pelos itens abaixo.
+`local-complete` — QA funcional, teclado, responsividade, lifecycle e recuperação aprovados. G13 permanece aberto somente pelos itens remotos abaixo.
 
 ## Próximo passo
 
-Concluir o ciclo arquivar/restaurar no navegador com confirmação explícita para o diálogo de alteração de estado. Depois planejar a validação remota e a medição de produção em etapa autorizada. Não iniciar Supabase nem deploy.
+Preparar a validação remota de migrações, recuperação, configuração e performance em etapa separadamente autorizada. Não iniciar Supabase nem deploy sem ambiente e credenciais confirmados.
+
+## Checklist da etapa remota
+
+1. Identificar o ambiente e a versão publicada, sem alterar dados; comparar o commit com o repositório local.
+2. Conferir quais migrações D1 0003–0005 foram aplicadas e fazer backup antes de qualquer upgrade.
+3. Ensaiar restauração em ambiente isolado e conferir contagens, vínculos e integridade sem copiar dados reais para o repositório.
+4. Executar smoke autenticado com registros sintéticos e papéis de administrador/atendimento.
+5. Medir Core Web Vitals no domínio final, revisar logs, monitoramento, retenção e rollback.
+6. Registrar PASS/FAIL/WARNING por dimensão na matriz G13 antes de propor cutover ou publicação.

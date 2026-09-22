@@ -45,6 +45,7 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
   const [listing,setListing]=useState(initial);
   const [selected,setSelected]=useState<string|null>(initial.customers[0]?.id||null);
   const selectedRef=useRef(selected);
+  const lifecycleButtonRef=useRef<HTMLButtonElement>(null);
   useEffect(()=>{selectedRef.current=selected},[selected]);
 
   const [detail,setDetail]=useState<CustomerDetail|null>(null);
@@ -64,6 +65,7 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
 
   const [editingContact,setEditingContact]=useState<{id:string;name:string;role:string;phone:string;email:string;primary:boolean}|null>(null);
   const [editingLocation,setEditingLocation]=useState<{id:string;label:string;address:string;number:string;complement:string;district:string;city:string;state:string;postalCode:string;primary:boolean}|null>(null);
+  const [lifecycleAction,setLifecycleAction]=useState<{archived:boolean;customerName:string}|null>(null);
 
   const [modalError,setModalError]=useState("");
   const [busy,setBusy]=useState(false);
@@ -298,12 +300,13 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
     setRefresh(v=>v+1);
   }
 
-  async function handleLifecycle(archived:boolean){
-    if(!selected||role!=="admin")return;
+  async function handleLifecycle(){
+    if(!selected||role!=="admin"||!lifecycleAction)return;
+    const {archived}=lifecycleAction;
     const verb=archived?"arquivar":"restaurar";
-    if(!confirm(`Deseja ${verb} este cliente? O histórico será preservado.`))return;
     const res=await request("/api/crm/customers/"+selected+"/lifecycle","PATCH",{archived});
-    if(!res.ok){setPageError(res.error||`Não foi possível ${verb} o cliente.`);return}
+    if(!res.ok){setModalError(res.error||`Não foi possível ${verb} o cliente.`);return}
+    setLifecycleAction(null);
     setSelected(null);
     setDetail(null);
     setRefresh(value=>value+1);
@@ -436,7 +439,7 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
                 </div>
                 <div style={{display:"flex",gap:"8px",alignItems:"center"}}>
                   <span className={styles.tag}>{detail.archivedAt?"Arquivado":kindLabel[detail.kind]}</span>
-                  {role==="admin"&&<button className={detail.archivedAt?styles.btnSmall:styles.btnSmallDanger} disabled={busy} onClick={()=>void handleLifecycle(!detail.archivedAt)}>{detail.archivedAt?"Restaurar":"Arquivar"}</button>}
+                  {role==="admin"&&<button ref={lifecycleButtonRef} className={detail.archivedAt?styles.btnSmall:styles.btnSmallDanger} disabled={busy} onClick={()=>{setModalError("");setLifecycleAction({archived:!detail.archivedAt,customerName:detail.tradeName||detail.name})}}>{detail.archivedAt?"Restaurar":"Arquivar"}</button>}
                   {!detail.archivedAt&&<Dialog open={openEditCustomer} onOpenChange={v=>{setOpenEditCustomer(v);if(v)setModalError("");}}>
                     <DialogTrigger asChild>
                       <button className={styles.btnSmall}>Editar dados</button>
@@ -678,6 +681,26 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
           )}
         </section>
       </section>
+
+      <Dialog open={!!lifecycleAction} onOpenChange={open=>{if(!open&&!busy){setLifecycleAction(null);setModalError("")}}}>
+        {lifecycleAction&&<DialogContent className={styles.dialog} onCloseAutoFocus={event=>{event.preventDefault();lifecycleButtonRef.current?.focus()}}>
+          <DialogHeader>
+            <DialogTitle>{lifecycleAction.archived?"Arquivar cliente?":"Restaurar cliente?"}</DialogTitle>
+            <DialogDescription>
+              {lifecycleAction.archived
+                ?`O cadastro de ${lifecycleAction.customerName} sairá da operação ativa. Contatos, locais e histórico serão preservados.`
+                :`O cadastro de ${lifecycleAction.customerName} voltará para a operação ativa com seus contatos, locais e histórico.`}
+            </DialogDescription>
+          </DialogHeader>
+          {modalError&&<div className={styles.modalError} role="alert">{modalError}</div>}
+          <div className={styles.actions}>
+            <button type="button" className={styles.ghost} disabled={busy} onClick={()=>{setLifecycleAction(null);setModalError("")}}>Cancelar</button>
+            <button type="button" className={lifecycleAction.archived?styles.btnSmallDanger:styles.primary} disabled={busy} onClick={()=>void handleLifecycle()}>
+              {busy?"Processando…":lifecycleAction.archived?"Arquivar cliente":"Restaurar cliente"}
+            </button>
+          </div>
+        </DialogContent>}
+      </Dialog>
     </main>
   );
 }

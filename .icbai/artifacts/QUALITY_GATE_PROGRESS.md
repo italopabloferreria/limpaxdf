@@ -1,6 +1,6 @@
 # G13 — progresso do Release Gate
 
-Data: 22/09/2026. Estado: **parcial; QA local e recuperação aprovados, ciclo arquivar/restaurar e validações remotas ainda pendentes**.
+Data: 22/09/2026. Estado: **QA local e recuperação aprovados; validações remotas ainda pendentes**.
 
 ## Linha de base automatizada
 
@@ -22,7 +22,6 @@ Data: 22/09/2026. Estado: **parcial; QA local e recuperação aprovados, ciclo a
 
 ## Ainda pendente
 
-- Ciclo arquivar/restaurar no navegador e validação visual do estado arquivado.
 - Cobertura cruzada de navegador e medição de produção.
 - Validação remota de migrações, ambiente e deploy em etapa autorizada posterior.
 
@@ -35,6 +34,7 @@ Data: 22/09/2026. Estado: **parcial; QA local e recuperação aprovados, ciclo a
 - Defeito corrigido: dois envios concorrentes podiam duplicar uma nota. Um guard síncrono de mutação foi adicionado e um clique duplo passou a gerar uma única ocorrência.
 - PASS: `npm run qa:recovery` criou backup e restauração isolada, comparou hashes de 14 arquivos e aprovou `PRAGMA integrity_check` no banco restaurado, com 16 tabelas.
 - PASS: navegação principal por teclado em `/crm` e `/crm/clientes`, abertura/fechamento do diálogo e validação obrigatória sem criação de registro.
+- PASS: arquivar/restaurar no navegador com cliente sintético. A confirmação nativa foi substituída por diálogo acessível; cancelamento devolve o foco ao acionador e a restauração preservou contato, local e atendimento vinculado.
 
 ## QA local — contraste e tempo de resposta
 

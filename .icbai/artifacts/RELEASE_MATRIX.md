@@ -5,13 +5,13 @@ PASS de teste unitário não equivale a PASS do fluxo operacional.
 
 | Dimensão | Estado | Evidência / ação |
 |---|---|---|
-| Aceites funcionais | FAIL | A01–A08 passam localmente; QA operacional e demais módulos continuam pendentes |
+| Aceites funcionais | PASS local | A01–A08 e as jornadas operacionais do incremento passam localmente; módulos futuros e validação remota não fazem parte deste aceite local |
 | Testes existentes | PASS | 47/47: negócio 16, acesso 15, deep link 2, estado/concorrência de tela 2, vínculo 5, lifecycle 2, lifecycle de cliente 2 e integridade 3; não substitui QA no browser |
 | TypeScript | PASS | tsc --noEmit --incremental false executado após correções; exit 0 |
 | Build | PASS | npm run build executado após correções; exit 0. Wrapper da skill falhou na resolução do npm; comando do projeto aprovado |
 | Lint | PASS | `npm run lint` termina com zero erros e zero avisos; somente artefatos gerados são ignorados |
 | Erros/empty/retry | WARNING | Intake e tarefa idempotente testados; clique duplo de nota foi reproduzido, corrigido e revalidado; formulário vazio direciona foco e exibe mensagem nativa; falhas de rede e retry ainda pendentes |
-| Persistência/formulários | WARNING | Tarefa, nota, cliente, vínculo e reabertura passaram no browser com dados sintéticos; arquivar/restaurar ainda pendente |
+| Persistência/formulários | PASS local | Tarefa, nota, cliente, vínculo, arquivamento e restauração passaram no navegador com dados sintéticos e relações preservadas |
 | Responsividade | PASS local | `/crm` e `/crm/clientes` autenticados validados em desktop e 390 × 844; sem overflow horizontal, e o formulário longo mantém rolagem interna e ações alcançáveis |
 | Navegadores/dispositivos | WARNING | Fluxos autenticados validados no navegador local integrado; cobertura cruzada de navegador permanece pendente |
 | Acessibilidade | WARNING | Teclado passou em `/crm` e `/crm/clientes`; varredura local encontrou 0 falhas AA em 54 textos visíveis, mínimo 4,64:1; imagens/gradientes, estados fora do viewport e auditoria manual completa permanecem pendentes |

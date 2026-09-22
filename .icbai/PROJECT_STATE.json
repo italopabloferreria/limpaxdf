@@ -212,12 +212,12 @@
   "blockers": [
     {
       "id": "G13",
-      "description": "Remaining archive/restore browser QA and remote migration/deploy plus production performance validation."
+      "description": "Remote migration, recovery, deploy and production performance validation remain."
     }
   ],
   "accepted_risks": [],
   "last_updated": "2026-09-22",
-  "next_action": "Continue G13-QA-01 with archive/restore browser QA; then plan the separately authorized remote and production performance validation.",
+  "next_action": "Prepare the separately authorized remote migration, recovery, deploy and production performance validation.",
   "baseline": {
     "head": "08cb5e4",
     "working_tree": "clean after code commit 08cb5e4; this evidence update is documentation-only; canonical path C:/Users/italo/Programação/Limpax",
@@ -240,8 +240,8 @@
     "typescript": "PASS tsc --noEmit",
     "build": "PASS npm run build after all changes",
     "lint": "PASS 2026-09-22: npm run lint completed with 0 errors and 0 warnings; only generated .sites-runtime is excluded.",
-    "release_gate": "FAIL: archive/restore browser QA and remote migration/deploy plus production performance validation remain.",
-    "browser_qa": "PARTIAL PASS 2026-09-22: task create/complete, note, synthetic customer, link and history validated; concurrent note guard revalidated; keyboard, dialog, required-field and 390x844 long-form responsiveness passed; archive/restore remains.",
+    "release_gate": "FAIL remote: local G13 QA passed; remote migration, recovery, deploy and production performance validation remain.",
+    "browser_qa": "PASS local 2026-09-22: task, note, synthetic customer, link, history, archive/restore, mutation guard, keyboard, accessible lifecycle dialog, required-field and 390x844 responsiveness passed.",
     "recovery": "PASS local 2026-09-22: 14 files copied/restored with identical hashes; SQLite integrity ok across 16 tables. Remote recovery untested.",
     "contrast": "PASS local sample 2026-09-22: 0 failures across 54 visible text samples on /crm and /crm/clientes; minimum 4.64:1. Images, gradients and off-viewport states untested.",
     "performance": "INFO local 2026-09-22: warm dev responses 62-117 ms across /, /check, /crm and /crm/clientes. Production Core Web Vitals untested."
