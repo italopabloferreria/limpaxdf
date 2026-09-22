@@ -8,6 +8,8 @@ Atualizado em 22/09/2026. Repositório canônico: `C:/Users/italo/Programação/
 
 `G13-QA-01` concluiu a parte local no repositório canônico. No navegador autenticado, foram validados tarefa, nota, cliente sintético, vínculo, histórico, arquivamento e restauração com relações preservadas. Um clique duplo reproduziu nota duplicada; `CrmWorkspace` agora bloqueia mutações concorrentes. A confirmação nativa de lifecycle foi substituída por diálogo acessível com foco inicial, cancelamento e retorno ao acionador. O ensaio `npm run qa:recovery` restaurou 14 arquivos com hashes idênticos e integridade SQLite de 16 tabelas. Teclado, formulário obrigatório, 390 × 844 e contraste local também passaram. As quatro rotas responderam entre 62 ms e 117 ms em ambiente aquecido; isso não equivale a Core Web Vitals de produção.
 
+`npm run qa:preflight` foi acrescentado como verificação local somente de leitura. Confere bindings, journal e sequência das seis migrações D1 e emite hashes SHA-256. Compara o HEAD ao upstream local; no ensaio, `origin/main` estava 7 commits atrás. Aplicação remota, backup, restauração, deploy e commit publicado continuam não verificados.
+
 ## Fase atual
 
 `EXISTING PROJECT → AUDIT & RESUME`. O núcleo A01–A08 está implementado localmente. O gate ativo é **G13 / Release Gate**, ainda reprovado. Não há autorização de deploy, migração remota ou uso de dados reais.

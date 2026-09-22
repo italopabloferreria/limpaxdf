@@ -217,7 +217,7 @@
   ],
   "accepted_risks": [],
   "last_updated": "2026-09-22",
-  "next_action": "Prepare the separately authorized remote migration, recovery, deploy and production performance validation.",
+  "next_action": "Use the local read-only release preflight, then identify the actual remote environment and deployed commit before separately authorized migration, recovery, deploy and production performance validation.",
   "baseline": {
     "head": "08cb5e4",
     "working_tree": "clean after code commit 08cb5e4; this evidence update is documentation-only; canonical path C:/Users/italo/Programação/Limpax",
@@ -244,7 +244,8 @@
     "browser_qa": "PASS local 2026-09-22: task, note, synthetic customer, link, history, archive/restore, mutation guard, keyboard, accessible lifecycle dialog, required-field and 390x844 responsiveness passed.",
     "recovery": "PASS local 2026-09-22: 14 files copied/restored with identical hashes; SQLite integrity ok across 16 tables. Remote recovery untested.",
     "contrast": "PASS local sample 2026-09-22: 0 failures across 54 visible text samples on /crm and /crm/clientes; minimum 4.64:1. Images, gradients and off-viewport states untested.",
-    "performance": "INFO local 2026-09-22: warm dev responses 62-117 ms across /, /check, /crm and /crm/clientes. Production Core Web Vitals untested."
+    "performance": "INFO local 2026-09-22: warm dev responses 62-117 ms across /, /check, /crm and /crm/clientes. Production Core Web Vitals untested.",
+    "release_preflight": "PASS local 2026-09-22: DB/BUCKET bindings, six D1 migration hashes and journal sequence; upstream was 7 commits behind local HEAD at initial run. Remote state unverified."
   },
   "resume_protocol": [
     "Read this file, AUDIT.md and current increment plan",

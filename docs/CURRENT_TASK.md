@@ -41,6 +41,8 @@ O lint foi encerrado em 22/09/2026 com zero erros e zero avisos. As oito suítes
 
 `local-complete` — QA funcional, teclado, responsividade, lifecycle e recuperação aprovados. G13 permanece aberto somente pelos itens remotos abaixo.
 
+O preflight local de release está disponível em `npm run qa:preflight`. Ele lista hashes SHA-256 das migrações D1 0000–0005, confere a sequência e mostra o estado Git local. O comando é somente leitura e **não** verifica aplicação de migrações, backup, restauração nem deploy remotos. Em 22/09/2026, `origin/main` estava 7 commits atrás do HEAD local; o commit efetivamente publicado segue não verificado.
+
 ## Próximo passo
 
 Preparar a validação remota de migrações, recuperação, configuração e performance em etapa separadamente autorizada. Não iniciar Supabase nem deploy sem ambiente e credenciais confirmados.

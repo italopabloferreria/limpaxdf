@@ -25,6 +25,12 @@ Data: 22/09/2026. Estado: **QA local e recuperação aprovados; validações rem
 - Cobertura cruzada de navegador e medição de produção.
 - Validação remota de migrações, ambiente e deploy em etapa autorizada posterior.
 
+## Preflight de release (somente leitura)
+
+- `npm run qa:preflight`: PASS para bindings `DB`/`BUCKET`, journal e sequência das seis migrações D1 0000–0005; o relatório inclui SHA-256 de cada SQL para comparação futura.
+- Git local: `origin/main` estava 7 commits atrás do HEAD local no ensaio inicial. Isso é comparação com upstream, não comprovação do commit publicado.
+- Migrações remotas, backup, restauração e deploy permanecem `UNVERIFIED` no JSON. O comando não toca em dados remotos.
+
 ## QA autenticado — lote 1
 
 - PASS: criação e conclusão de tarefa em atendimento sintético.
