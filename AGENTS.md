@@ -78,3 +78,5 @@ O lint global ignora `.sites-runtime`, `dist` e `.next`, que são artefatos gera
 Antes: leia as fontes, confira `git status`, valide a evidência afetada e confirme o primeiro gate incompleto.
 
 Depois: execute os checks aplicáveis, registre resultado/limitações e atualize `.icbai/PROJECT_STATE.json`, `docs/AI_HANDOFF.md` e `docs/CURRENT_TASK.md`. Nenhuma sessão termina com estado relevante apenas no chat.
+
+Ao finalizar uma etapa ou entregar uma resposta de conclusão, mostre ao usuário uma árvore resumida do projeto. Oculte dependências, builds e artefatos gerados (`node_modules`, `dist`, `.next`, `.wrangler` e `.sites-runtime`) e destaque os arquivos alterados na etapa quando houver.
