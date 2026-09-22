@@ -31,6 +31,12 @@ Data: 22/09/2026. Estado: **QA local e recuperação aprovados; validações rem
 - Git local: `origin/main` estava 7 commits atrás do HEAD local no ensaio inicial. Isso é comparação com upstream, não comprovação do commit publicado.
 - Migrações remotas, backup, restauração e deploy permanecem `UNVERIFIED` no JSON. O comando não toca em dados remotos.
 
+## Identificação remota por leitura
+
+- Sites: versão 3 publicada com status `succeeded`, commit `98c0bbf3590536b9b078f5ae0611302ae5fd8393` (16/09/2026); o HEAD local estava 11 commits à frente na consulta de 22/09/2026. Não houve novo deploy.
+- D1 remoto `DB`: overview listou oito tabelas (`attachments`, `crm_tasks`, `events`, `lead_activities`, `leads`, `outbox`, `rate_limits`, `service_records`). Não foram lidas linhas nem dados de clientes.
+- Esta evidência prova a diferença de versão e de estrutura visível; não prova quais migrações do journal foram aplicadas nem a integridade, backup ou capacidade de restauração remotos.
+
 ## QA autenticado — lote 1
 
 - PASS: criação e conclusão de tarefa em atendimento sintético.

@@ -8,7 +8,9 @@ Atualizado em 22/09/2026. Repositório canônico: `C:/Users/italo/Programação/
 
 `G13-QA-01` concluiu a parte local no repositório canônico. No navegador autenticado, foram validados tarefa, nota, cliente sintético, vínculo, histórico, arquivamento e restauração com relações preservadas. Um clique duplo reproduziu nota duplicada; `CrmWorkspace` agora bloqueia mutações concorrentes. A confirmação nativa de lifecycle foi substituída por diálogo acessível com foco inicial, cancelamento e retorno ao acionador. O ensaio `npm run qa:recovery` restaurou 14 arquivos com hashes idênticos e integridade SQLite de 16 tabelas. Teclado, formulário obrigatório, 390 × 844 e contraste local também passaram. As quatro rotas responderam entre 62 ms e 117 ms em ambiente aquecido; isso não equivale a Core Web Vitals de produção.
 
-`npm run qa:preflight` foi acrescentado como verificação local somente de leitura. Confere bindings, journal e sequência das seis migrações D1 e emite hashes SHA-256. Compara o HEAD ao upstream local; no ensaio, `origin/main` estava 7 commits atrás. Aplicação remota, backup, restauração, deploy e commit publicado continuam não verificados.
+`npm run qa:preflight` foi acrescentado como verificação local somente de leitura. Confere bindings, journal e sequência das seis migrações D1 e emite hashes SHA-256. Compara o HEAD ao upstream local; no primeiro ensaio, `origin/main` estava 7 commits atrás. O comando isolado não verifica aplicação remota, backup, restauração ou deploy.
+
+Consulta de leitura posterior à hospedagem Sites identificou o commit publicado `98c0bbf3590536b9b078f5ae0611302ae5fd8393` (versão 3, status `succeeded`), 11 commits atrás do HEAD local naquele instante. O overview D1 remoto `DB` mostrou oito tabelas: `attachments`, `crm_tasks`, `events`, `lead_activities`, `leads`, `outbox`, `rate_limits` e `service_records`. Nenhuma linha de cliente foi lida. Migrações aplicadas, integridade e recuperação remotas continuam não verificadas.
 
 ## Fase atual
 

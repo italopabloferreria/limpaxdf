@@ -41,7 +41,9 @@ O lint foi encerrado em 22/09/2026 com zero erros e zero avisos. As oito suítes
 
 `local-complete` — QA funcional, teclado, responsividade, lifecycle e recuperação aprovados. G13 permanece aberto somente pelos itens remotos abaixo.
 
-O preflight local de release está disponível em `npm run qa:preflight`. Ele lista hashes SHA-256 das migrações D1 0000–0005, confere a sequência e mostra o estado Git local. O comando é somente leitura e **não** verifica aplicação de migrações, backup, restauração nem deploy remotos. Em 22/09/2026, `origin/main` estava 7 commits atrás do HEAD local; o commit efetivamente publicado segue não verificado.
+O preflight local de release está disponível em `npm run qa:preflight`. Ele lista hashes SHA-256 das migrações D1 0000–0005, confere a sequência e mostra o estado Git local. O comando é somente leitura e **não** verifica aplicação de migrações, backup, restauração nem deploy remotos. Em seu primeiro ensaio, `origin/main` estava 7 commits atrás do HEAD local.
+
+Consulta de leitura à hospedagem em 22/09/2026 identificou a versão 3 publicada com sucesso no commit `98c0bbf3590536b9b078f5ae0611302ae5fd8393`, 11 commits atrás do HEAD local naquele momento. O overview do D1 remoto `DB` listou oito tabelas: `attachments`, `crm_tasks`, `events`, `lead_activities`, `leads`, `outbox`, `rate_limits` e `service_records`. A tabela de migrações e a integridade dos dados remotos ainda não foram verificadas; nenhuma alteração remota foi feita.
 
 ## Próximo passo
 
@@ -49,7 +51,7 @@ Preparar a validação remota de migrações, recuperação, configuração e pe
 
 ## Checklist da etapa remota
 
-1. Identificar o ambiente e a versão publicada, sem alterar dados; comparar o commit com o repositório local.
+1. CONCLUÍDO em leitura: ambiente Sites identificado, versão 3 publicada em `98c0bbf`, 11 commits atrás do HEAD local no momento da consulta.
 2. Conferir quais migrações D1 0003–0005 foram aplicadas e fazer backup antes de qualquer upgrade.
 3. Ensaiar restauração em ambiente isolado e conferir contagens, vínculos e integridade sem copiar dados reais para o repositório.
 4. Executar smoke autenticado com registros sintéticos e papéis de administrador/atendimento.
