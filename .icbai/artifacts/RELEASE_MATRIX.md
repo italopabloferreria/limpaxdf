@@ -10,7 +10,7 @@ PASS de teste unitário não equivale a PASS do fluxo operacional.
 | TypeScript | PASS | tsc --noEmit --incremental false executado após correções; exit 0 |
 | Build | PASS | npm run build executado após correções; exit 0. Wrapper da skill falhou na resolução do npm; comando do projeto aprovado |
 | Lint | PASS | `npm run lint` termina com zero erros e zero avisos; somente artefatos gerados são ignorados |
-| Erros/empty/retry | WARNING | Intake e tarefa idempotente testados; clique duplo de nota foi reproduzido, corrigido e revalidado; formulário vazio direciona foco e exibe mensagem nativa; falhas de rede e retry ainda pendentes |
+| Erros/empty/retry | WARNING | Intake e tarefa idempotente testados; clique duplo de nota foi reproduzido, corrigido e revalidado; formulário vazio direciona foco e exibe mensagem nativa; `CrmWorkspace` passou 10/10 e `CustomerWorkspace` passou 5/5 cenários sintéticos de rede/retry em 23/09/2026; ambiente remoto ainda pendente |
 | Persistência/formulários | PASS local | Tarefa, nota, cliente, vínculo, arquivamento e restauração passaram no navegador com dados sintéticos e relações preservadas |
 | Responsividade | PASS local | `/crm` e `/crm/clientes` autenticados validados em desktop e 390 × 844; sem overflow horizontal, e o formulário longo mantém rolagem interna e ações alcançáveis |
 | Navegadores/dispositivos | WARNING | Fluxos autenticados validados no navegador local integrado; cobertura cruzada de navegador permanece pendente |

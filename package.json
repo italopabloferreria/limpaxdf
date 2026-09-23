@@ -13,7 +13,12 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
     "qa:recovery": "node scripts/verify-local-backup.mjs",
-    "qa:preflight": "node scripts/release-preflight.mjs"
+    "qa:preflight": "node scripts/release-preflight.mjs",
+    "qa:crm-network": "node scripts/test-crm-network.mjs",
+    "qa:customer-network": "node scripts/test-customer-network.mjs",
+    "qa:remote-readiness": "node scripts/remote-release-readiness.mjs",
+    "qa:remote-evidence": "node scripts/remote-evidence-check.mjs",
+    "qa:remote-checks": "node --test scripts/test-remote-g13-checks.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

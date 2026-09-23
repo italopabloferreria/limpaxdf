@@ -41,12 +41,34 @@ const initialCreateDraft:CreateDraft={
   state:""
 };
 
+async function requestJson<T>(url:string,options:RequestInit,fallback:string):Promise<T>{
+  let response:Response;
+  try{response=await fetch(url,options)}catch(reason){
+    if(options.signal?.aborted)throw reason;
+    throw new Error(options.method&&options.method!=="GET"?fallback:"Falha de conexão. Confira sua rede e tente novamente.");
+  }
+  let body:T&{error?:string};
+  try{body=await response.json()}catch{throw new Error(fallback)}
+  if(!response.ok)throw new Error(typeof body?.error==="string"?body.error:fallback);
+  return body;
+}
+
+function resetUnchangedForm(form:HTMLFormElement,snapshot:FormData){
+  if(JSON.stringify([...new FormData(form)])===JSON.stringify([...snapshot]))form.reset();
+}
+
 export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:Listing;operator:string;role:"admin"|"attendant";dataMode:"review"|"live"}){
   const [listing,setListing]=useState(initial);
   const [selected,setSelected]=useState<string|null>(initial.customers[0]?.id||null);
   const selectedRef=useRef(selected);
   const lifecycleButtonRef=useRef<HTMLButtonElement>(null);
-  useEffect(()=>{selectedRef.current=selected},[selected]);
+  function selectCustomer(value:string|null){
+    if(value===selectedRef.current)return;
+    selectedRef.current=value;
+    setSelected(value);
+    setPageError("");
+    setDetailError("");
+  }
 
   const [detail,setDetail]=useState<CustomerDetail|null>(null);
   const [search,setSearch]=useState("");
@@ -54,6 +76,7 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
   const [page,setPage]=useState(1);
   const [refresh,setRefresh]=useState(0);
   const [showArchived,setShowArchived]=useState(false);
+  const [listingRefresh,setListingRefresh]=useState(0);
 
   // Modals & form state
   const [openCreate,setOpenCreate]=useState(false);
@@ -70,6 +93,8 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
   const [modalError,setModalError]=useState("");
   const [busy,setBusy]=useState(false);
   const [pageError,setPageError]=useState("");
+  const [listingError,setListingError]=useState("");
+  const [detailError,setDetailError]=useState("");
 
   // Debounced search
   useEffect(()=>{
@@ -81,37 +106,34 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
   useEffect(()=>{
     const controller=new AbortController();
     const params=new URLSearchParams({page:String(page),pageSize:"30",search:query,mode:dataMode,state:showArchived?"archived":"active"});
-    fetch("/api/crm/customers?"+params,{signal:controller.signal})
-      .then(async r=>{
-        const body=await r.json() as Listing&{error?:string};
-        if(!r.ok)throw new Error(body.error||"Não foi possível carregar os clientes.");
-        return body;
-      })
+    queueMicrotask(()=>{if(!controller.signal.aborted)setListingError("")});
+    requestJson<Listing>("/api/crm/customers?"+params,{signal:controller.signal},"Não foi possível carregar os clientes.")
       .then(value=>{
+        if(controller.signal.aborted)return;
         setListing(value);
         const cur=selectedRef.current;
         if(value.customers.length&&(!cur||!value.customers.some(item=>item.id===cur))){
-          setSelected(value.customers[0].id);
+          selectCustomer(value.customers[0].id);
         }else if(!value.customers.length){
-          setSelected(null);
+          selectCustomer(null);
         }
       })
-      .catch(e=>{if(e.name!=="AbortError")setPageError(e.message)});
+      .catch(e=>{if(!controller.signal.aborted)setListingError(e.message)});
     return()=>controller.abort();
-  },[page,query,refresh,dataMode,showArchived]);
+  },[page,query,refresh,dataMode,showArchived,listingRefresh]);
 
   // Load customer detail
   useEffect(()=>{
     if(!selected){queueMicrotask(()=>setDetail(null));return}
     const controller=new AbortController();
-    queueMicrotask(()=>setDetail(null));
-    fetch("/api/crm/customers/"+selected+(showArchived?"?archived=include":""),{signal:controller.signal})
-      .then(async r=>{
-        const body=await r.json() as CustomerDetail&{error?:string};
-        if(!r.ok)throw new Error(body.error||"Não foi possível abrir o cliente.");
-        return body;
-      })
+    queueMicrotask(()=>{
+      if(controller.signal.aborted)return;
+      setDetail(current=>current?.id===selected?current:null);
+      setDetailError("");
+    });
+    requestJson<CustomerDetail>("/api/crm/customers/"+selected+(showArchived?"?archived=include":""),{signal:controller.signal},"Não foi possível abrir o cliente.")
       .then(data=>{
+        if(controller.signal.aborted||selectedRef.current!==selected)return;
         setDetail(data);
         setEditCustomerDraft({
           kind:data.kind,
@@ -121,24 +143,22 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
           notes:data.notes||""
         });
       })
-      .catch(e=>{if(e.name!=="AbortError")setPageError(e.message)});
+      .catch(e=>{if(!controller.signal.aborted&&selectedRef.current===selected)setDetailError(e.message)});
     return()=>controller.abort();
   },[selected,refresh,showArchived]);
 
   // Request helper
-  async function request(url:string,method:"POST"|"PATCH"|"DELETE",body?:Record<string,unknown>):Promise<{ok:boolean;data?:Record<string,unknown>;error?:string}>{
+  async function request(url:string,method:"POST"|"PATCH"|"DELETE",body?:Record<string,unknown>,fallback="Erro ao processar solicitação."):Promise<{ok:boolean;data?:Record<string,unknown>;error?:string}>{
     setBusy(true);
     setModalError("");
     setPageError("");
     try{
       const opts:RequestInit={method,headers:{"Content-Type":"application/json"}};
       if(body)opts.body=JSON.stringify(body);
-      const r=await fetch(url,opts);
-      const res=await r.json() as Record<string,unknown>;
-      if(!r.ok)return {ok:false,error:String(res.error||"Erro ao processar solicitação.")};
+      const res=await requestJson<Record<string,unknown>>(url,opts,fallback);
       return {ok:true,data:res};
     }catch(e){
-      return {ok:false,error:(e as Error).message||"Falha de conexão."};
+      return {ok:false,error:(e as Error).message||fallback};
     }finally{
       setBusy(false);
     }
@@ -167,7 +187,7 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
       }:undefined
     };
 
-    const res=await request("/api/crm/customers","POST",payload);
+    const res=await request("/api/crm/customers","POST",payload,"Não foi possível salvar o cliente.");
     if(!res.ok){
       setModalError(res.error||"Não foi possível salvar o cliente.");
       return;
@@ -175,7 +195,7 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
     setOpenCreate(false);
     setCreateDraft(initialCreateDraft);
     if(typeof res.data?.id==="string"){
-      setSelected(res.data.id);
+      selectCustomer(res.data.id);
     }
     setRefresh(v=>v+1);
   }
@@ -191,7 +211,7 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
       taxId:editCustomerDraft.taxId.trim()||null,
       notes:editCustomerDraft.notes.trim()||null
     };
-    const res=await request("/api/crm/customers/"+selected,"PATCH",payload);
+    const res=await request("/api/crm/customers/"+selected,"PATCH",payload,"Não foi possível atualizar o cliente.");
     if(!res.ok){
       setModalError(res.error||"Não foi possível atualizar o cliente.");
       return;
@@ -201,8 +221,9 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
   }
 
   // Add Contact
-  async function handleAddContact(form:FormData){
+  async function handleAddContact(element:HTMLFormElement){
     if(!selected)return;
+    const form=new FormData(element);
     const name=String(form.get("name")||"").trim();
     if(!name)return;
     const res=await request("/api/crm/customers/"+selected+"/contacts","POST",{
@@ -213,6 +234,7 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
       primary:false
     });
     if(!res.ok){setPageError(res.error||"Erro ao adicionar contato.");return}
+    resetUnchangedForm(element,form);
     setRefresh(v=>v+1);
   }
 
@@ -249,8 +271,9 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
   }
 
   // Add Location
-  async function handleAddLocation(form:FormData){
+  async function handleAddLocation(element:HTMLFormElement){
     if(!selected)return;
+    const form=new FormData(element);
     const label=String(form.get("label")||"").trim();
     if(!label)return;
     const res=await request("/api/crm/customers/"+selected+"/locations","POST",{
@@ -261,6 +284,7 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
       primary:false
     });
     if(!res.ok){setPageError(res.error||"Erro ao adicionar local.");return}
+    resetUnchangedForm(element,form);
     setRefresh(v=>v+1);
   }
 
@@ -406,12 +430,13 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
             <label>Buscar cliente
               <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Nome, telefone, documento"/>
             </label>
-            {role==="admin"&&<div className={styles.lifecycleFilter} role="group" aria-label="Estado dos clientes"><button type="button" aria-pressed={!showArchived} onClick={()=>{setShowArchived(false);setPage(1);setSelected(null)}}>Ativos</button><button type="button" aria-pressed={showArchived} onClick={()=>{setShowArchived(true);setPage(1);setSelected(null)}}>Arquivados</button></div>}
+            {role==="admin"&&<div className={styles.lifecycleFilter} role="group" aria-label="Estado dos clientes"><button type="button" aria-pressed={!showArchived} onClick={()=>{setShowArchived(false);setPage(1);selectCustomer(null)}}>Ativos</button><button type="button" aria-pressed={showArchived} onClick={()=>{setShowArchived(true);setPage(1);selectCustomer(null)}}>Arquivados</button></div>}
           </div>
+          {listingError&&<div className={styles.error} role="alert"><p>{listingError}</p><button type="button" className={styles.ghost} onClick={()=>setListingRefresh(value=>value+1)}>Tentar carregar clientes novamente</button></div>}
           <div className={styles.count}>{listing.total} {showArchived?"clientes arquivados":"clientes ativos"} · {dataMode}</div>
           <div className={styles.list}>
             {listing.customers.map(item=>(
-              <button key={item.id} className={styles.customer+(item.id===selected?" "+styles.active:"")} onClick={()=>setSelected(item.id)}>
+              <button key={item.id} className={styles.customer+(item.id===selected?" "+styles.active:"")} onClick={()=>selectCustomer(item.id)}>
                 <strong>{item.tradeName||item.name}</strong>
                 <span>{kindLabel[item.kind]} · {item.primaryPhone||item.primaryEmail||"sem contato principal"}</span>
               </button>
@@ -428,7 +453,8 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
         {/* Painel Direito: Detalhes do Cliente Selecionado */}
         <section className={styles.detail}>
           {!selected&&<p className={styles.empty}>Cadastre ou selecione um cliente.</p>}
-          {selected&&!detail&&<p className={styles.empty}>Abrindo cliente…</p>}
+          {detailError&&<div className={styles.error} role="alert"><p>{detailError}</p><button type="button" className={styles.ghost} onClick={()=>setRefresh(value=>value+1)}>Tentar abrir cliente novamente</button></div>}
+          {selected&&!detail&&!detailError&&<p className={styles.empty}>Abrindo cliente…</p>}
           {detail&&(
             <>
               <header className={styles.detailHead}>
@@ -523,7 +549,7 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
                   ))}
                   {!detail.contactList.length&&<p className={styles.empty}>Nenhum contato cadastrado.</p>}
 
-                  {!detail.archivedAt&&<form className={styles.inline} action={form=>void handleAddContact(form)}>
+                  {!detail.archivedAt&&<form className={styles.inline} onSubmit={event=>{event.preventDefault();void handleAddContact(event.currentTarget)}}>
                     <label>Nome<input name="name" required maxLength={180}/></label>
                     <label>Cargo / Função<input name="role" maxLength={80} placeholder="Ex.: Gerente, Síndico"/></label>
                     <label>Telefone<input name="phone" maxLength={30} inputMode="tel"/></label>
@@ -561,7 +587,7 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
                   ))}
                   {!detail.locationList.length&&<p className={styles.empty}>Nenhum local cadastrado.</p>}
 
-                  {!detail.archivedAt&&<form className={styles.inline} action={form=>void handleAddLocation(form)}>
+                  {!detail.archivedAt&&<form className={styles.inline} onSubmit={event=>{event.preventDefault();void handleAddLocation(event.currentTarget)}}>
                     <label>Nome do local<input name="label" required maxLength={100} placeholder="Ex.: Matriz, Depósito"/></label>
                     <label>Endereço<input name="address" maxLength={240}/></label>
                     <label>Cidade<input name="city" maxLength={120}/></label>

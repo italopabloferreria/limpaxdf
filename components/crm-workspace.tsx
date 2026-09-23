@@ -1,5 +1,5 @@
 "use client";
-import {useEffect,useState,useRef} from "react";
+import {Fragment,useEffect,useState,useRef} from "react";
 import Link from "next/link";
 import {crmStatuses,statusLabels,type CrmStatus} from "@/lib/crm-shared";
 import type {CrmLead} from "@/lib/crm-data";
@@ -14,30 +14,115 @@ const time=(value:number|null)=>formatDateTime(value)||"—";
 const inputTime=(value:number|null)=>toInputDateTime(value);
 const isoTime=(value:string)=>{const ms=fromInputDateTime(value);return ms?new Date(ms).toISOString():""};
 
+async function requestJson<T>(url:string,options:RequestInit,fallback:string):Promise<T>{
+  let response:Response;
+  try{response=await fetch(url,options)}catch(reason){
+    if(options.signal?.aborted)throw reason;
+    throw new Error(options.method&&options.method!=="GET"?fallback:"Falha de conexão. Confira sua rede e tente novamente.");
+  }
+  let body:T&{error?:string};
+  try{body=await response.json()}catch{throw new Error(fallback)}
+  if(!response.ok)throw new Error(typeof body?.error==="string"?body.error:fallback);
+  return body;
+}
+
+function resetUnchangedForm(form:HTMLFormElement,snapshot:FormData){
+  // A response for an older draft must not erase text typed while it was pending.
+  if(JSON.stringify([...new FormData(form)])===JSON.stringify([...snapshot]))form.reset();
+}
+
 export function CrmWorkspace({initial,initialSelected=null,operator,role}:{initial:Listing;initialSelected?:string|null;operator:string;role:"admin"|"attendant"}){
   const [listing,setListing]=useState(initial),[status,setStatus]=useState<CrmStatus|"todos">("todos"),[search,setSearch]=useState(""),[query,setQuery]=useState(""),[page,setPage]=useState(1),[selected,setSelected]=useState<string|null>(initialSelected||initial.leads[0]?.id||null),[detail,setDetail]=useState<Detail|null>(null),[busy,setBusy]=useState(false),[loading,setLoading]=useState(false),[error,setError]=useState(""),[refresh,setRefresh]=useState(0),[now]=useState(()=>Date.now());
   const selectedRef=useRef(selected);
   const mutationPending=useRef(false);
-  function selectLead(value:string|null){selectedRef.current=value;setSelected(value)}
+  const taskAttempts=useRef(new Map<string,string>());
+  const [listingError,setListingError]=useState("");
+  const [detailError,setDetailError]=useState("");
+  const [listingRefresh,setListingRefresh]=useState(0);
+  function selectLead(value:string|null){
+    if(value===selectedRef.current)return;
+    selectedRef.current=value;setSelected(value);setError("");setDetailError("");
+  }
   useEffect(()=>{const timer=setTimeout(()=>{setPage(1);setQuery(search.trim())},300);return()=>clearTimeout(timer)},[search]);
-  useEffect(()=>{const controller=new AbortController();queueMicrotask(()=>setLoading(true));const params=new URLSearchParams({page:String(page),pageSize:"50"});if(status!=="todos")params.set("status",status);if(query)params.set("search",query);fetch("/api/crm/workspace?"+params,{signal:controller.signal}).then(async response=>{const body=await response.json() as Listing&{error?:string};if(!response.ok)throw new Error(body.error||"Não foi possível carregar os registros.");return body}).then(value=>{setListing(value);const current=selectedRef.current;if(!current&&value.leads.length)selectLead(value.leads[0].id);if(!current&&!value.leads.length)selectLead(null)}).catch(e=>{if(e.name!=="AbortError")setError(e.message)}).finally(()=>{if(!controller.signal.aborted)setLoading(false)});return()=>controller.abort()},[page,status,query]);
-  useEffect(()=>{if(!selected){queueMicrotask(()=>setDetail(null));return}const controller=new AbortController();queueMicrotask(()=>{setDetail(null);setError("")});fetch("/api/crm/leads/"+selected,{signal:controller.signal}).then(async response=>{const body=await response.json() as Detail&{error?:string};if(!response.ok)throw new Error(body.error||"Não foi possível abrir o registro.");return body}).then(value=>{const accepted=acceptLeadResponse(selectedRef.current,selected,value);if(accepted)setDetail(accepted)}).catch(e=>{if(e.name!=="AbortError")setError(e.message)});return()=>controller.abort()},[selected,refresh]);
+  useEffect(()=>{
+    const controller=new AbortController();
+    queueMicrotask(()=>{if(!controller.signal.aborted){setLoading(true);setListingError("")}});
+    const params=new URLSearchParams({page:String(page),pageSize:"50"});
+    if(status!=="todos")params.set("status",status);
+    if(query)params.set("search",query);
+    requestJson<Listing>("/api/crm/workspace?"+params,{signal:controller.signal},"Não foi possível carregar os registros.")
+      .then(value=>{
+        if(controller.signal.aborted)return;
+        setListing(value);
+        const current=selectedRef.current;
+        if(!current&&value.leads.length)selectLead(value.leads[0].id);
+        if(!current&&!value.leads.length)selectLead(null);
+      })
+      .catch(e=>{if(!controller.signal.aborted)setListingError(e.message)})
+      .finally(()=>{if(!controller.signal.aborted)setLoading(false)});
+    return()=>controller.abort();
+  },[page,status,query,listingRefresh]);
+  useEffect(()=>{
+    const controller=new AbortController();
+    queueMicrotask(()=>{
+      if(controller.signal.aborted)return;
+      setDetail(current=>current?.lead.id===selected?current:null);
+      setDetailError("");
+    });
+    if(selected)requestJson<Detail>("/api/crm/leads/"+selected,{signal:controller.signal},"Não foi possível abrir o registro.")
+      .then(value=>{
+        if(controller.signal.aborted)return;
+        const accepted=acceptLeadResponse(selectedRef.current,selected,value);
+        if(accepted)setDetail(accepted);
+      })
+      .catch(e=>{if(!controller.signal.aborted&&selectedRef.current===selected)setDetailError(e.message)});
+    return()=>controller.abort();
+  },[selected,refresh]);
   function chooseStatus(value:CrmStatus|"todos"){setStatus(value);setPage(1)}
   async function update(values:Record<string,unknown>){if(!detail)return;const requestId=detail.lead.id,beforeStatus=detail.lead.status;setBusy(true);setError("");try{const response=await fetch("/api/crm/leads/"+requestId,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify(values)});const body=await response.json() as {status:CrmStatus;assignedTo:string|null;nextActionAt:number|null;updatedAt:number;error?:string};if(!response.ok)throw new Error(body.error||"Não foi possível atualizar.");setListing(current=>({...current,leads:current.leads.map(item=>item.id===requestId?{...item,...body}:item),totals:updateTotals(current.totals,beforeStatus,body.status)}));setDetail(current=>applyLeadUpdate(current,selectedRef.current,requestId,body));if(selectedRef.current===requestId)setRefresh(value=>value+1)}catch(e){setError((e as Error).message)}finally{setBusy(false)}}
-  async function mutate(url:string,body:Record<string,unknown>,done?:()=>void,idempotencyKey?:string){if(mutationPending.current)return;mutationPending.current=true;setBusy(true);setError("");try{const headers:Record<string,string>={"Content-Type":"application/json"};if(idempotencyKey)headers["Idempotency-Key"]=idempotencyKey;const response=await fetch(url,{method:"POST",headers,body:JSON.stringify(body)});const result=await response.json() as {error?:string};if(!response.ok)throw new Error(result.error||"Não foi possível salvar.");done?.();setRefresh(value=>value+1)}catch(e){setError((e as Error).message)}finally{mutationPending.current=false;setBusy(false)}}
-  async function addNote(form:FormData){if(!detail)return;const body=String(form.get("note")||"").trim();if(!body)return;await mutate("/api/crm/leads/"+detail.lead.id+"/activities",{body},()=>{const input=document.getElementById("crm-note") as HTMLTextAreaElement|null;if(input)input.value=""})}
-  async function addTask(form:FormData){if(!detail)return;const title=String(form.get("task")||"").trim();if(!title)return;const dueAt=String(form.get("dueAt")||"");await mutate("/api/crm/leads/"+detail.lead.id+"/tasks",{title,dueAt:isoTime(dueAt),assignee:String(form.get("assignee")||"")},()=>{const input=document.getElementById("crm-task") as HTMLInputElement|null;if(input)input.value=""},crypto.randomUUID())}
+  async function mutate(url:string,body:Record<string,unknown>,done:()=>void,idempotencyKey?:string){
+    if(mutationPending.current)return;
+    const requestId=selectedRef.current;
+    mutationPending.current=true;setBusy(true);setError("");
+    try{
+      const headers:Record<string,string>={"Content-Type":"application/json"};
+      if(idempotencyKey)headers["Idempotency-Key"]=idempotencyKey;
+      await requestJson(url,{method:"POST",headers,body:JSON.stringify(body)},"Não foi possível confirmar o envio. Confira o histórico antes de tentar novamente.");
+      done();
+      if(selectedRef.current===requestId)setRefresh(value=>value+1);
+    }catch(e){if(selectedRef.current===requestId)setError((e as Error).message)}
+    finally{mutationPending.current=false;setBusy(false)}
+  }
+  async function addNote(element:HTMLFormElement){
+    if(!detail||mutationPending.current)return;
+    const form=new FormData(element),body=String(form.get("note")||"").trim();
+    if(!body)return;
+    await mutate("/api/crm/leads/"+detail.lead.id+"/activities",{body},()=>resetUnchangedForm(element,form));
+  }
+  async function addTask(element:HTMLFormElement){
+    if(!detail||mutationPending.current)return;
+    const form=new FormData(element),title=String(form.get("task")||"").trim();
+    if(!title)return;
+    const leadId=detail.lead.id;
+    const body={title,dueAt:isoTime(String(form.get("dueAt")||"")),assignee:String(form.get("assignee")||"")};
+    const fingerprint=JSON.stringify({leadId,...body}),attempt=taskAttempts.current.get(fingerprint)||crypto.randomUUID();
+    taskAttempts.current.set(fingerprint,attempt);
+    await mutate("/api/crm/leads/"+leadId+"/tasks",body,()=>{
+      taskAttempts.current.delete(fingerprint);
+      resetUnchangedForm(element,form);
+    },attempt);
+  }
   async function toggleTask(task:Detail["tasks"][number]){setBusy(true);setError("");try{const response=await fetch("/api/crm/tasks/"+task.id,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({completed:!task.completed_at})});const body=await response.json() as {error?:string};if(!response.ok)throw new Error(body.error||"Não foi possível atualizar a tarefa.");setRefresh(value=>value+1)}catch(e){setError((e as Error).message)}finally{setBusy(false)}}
   const totals=Object.fromEntries(crmStatuses.map(item=>[item,listing.totals[item]||0])),allTotal=Object.values(totals).reduce((a,b)=>a+b,0);
   return <main id="conteudo" className="crm-page">
     <header className="crm-top"><div><Link href="/" className="crm-brand">Limpax <span>CRM</span></Link><p>Fila operacional · {operator} · {role==="admin"?"Administrador":"Atendimento"}</p></div><nav className="crm-top-actions"><Link href="/crm/clientes" className="outline-button">Clientes</Link><Link href="/" className="outline-button">Ver site</Link></nav></header>
     <section className="crm-overview"><div><p className="eyebrow">CENTRAL DE ATENDIMENTO</p><h1>Atendimentos<br/>em movimento.</h1></div><div className="crm-kpis"><div><strong>{allTotal}</strong><span>registros</span></div><div><strong>{totals.novo}</strong><span>novos</span></div><div><strong>{listing.leads.filter(l=>l.nextActionAt&&l.nextActionAt<now).length}</strong><span>vencidas na página</span></div></div></section>
-    <section className="crm-workspace"><aside className="crm-inbox"><div className="crm-filters"><label>Buscar<input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Nome, região ou telefone"/></label><label>Status<select value={status} onChange={e=>chooseStatus(e.target.value as CrmStatus|"todos")}><option value="todos">Todos ({allTotal})</option>{crmStatuses.map(s=><option key={s} value={s}>{statusLabels[s]} ({totals[s]})</option>)}</select></label></div><p className="crm-count">{loading?"Atualizando…":listing.total+" registros encontrados"}</p><div className="crm-lead-list">{listing.leads.map(lead=><button type="button" className={"crm-lead "+(selected===lead.id?"active":"")} key={lead.id} onClick={()=>selectLead(lead.id)}><span className="status-dot" data-status={lead.status}/><span><strong>{lead.contact.name}</strong><small>{problemLabel[lead.contact.problem]||lead.contact.problem} · {lead.contact.region}</small></span><time>{time(lead.nextActionAt||lead.createdAt)}</time></button>)}{!listing.leads.length&&<p className="crm-empty">Nenhum registro neste filtro.</p>}</div><nav className="crm-pagination" aria-label="Páginas de registros"><button type="button" disabled={page<=1||loading} onClick={()=>setPage(value=>value-1)}>Anterior</button><span>Página {listing.page} de {listing.pages}</span><button type="button" disabled={page>=listing.pages||loading} onClick={()=>setPage(value=>value+1)}>Próxima</button></nav></aside>
-      <section className="crm-detail" aria-live="polite">{error&&<p className="crm-error" role="alert">{error}</p>}{!selected&&<p className="crm-empty">Selecione um registro para começar.</p>}{selected&&!detail&&!error&&<p className="crm-empty">Abrindo registro…</p>}{detail&&<><header className="crm-detail-head"><div><p className="eyebrow">SOLICITAÇÃO #{String(detail.lead.seq).padStart(4,"0")}</p><h2>{detail.lead.contact.name}</h2><p>{detail.lead.contact.phone}{detail.lead.contact.email?" · "+detail.lead.contact.email:""}</p></div><span className="mode-label">{detail.lead.mode}</span></header>
+    <section className="crm-workspace"><aside className="crm-inbox"><div className="crm-filters"><label>Buscar<input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Nome, região ou telefone"/></label><label>Status<select value={status} onChange={e=>chooseStatus(e.target.value as CrmStatus|"todos")}><option value="todos">Todos ({allTotal})</option>{crmStatuses.map(s=><option key={s} value={s}>{statusLabels[s]} ({totals[s]})</option>)}</select></label></div>{listingError&&<div className="crm-error" role="alert"><p>{listingError}</p><button type="button" className="outline-button" disabled={loading} onClick={()=>setListingRefresh(value=>value+1)}>Tentar carregar atendimentos novamente</button></div>}<p className="crm-count">{loading?"Atualizando…":listing.total+" registros encontrados"}</p><div className="crm-lead-list">{listing.leads.map(lead=><button type="button" className={"crm-lead "+(selected===lead.id?"active":"")} key={lead.id} onClick={()=>selectLead(lead.id)}><span className="status-dot" data-status={lead.status}/><span><strong>{lead.contact.name}</strong><small>{problemLabel[lead.contact.problem]||lead.contact.problem} · {lead.contact.region}</small></span><time>{time(lead.nextActionAt||lead.createdAt)}</time></button>)}{!listing.leads.length&&<p className="crm-empty">Nenhum registro neste filtro.</p>}</div><nav className="crm-pagination" aria-label="Páginas de registros"><button type="button" disabled={page<=1||loading} onClick={()=>setPage(value=>value-1)}>Anterior</button><span>Página {listing.page} de {listing.pages}</span><button type="button" disabled={page>=listing.pages||loading} onClick={()=>setPage(value=>value+1)}>Próxima</button></nav></aside>
+      <section className="crm-detail" aria-live="polite">{error&&<p className="crm-error" role="alert">{error}</p>}{detailError&&<div className="crm-error" role="alert"><p>{detailError}</p><button type="button" className="outline-button" onClick={()=>setRefresh(value=>value+1)}>Tentar abrir atendimento novamente</button></div>}{!selected&&<p className="crm-empty">Selecione um registro para começar.</p>}{selected&&(!detail||detail.lead.id!==selected)&&!detailError&&<p className="crm-empty">Abrindo registro…</p>}{detail&&detail.lead.id===selected&&<Fragment key={detail.lead.id}><header className="crm-detail-head"><div><p className="eyebrow">SOLICITAÇÃO #{String(detail.lead.seq).padStart(4,"0")}</p><h2>{detail.lead.contact.name}</h2><p>{detail.lead.contact.phone}{detail.lead.contact.email?" · "+detail.lead.contact.email:""}</p></div><span className="mode-label">{detail.lead.mode}</span></header>
         <LeadCustomerLinker key={detail.lead.id} leadId={detail.lead.id} leadMode={detail.lead.mode==="live"?"live":"review"} linkedCustomer={detail.linkedCustomer} onChanged={()=>setRefresh(value=>value+1)}/>
         <div className="crm-controls"><label>Status<select disabled={busy} value={detail.lead.status} onChange={e=>void update({status:e.target.value})}>{crmStatuses.map(s=><option value={s} key={s}>{statusLabels[s]}</option>)}</select></label><label>Responsável<input disabled={busy} defaultValue={detail.lead.assignedTo||""} onBlur={e=>{if(e.target.value!==(detail.lead.assignedTo||""))void update({assignedTo:e.target.value||null})}} placeholder="E-mail ou nome da equipe"/></label><label>Próxima ação<input disabled={busy} type="datetime-local" defaultValue={inputTime(detail.lead.nextActionAt)} onBlur={e=>{if(e.target.value!==inputTime(detail.lead.nextActionAt))void update({nextActionAt:isoTime(e.target.value)})}}/></label></div>
-        <div className="crm-panels"><section><h3>Contexto</h3><dl className="crm-facts"><div><dt>Problema</dt><dd>{problemLabel[detail.lead.contact.problem]||detail.lead.contact.problem}</dd></div><div><dt>Imóvel</dt><dd>{detail.lead.contact.property}</dd></div><div><dt>Região</dt><dd>{detail.lead.contact.region}</dd></div><div><dt>Urgência</dt><dd>{String(detail.lead.payload.urgency||"—")}</dd></div><div><dt>Local</dt><dd>{String(detail.lead.payload.location||"—")}</dd></div><div><dt>Acesso</dt><dd>{String(detail.lead.payload.access||"—")}</dd></div></dl>{detail.lead.payload.notes?<p className="crm-notes"><strong>Observação do cliente</strong>{String(detail.lead.payload.notes)}</p>:null}</section><section><h3>Próximas ações</h3><form className="crm-inline-form" action={form=>void addTask(form)}><input id="crm-task" name="task" required maxLength={300} placeholder="Ex.: retornar ligação"/><input name="dueAt" type="datetime-local"/><input name="assignee" maxLength={150} placeholder="Responsável"/><button className="button" disabled={busy}>Criar tarefa</button></form><ul className="crm-tasks">{detail.tasks.map(task=><li key={task.id}><label><input type="checkbox" checked={!!task.completed_at} disabled={busy} onChange={()=>void toggleTask(task)}/><span>{task.title}<small>{task.assignee||"Sem responsável"} · {time(task.due_at)}</small></span></label></li>)}{!detail.tasks.length&&<li className="crm-empty">Sem tarefas abertas.</li>}</ul></section></div>
-        <section className="crm-timeline"><h3>Histórico</h3><form action={form=>void addNote(form)}><textarea id="crm-note" name="note" maxLength={2000} placeholder="Registrar uma nota interna"/><button className="outline-button" disabled={busy}>Adicionar nota</button></form>{detail.activities.map(event=><article key={event.id}><span>{event.kind==="note"?"Nota":event.kind==="task"?"Tarefa":"Atualização"}</span><p>{event.body}</p><small>{event.author} · {time(event.created_at)}</small></article>)}{!detail.activities.length&&<p className="crm-empty">O histórico começa quando a equipe fizer a primeira ação.</p>}</section>{detail.attachments.length>0&&<section className="crm-attachments"><h3>Fotos enviadas</h3>{detail.attachments.map(file=><a key={file.id} href={"/api/crm/attachments?id="+file.id} target="_blank" rel="noreferrer">Abrir foto · {Math.ceil(file.bytes/1024)} KB</a>)}</section>}</>}</section></section></main>
+        <div className="crm-panels"><section><h3>Contexto</h3><dl className="crm-facts"><div><dt>Problema</dt><dd>{problemLabel[detail.lead.contact.problem]||detail.lead.contact.problem}</dd></div><div><dt>Imóvel</dt><dd>{detail.lead.contact.property}</dd></div><div><dt>Região</dt><dd>{detail.lead.contact.region}</dd></div><div><dt>Urgência</dt><dd>{String(detail.lead.payload.urgency||"—")}</dd></div><div><dt>Local</dt><dd>{String(detail.lead.payload.location||"—")}</dd></div><div><dt>Acesso</dt><dd>{String(detail.lead.payload.access||"—")}</dd></div></dl>{detail.lead.payload.notes?<p className="crm-notes"><strong>Observação do cliente</strong>{String(detail.lead.payload.notes)}</p>:null}</section><section><h3>Próximas ações</h3><form className="crm-inline-form" onSubmit={event=>{event.preventDefault();void addTask(event.currentTarget)}}><input id="crm-task" name="task" required maxLength={300} placeholder="Ex.: retornar ligação"/><input name="dueAt" type="datetime-local"/><input name="assignee" maxLength={150} placeholder="Responsável"/><button className="button" disabled={busy}>Criar tarefa</button></form><ul className="crm-tasks">{detail.tasks.map(task=><li key={task.id}><label><input type="checkbox" checked={!!task.completed_at} disabled={busy} onChange={()=>void toggleTask(task)}/><span>{task.title}<small>{task.assignee||"Sem responsável"} · {time(task.due_at)}</small></span></label></li>)}{!detail.tasks.length&&<li className="crm-empty">Sem tarefas abertas.</li>}</ul></section></div>
+        <section className="crm-timeline"><h3>Histórico</h3><form onSubmit={event=>{event.preventDefault();void addNote(event.currentTarget)}}><textarea id="crm-note" name="note" maxLength={2000} placeholder="Registrar uma nota interna"/><button className="outline-button" disabled={busy}>Adicionar nota</button></form>{detail.activities.map(event=><article key={event.id}><span>{event.kind==="note"?"Nota":event.kind==="task"?"Tarefa":"Atualização"}</span><p>{event.body}</p><small>{event.author} · {time(event.created_at)}</small></article>)}{!detail.activities.length&&<p className="crm-empty">O histórico começa quando a equipe fizer a primeira ação.</p>}</section>{detail.attachments.length>0&&<section className="crm-attachments"><h3>Fotos enviadas</h3>{detail.attachments.map(file=><a key={file.id} href={"/api/crm/attachments?id="+file.id} target="_blank" rel="noreferrer">Abrir foto · {Math.ceil(file.bytes/1024)} KB</a>)}</section>}</Fragment>}</section></section></main>
 }
 
 function updateTotals(totals:Record<string,number>,before:CrmStatus,after:CrmStatus){if(before===after)return totals;return {...totals,[before]:Math.max(0,(totals[before]||0)-1),[after]:(totals[after]||0)+1}}

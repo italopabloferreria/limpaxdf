@@ -148,7 +148,9 @@
         "artifacts/GATE_EVIDENCE.md",
         "artifacts/RELEASE_MATRIX.md",
         "artifacts/QUALITY_GATE_PROGRESS.md",
-        "artifacts/HANDOFF_AUDIT_2026-09-22.md"
+        "artifacts/HANDOFF_AUDIT_2026-09-22.md",
+        "artifacts/REMOTE_G13_RUNBOOK.md",
+        "artifacts/REMOTE_G13_EVIDENCE_TEMPLATE.md"
       ]
     },
     "deployment": {
@@ -212,12 +214,12 @@
   "blockers": [
     {
       "id": "G13",
-      "description": "Remote migration, recovery, deploy and production performance validation remain."
+      "description": "Remote migration, recovery, deploy and production performance validation remain; local focused network/retry QA now covers CrmWorkspace and CustomerWorkspace."
     }
   ],
   "accepted_risks": [],
-  "last_updated": "2026-09-22",
-  "next_action": "Use the local read-only release preflight, then identify the actual remote environment and deployed commit before separately authorized migration, recovery, deploy and production performance validation.",
+  "last_updated": "2026-09-23",
+  "next_action": "Organize Git, then execute the remote G13 runbook after environment variables, credentials and authorization are confirmed; validate remote migration, recovery, deploy readiness and production performance before G13 can pass.",
   "baseline": {
     "head": "08cb5e4",
     "working_tree": "clean after code commit 08cb5e4; this evidence update is documentation-only; canonical path C:/Users/italo/Programação/Limpax",
@@ -238,14 +240,24 @@
     "customer_lifecycle_tests": "PASS 2/2; archive/restore preserves relations, separates listings and audits transitions",
     "integrity_tests": "PASS 3/3; legacy status history, task idempotency, date and tax ID validation",
     "typescript": "PASS tsc --noEmit",
-    "build": "PASS npm run build after all changes",
-    "lint": "PASS 2026-09-22: npm run lint completed with 0 errors and 0 warnings; only generated .sites-runtime is excluded.",
-    "release_gate": "FAIL remote: local G13 QA passed; remote migration, recovery, deploy and production performance validation remain.",
+    "build": "PASS 2026-09-23: npm run build after local G13 closing checks.",
+    "lint": "PASS 2026-09-23: npm run lint completed with 0 errors and 0 warnings; only generated .sites-runtime is excluded.",
+    "release_gate": "FAIL remote-only: local G13 evidence is ready for remote validation; remote migration, recovery, deploy and production performance validation remain.",
     "browser_qa": "PASS local 2026-09-22: task, note, synthetic customer, link, history, archive/restore, mutation guard, keyboard, accessible lifecycle dialog, required-field and 390x844 responsiveness passed.",
     "recovery": "PASS local 2026-09-22: 14 files copied/restored with identical hashes; SQLite integrity ok across 16 tables. Remote recovery untested.",
     "contrast": "PASS local sample 2026-09-22: 0 failures across 54 visible text samples on /crm and /crm/clientes; minimum 4.64:1. Images, gradients and off-viewport states untested.",
     "performance": "INFO local 2026-09-22: warm dev responses 62-117 ms across /, /check, /crm and /crm/clientes. Production Core Web Vitals untested.",
-    "release_preflight": "PASS local 2026-09-22: DB/BUCKET bindings, six D1 migration hashes and journal sequence; upstream was 7 commits behind local HEAD at initial run. Sites read-only lookup found deployed version 3 at 98c0bbf, 11 commits behind local HEAD then; remote DB overview listed 8 tables. Migration journal, integrity and recovery remote unverified."
+    "release_preflight": "PASS local 2026-09-22: DB/BUCKET bindings, six D1 migration hashes and journal sequence; upstream was 7 commits behind local HEAD at initial run. Sites read-only lookup found deployed version 3 at 98c0bbf, 11 commits behind local HEAD then; remote DB overview listed 8 tables. Migration journal, integrity and recovery remote unverified.",
+    "remote_readiness": "PASS local 2026-09-22 with warnings: npm run qa:remote-readiness ran outside sandbox. Files, hosting, migrations, Node, npm, wrangler and Git passed; HEAD f86ecd05007ccf11f611060e4a7293b2fe29b71f, origin/main 0 9. Remaining warnings are dirty working tree for this step and missing remote environment variables. It does not run deploy, migration, DNS, import or real-data reads.",
+    "remote_runbook": "ADDED local 2026-09-22: artifacts/REMOTE_G13_RUNBOOK.md defines sequence, required evidence, stop criteria and final states for the authorized remote G13 validation. It does not authorize remote action.",
+    "remote_evidence_template": "ADDED local 2026-09-22: artifacts/REMOTE_G13_EVIDENCE_TEMPLATE.md captures remote validation evidence without secrets, PII or dumps; .env.example lists empty remote validation variables.",
+    "remote_evidence_scan": "ADDED local 2026-09-22: npm run qa:remote-evidence scans the remote evidence artifact for obvious token, private key, email, CPF, CNPJ and SQL dump patterns before versioning or sharing. Human review remains required.",
+    "crm_network_qa": "PASS local 2026-09-23: npm run qa:crm-network passed 10/10 synthetic browser scenarios for CrmWorkspace list/detail retry, mutation uncertainty, draft preservation, late responses, non-JSON errors and task idempotency.",
+    "customer_network_qa": "PASS local 2026-09-23: npm run qa:customer-network passed 5/5 synthetic browser scenarios for CustomerWorkspace list/detail retry, inline contact/location draft preservation and non-JSON modal errors.",
+    "remote_checks": "PASS local 2026-09-23: npm run qa:remote-checks passed 2/2 tests for remote readiness/evidence scripts.",
+    "local_route_smoke": "PASS local 2026-09-23: /, /check, /crm and /crm/clientes returned HTTP 200 on localhost:5173.",
+    "local_recovery_latest": "PASS local 2026-09-23: npm run qa:recovery restored 14 files, checked 16 tables and wrote artifact .sites-runtime/qa-recovery/2026-09-23T04-46-07-017Z.",
+    "remote_evidence_latest": "PASS local 2026-09-23: npm run qa:remote-evidence reported no findings in the evidence template."
   },
   "resume_protocol": [
     "Read this file, AUDIT.md and current increment plan",

@@ -36,4 +36,8 @@ Não duplicar as specs existentes em dezenas de documentos vazios. Os gates herd
 - artifacts/CUSTOMER_LIFECYCLE_RESULT.md: arquivamento/restauração auditáveis e visões ativas/arquivadas.
 - artifacts/INTEGRITY_INCREMENT_RESULT.md: compatibilidade de status, idempotência de tarefas e validações estritas da A08.
 - artifacts/QUALITY_GATE_PROGRESS.md: QA autenticado desktop/mobile/teclado, correção responsiva e pendências do G13.
+- ../scripts/test-crm-network.mjs e ../tests/crm-network-fixture.tsx: QA sintético de rede/retry do `CrmWorkspace` em navegador local, sem dados reais.
+- ../scripts/test-customer-network.mjs e ../tests/customer-network-fixture.tsx: QA sintético de rede/retry do `CustomerWorkspace` em navegador local, sem dados reais.
+- artifacts/REMOTE_G13_RUNBOOK.md: sequência segura para validação remota, backup, restauração, smoke, performance e rollback do G13.
+- artifacts/REMOTE_G13_EVIDENCE_TEMPLATE.md: template para registrar evidências remotas sem segredos ou dados reais.
 - artifacts/HANDOFF_AUDIT_2026-09-22.md: auditoria de retomada, divergências e evidência atual.
