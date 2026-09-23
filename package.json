@@ -18,12 +18,14 @@
     "qa:customer-network": "node scripts/test-customer-network.mjs",
     "qa:remote-readiness": "node scripts/remote-release-readiness.mjs",
     "qa:remote-evidence": "node scripts/remote-evidence-check.mjs",
-    "qa:remote-checks": "node --test scripts/test-remote-g13-checks.mjs"
+    "qa:remote-checks": "node --test scripts/test-remote-g13-checks.mjs",
+    "qa:supabase-local": "node scripts/check-supabase-local.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
     "@hookform/resolvers": "^5.7.1",
     "@shadcn/react": "^0.3.0",
+    "@supabase/supabase-js": "2.117.0",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "cmdk": "^1.1.1",

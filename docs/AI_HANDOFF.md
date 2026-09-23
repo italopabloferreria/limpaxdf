@@ -2,6 +2,9 @@
 
 Atualizado em 23/09/2026. Repositório canônico: `C:/Users/italo/Programação/Limpax`.
 
+## Sessão 2026-09-23 — Supabase homologação no código
+
+Foi adicionada a primeira camada de integração Supabase sem trocar o backend padrão: `@supabase/supabase-js` foi instalado com lockfile, `lib/supabase.ts` centraliza configuração pública/health-check, `/api/supabase/health` expõe diagnóstico sem chave e `npm run qa:supabase-local` valida `.env.local`, projeto São Paulo e ausência de `service_role`. O CRM continua usando D1 por padrão. Nenhum SQL foi aplicado e nenhum dado real foi migrado.
 ## Sessão 2026-09-23 — Supabase São Paulo
 
 Foi criado o projeto Supabase `Limpax Brasil` na organização `Limpax`, região `South America (São Paulo) / sa-east-1`, ref `lkamarbpjqlibxlmcico`. O projeto está saudável e sem migrations. `.env.local` foi configurado localmente com URL pública e publishable key; `.env.local` permanece ignorado pelo Git. `.env.example` recebeu somente nomes vazios das variáveis Supabase. Nenhuma `service_role`, senha de banco, segredo Google, migration, SQL ou dado real foi usado.

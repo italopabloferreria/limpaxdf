@@ -74,3 +74,19 @@ Antes de implementar conexao real, decidir:
 - quais emails serao admin/atendente;
 - destino externo de backup;
 - se o dominio proprio ja apontara para esta homologacao.
+## Homologacao local implementada em 2026-09-23
+
+Projeto alvo vazio: `Limpax Brasil`, ref `lkamarbpjqlibxlmcico`, região `South America (São Paulo) / sa-east-1`.
+
+Foi criada a primeira integração de código sem substituir o banco atual:
+
+- `lib/supabase.ts`: leitura segura de configuração, inferência de project ref, cliente público Supabase e health-check Auth.
+- `app/api/supabase/health/route.ts`: endpoint interno de diagnóstico que retorna status, project ref, região, host e disponibilidade REST sem expor chave.
+- `scripts/check-supabase-local.mjs`: verificação local de `.env.local`, região São Paulo e ausência de `service_role`.
+- `npm run qa:supabase-local`: script de QA local.
+
+O D1/Cloudflare continua sendo o backend padrão do CRM. O Supabase ainda não recebe dados do site, não tem schema aplicado e não deve ser considerado produção.
+
+Nota de chave Supabase atual: sb_publishable_* deve ser enviada no header pikey. Não usar Authorization: Bearer sb_publishable_*; o Bearer fica reservado para JWT de usuário autenticado.
+
+Health-check de homologação usa /auth/v1/health, que valida conectividade do projeto sem depender de tabelas. /rest/v1/ pode retornar 401 no projeto vazio sem chave secreta/admin e não deve ser usado como critério de falha nesta etapa.

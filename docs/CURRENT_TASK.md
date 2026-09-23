@@ -41,8 +41,8 @@ O G13 local do CRM está pronto para validação remota, mas o usuário definiu 
 
 ## Estado
 
-`supabase-project-created` — pacote Supabase preparado e projeto vazio `Limpax Brasil` criado em São Paulo (`sa-east-1`). `.env.local` contém somente URL pública e publishable key. Nenhuma migration, SQL, service_role, senha, deploy ou dado real foi usado.
+`supabase-homologation-wired` — projeto Supabase São Paulo criado e primeira camada de código adicionada. O app já possui cliente público, health-check e QA local de configuração, mas o CRM ainda usa D1 por padrão. Nenhuma migration, SQL, service_role, senha, deploy ou dado real foi usado.
 
 ## Próximo passo
 
-Próximo passo: criar uma branch/etapa de homologação Supabase no código, instalar cliente Supabase com versões fixas, preparar adapter sem substituir D1 por padrão, e só depois transformar o rascunho SQL em migrations reais no projeto vazio de São Paulo.
+Próximo passo: revisar o rascunho SQL contra o schema D1 real, gerar migrations Supabase em etapa controlada, aplicar no projeto vazio de São Paulo e criar adapters de leitura/escrita por módulo, começando por health/status e depois leads sintéticos.
