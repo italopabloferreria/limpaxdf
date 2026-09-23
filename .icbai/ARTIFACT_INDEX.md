@@ -41,3 +41,9 @@ Não duplicar as specs existentes em dezenas de documentos vazios. Os gates herd
 - artifacts/REMOTE_G13_RUNBOOK.md: sequência segura para validação remota, backup, restauração, smoke, performance e rollback do G13.
 - artifacts/REMOTE_G13_EVIDENCE_TEMPLATE.md: template para registrar evidências remotas sem segredos ou dados reais.
 - artifacts/HANDOFF_AUDIT_2026-09-22.md: auditoria de retomada, divergências e evidência atual.
+
+## Preparação Supabase
+- ../docs/supabase/README.md: pacote de preparação Supabase; nenhuma migração executada.
+- ../docs/supabase/MAPPING_D1_TO_SUPABASE.md: mapeamento D1/R2 para Supabase PostgreSQL/Storage.
+- ../docs/supabase/EXECUTION_PLAN.md: sequência segura de homologação, backup/exportação e cutover.
+- ../docs/supabase/SCHEMA_RLS_DRAFT.sql: rascunho PostgreSQL/RLS/Storage para revisão, não produção.

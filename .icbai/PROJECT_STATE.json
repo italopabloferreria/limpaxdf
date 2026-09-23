@@ -219,10 +219,10 @@
   ],
   "accepted_risks": [],
   "last_updated": "2026-09-23",
-  "next_action": "Organize Git, then execute the remote G13 runbook after environment variables, credentials and authorization are confirmed; validate remote migration, recovery, deploy readiness and production performance before G13 can pass.",
+  "next_action": "Review docs/supabase, choose Supabase project/region/plan, confirm admin emails, Google callbacks and backup destination, then create an empty staging project before generating real migrations. G13 remains open for remote validation; Cloudflare D1/R2 stays intact until approved cutover.",
   "baseline": {
     "head": "08cb5e4",
-    "working_tree": "clean after code commit 08cb5e4; this evidence update is documentation-only; canonical path C:/Users/italo/Programação/Limpax",
+    "working_tree": "Supabase prep docs in progress; canonical path C:/Users/italo/Programação/Limpax",
     "source_modified_by_audit": true,
     "deployment": "known private version 3; no deploy in this audit",
     "migration_0003": "local; remote application unverified",
@@ -257,7 +257,8 @@
     "remote_checks": "PASS local 2026-09-23: npm run qa:remote-checks passed 2/2 tests for remote readiness/evidence scripts.",
     "local_route_smoke": "PASS local 2026-09-23: /, /check, /crm and /crm/clientes returned HTTP 200 on localhost:5173.",
     "local_recovery_latest": "PASS local 2026-09-23: npm run qa:recovery restored 14 files, checked 16 tables and wrote artifact .sites-runtime/qa-recovery/2026-09-23T04-46-07-017Z.",
-    "remote_evidence_latest": "PASS local 2026-09-23: npm run qa:remote-evidence reported no findings in the evidence template."
+    "remote_evidence_latest": "PASS local 2026-09-23: npm run qa:remote-evidence reported no findings in the evidence template.",
+    "supabase_prep_docs": "ADDED local 2026-09-23: docs/supabase documents D1/R2 to Supabase mapping, execution plan and SQL/RLS/Storage draft. No Supabase project, credential, migration, deploy or real data used."
   },
   "resume_protocol": [
     "Read this file, AUDIT.md and current increment plan",

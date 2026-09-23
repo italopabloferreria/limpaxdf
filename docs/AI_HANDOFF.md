@@ -2,6 +2,11 @@
 
 Atualizado em 23/09/2026. Repositório canônico: `C:/Users/italo/Programação/Limpax`.
 
+## Sessão 2026-09-23 — Supabase prep
+
+Foi criado o pacote `docs/supabase/` para preparar a migração futura para Supabase sem alterar o sistema atual. O pacote contém mapeamento D1/R2 → Supabase, plano operacional de execução e rascunho SQL de PostgreSQL/RLS/Storage. Esta etapa é documentação técnica: não conecta projeto Supabase, não salva credenciais, não aplica migrations, não lê dados reais e não substitui Cloudflare/D1/R2.
+
+O rascunho considera PostgreSQL, Auth Google, `crm_user_profiles` para papéis `admin` e `attendant`, RLS em todas as tabelas expostas, buckets privados para uploads/importações/templates/documentos/backups e bloqueio de `service_role` no cliente. A execução real exige projeto Supabase vazio de homologação, região/plano confirmados, callbacks Google, e-mails dos dois administradores, destino externo de backup e validação com advisors antes de qualquer cutover.
 ## Sessão 2026-09-23
 
 `G13-QA-01` foi expandido com QA sintético de rede do CRM. `CrmWorkspace` agora separa erro de listagem, erro de detalhe e erro de mutação; preserva rascunhos quando POST falha, quando a resposta chega tarde ou quando há refresh bem-sucedido; mantém o retry ao clicar no mesmo atendimento com erro aberto; e guarda chaves de idempotência por payload de tarefa, permitindo voltar a uma tentativa incerta sem gerar nova chave.
