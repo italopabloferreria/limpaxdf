@@ -2,6 +2,11 @@
 
 Atualizado em 23/09/2026. Repositório canônico: `C:/Users/italo/Programação/Limpax`.
 
+## Sessão 2026-09-23 — Supabase São Paulo
+
+Foi criado o projeto Supabase `Limpax Brasil` na organização `Limpax`, região `South America (São Paulo) / sa-east-1`, ref `lkamarbpjqlibxlmcico`. O projeto está saudável e sem migrations. `.env.local` foi configurado localmente com URL pública e publishable key; `.env.local` permanece ignorado pelo Git. `.env.example` recebeu somente nomes vazios das variáveis Supabase. Nenhuma `service_role`, senha de banco, segredo Google, migration, SQL ou dado real foi usado.
+
+O projeto anterior `bzretxzwnudtpxmoqjyv` foi criado em `us-east-1`; como Supabase não troca região de projeto existente, ele deve ser tratado como descartável até eventual exclusão manual/autorizada.
 ## Sessão 2026-09-23 — Supabase prep
 
 Foi criado o pacote `docs/supabase/` para preparar a migração futura para Supabase sem alterar o sistema atual. O pacote contém mapeamento D1/R2 → Supabase, plano operacional de execução e rascunho SQL de PostgreSQL/RLS/Storage. Esta etapa é documentação técnica: não conecta projeto Supabase, não salva credenciais, não aplica migrations, não lê dados reais e não substitui Cloudflare/D1/R2.

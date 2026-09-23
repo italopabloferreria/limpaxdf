@@ -41,8 +41,8 @@ O G13 local do CRM está pronto para validação remota, mas o usuário definiu 
 
 ## Estado
 
-`prepared-docs-only` — pacote Supabase preparado em documentação e rascunho técnico. Nenhuma conexão, migration, deploy, credential ou dado real foi usado.
+`supabase-project-created` — pacote Supabase preparado e projeto vazio `Limpax Brasil` criado em São Paulo (`sa-east-1`). `.env.local` contém somente URL pública e publishable key. Nenhuma migration, SQL, service_role, senha, deploy ou dado real foi usado.
 
 ## Próximo passo
 
-Escolher projeto/região/plano Supabase, confirmar e-mails dos administradores, confirmar callbacks Google, decidir destino externo de backup e só então criar um ambiente de homologação vazio para transformar o rascunho em migrations reais.
+Próximo passo: criar uma branch/etapa de homologação Supabase no código, instalar cliente Supabase com versões fixas, preparar adapter sem substituir D1 por padrão, e só depois transformar o rascunho SQL em migrations reais no projeto vazio de São Paulo.

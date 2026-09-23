@@ -219,7 +219,7 @@
   ],
   "accepted_risks": [],
   "last_updated": "2026-09-23",
-  "next_action": "Review docs/supabase, choose Supabase project/region/plan, confirm admin emails, Google callbacks and backup destination, then create an empty staging project before generating real migrations. G13 remains open for remote validation; Cloudflare D1/R2 stays intact until approved cutover.",
+  "next_action": "Create the Supabase homologation integration against project ref lkamarbpjqlibxlmcico in sa-east-1, using only public URL/publishable key locally; do not apply SQL, use service_role, migrate real data, deploy, or cut over until reviewed.",
   "baseline": {
     "head": "08cb5e4",
     "working_tree": "Supabase prep docs in progress; canonical path C:/Users/italo/Programação/Limpax",
@@ -258,7 +258,8 @@
     "local_route_smoke": "PASS local 2026-09-23: /, /check, /crm and /crm/clientes returned HTTP 200 on localhost:5173.",
     "local_recovery_latest": "PASS local 2026-09-23: npm run qa:recovery restored 14 files, checked 16 tables and wrote artifact .sites-runtime/qa-recovery/2026-09-23T04-46-07-017Z.",
     "remote_evidence_latest": "PASS local 2026-09-23: npm run qa:remote-evidence reported no findings in the evidence template.",
-    "supabase_prep_docs": "ADDED local 2026-09-23: docs/supabase documents D1/R2 to Supabase mapping, execution plan and SQL/RLS/Storage draft. No Supabase project, credential, migration, deploy or real data used."
+    "supabase_prep_docs": "ADDED local 2026-09-23: docs/supabase documents D1/R2 to Supabase mapping, execution plan and SQL/RLS/Storage draft. No Supabase project, credential, migration, deploy or real data used.",
+    "supabase_project_created": "ADDED local 2026-09-23: Supabase project Limpax Brasil created in South America Sao Paulo sa-east-1, ref lkamarbpjqlibxlmcico. Local .env.local configured with public URL and publishable key only; no secret/service_role/migration/data used."
   },
   "resume_protocol": [
     "Read this file, AUDIT.md and current increment plan",
