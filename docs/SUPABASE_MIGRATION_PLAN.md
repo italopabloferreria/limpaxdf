@@ -9,6 +9,7 @@ Estado: **planejado; nenhuma migração executada**. D1/R2 continuam sendo o bac
 - perfis e papéis internos controlados pelo CRM;
 - RLS por entidade/ação;
 - Storage privado para fotos, planilhas, modelos, contratos e PDFs;
+- rotina de backup externo completo e exportação manual de arquivo, com destino e periodicidade `[VALIDAR]`;
 - Realtime apenas onde demonstrar necessidade;
 - frontend React/TypeScript e domínio próprio preservados.
 
@@ -31,9 +32,10 @@ Estado: **planejado; nenhuma migração executada**. D1/R2 continuam sendo o bac
 4. Criar buckets privados e políticas para upload/download/substituição/exclusão.
 5. Implementar adapter de persistência atrás dos contratos existentes, mantendo D1 como caminho padrão.
 6. Executar dry run D1→Supabase; comparar contagens, chaves, vínculos, hashes e arquivos.
-7. Testar fluxos completos e restauração. Corrigir sem alterar o D1 de origem.
-8. Planejar janela de cutover, export final, reconciliação e chave de retorno ao D1.
-9. Só depois de aceite explícito, trocar produção; manter backup e rollback durante a janela definida.
+7. Definir exportação manual de arquivo e backup externo completo: destino `[VALIDAR]`, formato, periodicidade, retenção, criptografia e responsável.
+8. Testar fluxos completos, exportação, backup e restauração. Corrigir sem alterar o D1 de origem.
+9. Planejar janela de cutover, export final, reconciliação e chave de retorno ao D1.
+10. Só depois de aceite explícito, trocar produção; manter backup e rollback durante a janela definida.
 
 ## Segurança mínima
 
@@ -58,6 +60,8 @@ Referência verificada: https://supabase.com/pricing. Limites podem mudar e deve
 - testes de papéis e negações aprovados;
 - uploads privados e exclusão verificados;
 - export/reimport reproduzível e reconciliado;
+- exportação manual de arquivo disponível para admins;
+- backup externo completo configurado, com retenção e destino aprovados;
 - backup restaurado em ambiente limpo;
 - latência e limites medidos;
 - domínio/callbacks Google confirmados;
