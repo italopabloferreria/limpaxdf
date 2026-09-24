@@ -2,7 +2,7 @@
   "schema_version": "2.0",
   "current_phase": "verification",
   "status": "active",
-  "mode": "audit-and-resume",
+  "mode": "audit-and-cleanup",
   "phases": {
     "intake": {
       "status": "passed",
@@ -218,11 +218,11 @@
     }
   ],
   "accepted_risks": [],
-  "last_updated": "2026-09-23",
-  "next_action": "Review Supabase SQL draft against current D1 schema, generate controlled migrations for the empty Sao Paulo project, then create module adapters behind a feature flag. D1 remains default until verified.",
+  "last_updated": "2026-09-24",
+  "next_action": "AUDIT-CLEANUP-01 verified locally for GitHub delivery. Resume isolated Supabase OAuth setup and real Auth/RLS validation after review; keep D1/R2 and Supabase data mode disabled. See docs/AUDIT_2026-09-24.md for remaining development-only dependency advisories and G13 limitations.",
   "baseline": {
-    "head": "08cb5e4",
-    "working_tree": "Supabase prep docs in progress; canonical path C:/Users/italo/Programação/Limpax",
+    "head": "15149f1",
+    "working_tree": "Canonical path confirmed C:/Users/italo/Programação/Limpax; existing baseline SQL and documentation changes preserved. Alternate 01_PROJETOS/LIMPAX is clean at 1bf9702, 14 commits behind.",
     "source_modified_by_audit": true,
     "deployment": "known private version 3; no deploy in this audit",
     "migration_0003": "local; remote application unverified",
@@ -231,6 +231,9 @@
     "source_change_note": "Audit itself was documentation-only; subsequent authorized increment corrected A01/A02."
   },
   "checks": {
+    "supabase_local_auth_flow": "PASS local 2026-09-24: @supabase/ssr 0.12.7 pinned; isolated /supabase/homologacao and callback/session/logout routes added. Browser preview showed signed-out state, TypeScript, targeted ESLint, readiness dry-run, adapter 5/5 outside sandbox and production build passed. Google OAuth and Supabase Google provider are not configured; no real login, user/profile bootstrap, RLS allow/deny or fixture validation passed. Local .env.local enables only localhost origin and is ignored by Git.",
+    "supabase_auth_homologation_design": "PASS local 2026-09-24: documented login/callback/session/profile bootstrap and access matrix in docs/supabase/AUTH_HOMOLOGATION_DESIGN.md. Verifier now filters profile by auth.getUser UUID and reads only count of a named synthetic batch; no data rows fetched. node --check, dry-run and TypeScript passed; --remote without token/flag/batch failed before network as intended. No remote Auth/RLS validation or OAuth implementation claimed.",
+    "planning_review_2026_09_24": "DOCUMENTED: source inspection found current Sites/D1 identity, partial Supabase list adapter, missing UI Supabase session integration, verifier profile query not explicitly bound to authenticated user and leads query not limited to synthetic fixtures. Proposed Auth-before-RLS and backup-before-real-data sequence. Documentation only; no remote validation, code fix or fresh functional test claimed.",
     "business_tests": "PASS 16/16 re-run 2026-09-22; public leads persist origin public_check",
     "access_tests": "PASS 15/15; includes admin-only, origin-protected customer lifecycle",
     "deep_link_tests": "PASS 2/2; valid selected lead forwarded, malformed ignored",
@@ -239,9 +242,9 @@
     "lifecycle_tests": "PASS 2/2; incompatible modes rejected and legacy migration defaults to review/unknown",
     "customer_lifecycle_tests": "PASS 2/2; archive/restore preserves relations, separates listings and audits transitions",
     "integrity_tests": "PASS 3/3; legacy status history, task idempotency, date and tax ID validation",
-    "typescript": "PASS tsc --noEmit",
-    "build": "PASS 2026-09-23: npm run build after local G13 closing checks.",
-    "lint": "PASS 2026-09-23: npm run lint completed with 0 errors and 0 warnings; only generated .sites-runtime is excluded.",
+    "typescript": "PASS 2026-09-24: npx tsc --noEmit --incremental false",
+    "build": "PASS 2026-09-24: npm run build after dependency updates and proxy migration",
+    "lint": "PASS 2026-09-24: global lint; obsolete template rule exceptions removed",
     "release_gate": "FAIL remote-only: local G13 evidence is ready for remote validation; remote migration, recovery, deploy and production performance validation remain.",
     "browser_qa": "PASS local 2026-09-22: task, note, synthetic customer, link, history, archive/restore, mutation guard, keyboard, accessible lifecycle dialog, required-field and 390x844 responsiveness passed.",
     "recovery": "PASS local 2026-09-22: 14 files copied/restored with identical hashes; SQLite integrity ok across 16 tables. Remote recovery untested.",
@@ -260,7 +263,18 @@
     "remote_evidence_latest": "PASS local 2026-09-23: npm run qa:remote-evidence reported no findings in the evidence template.",
     "supabase_prep_docs": "ADDED local 2026-09-23: docs/supabase documents D1/R2 to Supabase mapping, execution plan and SQL/RLS/Storage draft. No Supabase project, credential, migration, deploy or real data used.",
     "supabase_project_created": "ADDED local 2026-09-23: Supabase project Limpax Brasil created in South America Sao Paulo sa-east-1, ref lkamarbpjqlibxlmcico. Local .env.local configured with public URL and publishable key only; no secret/service_role/migration/data used.",
-    "supabase_homologation_code": "ADDED local 2026-09-23: installed @supabase/supabase-js, added lib/supabase.ts, /api/supabase/health and npm run qa:supabase-local. No SQL, service_role, real data, deploy or cutover."
+    "supabase_homologation_code": "ADDED local 2026-09-23: installed @supabase/supabase-js, added lib/supabase.ts, /api/supabase/health and npm run qa:supabase-local. No SQL, service_role, real data, deploy or cutover.",
+    "supabase_baseline_applied": "PASS remote 2026-09-23: baseline migration applied via Supabase SQL Editor to lkamarbpjqlibxlmcico sa-east-1. Verification returned public_tables=14, rls_enabled=14, policies=50, storage_buckets=5. No real data imported.",
+    "resume_verification": "PASS local 2026-09-23: 47/47 tests across eight official suites, TypeScript --noEmit --incremental false and check-supabase-local. No remote query or mutation; recorded baseline application not independently revalidated.",
+    "supabase_leads_adapter": "PASS local 2026-09-23: read-only leads/workspace adapter remains behind SUPABASE_DATA_MODE=read_only, D1 remains default. Mocked Supabase client validates filters, inclusive pagination, JSON payload mapping, global totals, read errors, missing Supabase session, bearer token extraction and Authorization forwarding. No remote calls or data migration.",
+    "supabase_session_bridge": "PASS local 2026-09-23: added request token extraction for Authorization: Bearer or x-supabase-access-token, rejects malformed/duplicate token sources, and creates a Supabase user client with bearer Authorization header. This is a local bridge only; identity/RLS still require real Supabase Auth homologation before activation.",
+    "supabase_auth_readiness_plan": "PASS local 2026-09-23: added docs/supabase/AUTH_RLS_READINESS.sql and npm run qa:supabase-auth-readiness. Offline check confirms baseline RLS/policies/helper grants and readiness SQL for Data API SELECT grants on public.leads and public.crm_user_profiles plus adapter smoke query. No remote SQL or Supabase data read.",
+    "supabase_homologation_dry_run": "PASS local 2026-09-23: added npm run qa:supabase-homologation. Dry-run validates Sao Paulo project config and confirms no profiled Supabase user JWT is present locally. Remote validation was not run; no Supabase data read.",
+    "supabase_data_api_grants_remote": "PASS remote 2026-09-23: after explicit user authorization, Supabase SQL Editor applied SELECT grants on public.leads and public.crm_user_profiles to authenticated in project lkamarbpjqlibxlmcico. Read-only verification returned SELECT grants on both tables, RLS enabled on both tables, and expected authenticated policies leads_member_select and crm_user_profiles_read_own_or_admin. No service_role, cutover, deploy, user invite or real customer data read.",
+    "supabase_post_grants_validation": "PASS local 2026-09-23: after remote Data API grants verification, check-supabase-auth-readiness, validate-supabase-homologation dry-run, TypeScript --noEmit --incremental false, test-supabase-adapter 5/5 outside sandbox due esbuild parent-directory access, and git diff --check passed with only LF/CRLF warnings.",
+    "supabase_homologation_env_probe": "BLOCKED local 2026-09-24: rechecked without printing secrets; npm run qa:supabase-homologation dry-run still reports hasUserToken=false. Remote Auth/RLS validation cannot run without a user-provided profiled Supabase CRM JWT and LIMPAX_SUPABASE_REMOTE_VALIDATION=authorized. Readiness, TypeScript, adapter 5/5 and git diff --check passed; service_role was not used.",
+    "audit_cleanup_2026_09_24": "PASS: removed 65 proven-unused template/example/draft files and 14 template-only direct dependencies; preserved operational D1/R2 and migrations. Fixed JSONB search, truncated totals, public-key guard, logout errors, session error cookies, Google pending UI and scoped CSP. 78 tests/scenarios, TypeScript, global lint, build, five HTTP routes/CSP and versionable-file scan passed.",
+    "dependency_audit_2026_09_24": "19 advisories reduced to 4 moderate in development-only drizzle-kit/esbuild chain; npm audit --omit=dev reports zero. Breaking downgrade suggested by audit was not applied. npm ls --depth=0 passed."
   },
   "resume_protocol": [
     "Read this file, AUDIT.md and current increment plan",
@@ -369,5 +383,12 @@
       "evidence": "artifacts/INTEGRITY_INCREMENT_RESULT.md",
       "deployment": "not deployed; migration 0005 is local only"
     }
-  ]
+  ],
+  "workspace": {
+    "canonical": "C:/Users/italo/Programação/Limpax",
+    "alternate": "C:/Users/italo/Programação/01_PROJETOS/LIMPAX",
+    "alternate_head": "1bf9702",
+    "alternate_status": "clean; 14 commits behind canonical HEAD; preserved",
+    "verified_on": "2026-09-23"
+  }
 }

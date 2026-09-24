@@ -1,14 +1,17 @@
-# Supabase — pacote de preparacao
+# Supabase — estado de homologação
 
-Estado: **rascunho tecnico; nenhuma migracao executada**.
-
-Este diretorio prepara a migracao futura para Supabase sem conectar projeto real, sem credenciais e sem alterar D1/R2. Os arquivos aqui servem para revisao, dry run e criacao posterior de migrations reais com Supabase CLI ou ferramenta aprovada.
+O projeto `lkamarbpjqlibxlmcico` existe em São Paulo. A baseline em `supabase/migrations/202609230001_limpax_crm_baseline.sql` foi registrada como aplicada em 23/09/2026: 14 tabelas com RLS e cinco buckets privados. O CRM operacional continua em D1/R2. Não reaplicar nem editar essa migration.
 
 ## Arquivos
 
-- `SCHEMA_RLS_DRAFT.sql`: rascunho PostgreSQL com tabelas, tipos, indices, RLS e politicas iniciais.
+- `../../supabase/migrations/202609230001_limpax_crm_baseline.sql`: substitui o rascunho antigo removido; é a baseline preservada.
 - `MAPPING_D1_TO_SUPABASE.md`: mapeamento entre D1/R2 atual e Supabase PostgreSQL/Storage.
 - `EXECUTION_PLAN.md`: sequencia operacional para criar projeto, testar Auth Google, migrar dados sinteticos, validar backup/exportacao e planejar cutover.
+- `AUTH_HOMOLOGATION_DESIGN.md`: fluxo Google, sessão e matriz de permissão.
+- `AUTH_RLS_READINESS.sql`: consultas de revisão; não é uma nova migration.
+- `../AI_HANDOFF.md` e `../CURRENT_TASK.md`: estado e tarefa atuais.
+
+`/supabase/homologacao` contém o fluxo local isolado. A flag `SUPABASE_GOOGLE_ENABLED` permanece ausente/false até o provedor e os redirects serem configurados e verificados. A interface informa configuração pendente nesse estado. O login real e a matriz RLS ainda não passaram; manter `SUPABASE_DATA_MODE=disabled`.
 
 ## Fontes oficiais consultadas
 
@@ -18,10 +21,10 @@ Este diretorio prepara a migracao futura para Supabase sem conectar projeto real
 
 ## Regras
 
-- Nao aplicar este SQL em producao.
+- Não reaplicar a baseline nem executar SQL remoto sem tarefa autorizada.
 - Nao copiar dados reais para este diretorio.
 - Nao salvar `service_role`, URL secreta, tokens Google ou credenciais Cloudflare/Supabase.
-- Criar migrations reais somente depois de escolher projeto Supabase, ambiente e estrategia de schema.
+- Mudanças futuras usam migrations incrementais, teste de regressão e rollback.
 - Toda tabela exposta precisa de RLS antes de qualquer uso por cliente autenticado.
 - `service_role` fica somente no servidor e em tarefas administrativas controladas.
 - Buckets de CRM, contratos, importacoes e backups devem ser privados.

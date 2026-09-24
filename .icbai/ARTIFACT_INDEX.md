@@ -46,4 +46,4 @@ Não duplicar as specs existentes em dezenas de documentos vazios. Os gates herd
 - ../docs/supabase/README.md: pacote de preparação Supabase; nenhuma migração executada.
 - ../docs/supabase/MAPPING_D1_TO_SUPABASE.md: mapeamento D1/R2 para Supabase PostgreSQL/Storage.
 - ../docs/supabase/EXECUTION_PLAN.md: sequência segura de homologação, backup/exportação e cutover.
-- ../docs/supabase/SCHEMA_RLS_DRAFT.sql: rascunho PostgreSQL/RLS/Storage para revisão, não produção.
+- ../supabase/migrations/202609230001_limpax_crm_baseline.sql: baseline PostgreSQL/RLS/Storage registrada como aplicada; substitui o rascunho removido. Não reaplicar nem editar.

@@ -1,6 +1,6 @@
 # Plano de migração para Supabase
 
-Estado: **planejado; nenhuma migração executada**. D1/R2 continuam sendo o backend atual.
+Estado atualizado em 24/09/2026: schema baseline Supabase aplicado em homologação conforme registro de 23/09; dados operacionais não migrados. D1/R2 continuam sendo o backend atual. A aplicação da baseline é evidência histórica; esta revisão não a reexecutou.
 
 ## Alvo
 

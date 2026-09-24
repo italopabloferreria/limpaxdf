@@ -1,48 +1,23 @@
-# Tarefa ativa
+# Tarefa ativa — AUDIT-CLEANUP-01
 
-## ID
+## Autorização e pasta
 
-`S01-SUPABASE-PREP-01`
+Em 24/09/2026, o usuário pediu revisar todo o projeto, remover legado sem uso, corrigir erros e fazer commit/push no GitHub antes de retomar Supabase. Pasta oficial: `C:/Users/italo/Programação/Limpax`. Remoto autorizado: `origin`, repositório `italopabloferreria/limpaxdf`.
 
-## Objetivo
+## Escopo
 
-Preparar a migração futura do CRM Limpax para Supabase PostgreSQL, Auth Google, RLS, Storage privado, backup externo e exportação de dados, sem conectar projeto real e sem alterar o D1/R2 atual.
+Revisão estática das camadas de aplicação, APIs, dados, autenticação, configuração, dependências e documentação; remoção baseada em referências; testes locais e build; inspeção de arquivos antes do commit; envio normal ao GitHub sem force-push.
 
-## Motivo
+D1/R2, APIs em uso, migrações existentes, fontes de mídia e histórico relevante são preservados. Não há deploy, configuração OAuth remota, importação real, alteração de DNS ou remoção da cópia alternativa nesta etapa.
 
-O G13 local do CRM está pronto para validação remota, mas o usuário definiu Supabase como direção alvo para tirar a empresa de planilhas e evoluir o CRM. Antes de qualquer credencial, migração ou cutover, o projeto precisa de um pacote seguro de preparação para evitar gasto de tokens e decisões improvisadas.
+## Resultado
 
-## Escopo permitido
+Revisão local concluída: 65 arquivos sem uso removidos, correções verificadas, 78 testes/cenários aprovados, TypeScript/lint/build e smoke de cinco rotas aprovados. Dependências de produção sem avisos; quatro moderados permanecem na cadeia de desenvolvimento drizzle-kit/esbuild. Alterações preparadas para o commit/push solicitado em `origin/main`; a entrega pode ser conferida pelo histórico Git. Consultar `docs/AUDIT_2026-09-24.md` para detalhes. Primeiro gate incompleto: G13_RELEASE_GATE. A publicação de código no GitHub não fecha esse gate.
 
-- documentar mapeamento D1/R2 → Supabase PostgreSQL/Storage;
-- rascunhar schema PostgreSQL, papéis, RLS e políticas de Storage;
-- registrar plano de execução, backup, exportação, rollback e validação;
-- atualizar handoff, estado `.icbai/` e roadmap;
-- manter Cloudflare/D1/R2 intactos até cutover futuro aprovado.
+## Próximo passo após concluir a revisão
 
-## Fora do escopo
+Retomar S01 de homologação Supabase: configurar Google OAuth e redirects, verificar login/logout, criar perfis controlados e testar RLS com identidades/lote sintéticos. `SUPABASE_DATA_MODE=disabled` até aceite completo. `SUPABASE_GOOGLE_ENABLED` permanece false/ausente enquanto a configuração externa estiver incompleta.
 
-- criar projeto Supabase;
-- salvar URL, anon key, service role, tokens Google ou credenciais reais;
-- aplicar SQL em banco remoto;
-- migrar dados reais;
-- habilitar login Google no app;
-- trocar o adapter do CRM;
-- alterar DNS, domínio, deploy ou ambiente publicado.
+## Bloqueios externos e futuro
 
-## Critérios de aceite
-
-- pacote `docs/supabase/` contém README, mapeamento, plano operacional e rascunho SQL;
-- todo dado não confirmado continua como `[VALIDAR]` ou decisão pendente;
-- RLS fica planejado para todas as tabelas expostas;
-- `service_role` permanece proibido no cliente;
-- Storage privado, backup/exportação e rollback ficam explícitos;
-- G13 continua aberto e separado da preparação Supabase.
-
-## Estado
-
-`supabase-homologation-wired` — projeto Supabase São Paulo criado e primeira camada de código adicionada. O app já possui cliente público, health-check e QA local de configuração, mas o CRM ainda usa D1 por padrão. Nenhuma migration, SQL, service_role, senha, deploy ou dado real foi usado.
-
-## Próximo passo
-
-Próximo passo: revisar o rascunho SQL contra o schema D1 real, gerar migrations Supabase em etapa controlada, aplicar no projeto vazio de São Paulo e criar adapters de leitura/escrita por módulo, começando por health/status e depois leads sintéticos.
+OAuth/e-mail de suporte/identidades ainda pendentes de confirmação. G13 depende de migrações, backup/restauração, configuração e desempenho remotos. Importador, comercial, documentos, agenda/OS, frota, financeiro e fiscal são fases futuras em `docs/ROADMAP.md`.

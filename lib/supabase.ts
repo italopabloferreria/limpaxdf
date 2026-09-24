@@ -29,8 +29,19 @@ export function getSupabaseConfig(s:Settings):SupabaseRuntimeConfig|null{
   const projectRef=readEnvValue(s,"SUPABASE_PROJECT_REF")||inferProjectRef(url);
   const region=readEnvValue(s,"SUPABASE_REGION")||"[VALIDAR]";
   if(!url||!publishableKey||!projectRef)return null;
-  if(/service[_-]?role/i.test(publishableKey))return null;
+  if(!isSupabasePublicKey(publishableKey))return null;
   return {projectRef,region,url,publishableKey};
+}
+
+export function isSupabasePublicKey(key:string){
+  if(/^sb_publishable_[A-Za-z0-9_-]+$/.test(key))return true;
+  // Legacy anon keys are JWTs; privileged roles are encoded, not plaintext.
+  try{
+    const parts=key.split('.');
+    if(parts.length!==3)return false;
+    const payload=JSON.parse(atob(parts[1].replace(/-/g,'+').replace(/_/g,'/')));
+    return payload.role==='anon';
+  }catch{return false}
 }
 
 export function inferProjectRef(url?:string){
@@ -48,6 +59,15 @@ export function createSupabasePublicClient(s:Settings):SupabaseClient|null{
   return createClient(cfg.url,cfg.publishableKey,{
     auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false},
     global:{headers:{"X-Client-Info":"limpax-crm-homologation"}}
+  });
+}
+
+export function createSupabaseUserClient(s:Settings,accessToken:string):SupabaseClient|null{
+  const cfg=getSupabaseConfig(s);
+  if(!cfg)return null;
+  return createClient(cfg.url,cfg.publishableKey,{
+    auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false},
+    global:{headers:{"X-Client-Info":"limpax-crm-read-session","Authorization":"Bearer "+accessToken}}
   });
 }
 
