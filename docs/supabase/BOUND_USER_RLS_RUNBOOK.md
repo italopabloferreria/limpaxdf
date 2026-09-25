@@ -1,6 +1,6 @@
 # S01 — autorização Supabase vinculada ao UUID
 
-Estado em 25/09/2026: preparado localmente, sem aplicação remota. Projeto alvo `lkamarbpjqlibxlmcico`; CRM operacional permanece D1/R2 e `SUPABASE_DATA_MODE=disabled`.
+Estado em 25/09/2026: preparado localmente, sem aplicação remota. Projeto alvo `lkamarbpjqlibxlmcico`; CRM operacional permanece D1/R2 e `SUPABASE_DATA_MODE=disabled`. Preflight somente leitura no SQL Editor confirmou que as definições completas das duas funções e da política de perfis correspondem à baseline versionada, inclusive o fallback por e-mail. `crm_user_profiles` contém 0 linhas, das quais 0 sem UUID. `authenticated` tem SELECT em `leads` e `crm_user_profiles`, ambos com RLS ativo. O painel de migrações não registra nenhuma execução pela CLI. O plano Free não fornece backups automáticos.
 
 ## Problema e alteração
 
@@ -8,10 +8,10 @@ A baseline aplicada permite que um JWT Google com e-mail igual ao de um perfil a
 
 ## Antes de aplicar remotamente
 
-1. Confirmar no Dashboard o projeto `lkamarbpjqlibxlmcico` e que a baseline de 23/09/2026 e os grants SELECT foram aplicados. Conferir as definições atuais das duas funções e da política de perfis; se divergirem do arquivo versionado, parar e revisar.
-2. Registrar um backup/exportação verificável do schema e dos perfis antes da mudança. Não anexar exportação nem identificadores pessoais ao Git.
+1. Confirmar no Dashboard o projeto `lkamarbpjqlibxlmcico`. O preflight confirmou grants SELECT, RLS ativo, definições completas dos três objetos contra a baseline versionada e 0 perfis. Se houver alteração desde então, parar e revisar.
+2. Usar as definições verificadas da baseline versionada como snapshot de reversão desses objetos. O plano Free não oferece backups automáticos, mas esta mudança não modifica dados e a tabela de perfis está vazia. Backup/restauração integral segue como gate separado antes de migração de dados ou corte do CRM.
 3. Revisar o SQL da migração e obter autorização específica para aplicá-la remotamente. Aplicar como uma transação única; se qualquer comando falhar, não tentar continuar com comandos isolados.
-4. Registrar método de aplicação e histórico de migrações remoto. A baseline foi executada pelo SQL Editor; não presumir que o registro da CLI foi preenchido.
+4. Registrar método de aplicação e histórico de migrações remoto. O painel de migrações está vazio porque a baseline foi executada pelo SQL Editor; não usar `supabase db push` antes de reconciliar esse histórico, pois ele tentaria reaplicar a baseline.
 
 ## Verificação após aplicação
 
