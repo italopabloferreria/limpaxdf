@@ -11,7 +11,7 @@ O projeto `lkamarbpjqlibxlmcico` existe em São Paulo. A baseline em `supabase/m
 - `AUTH_RLS_READINESS.sql`: consultas de revisão; não é uma nova migration.
 - `../AI_HANDOFF.md` e `../CURRENT_TASK.md`: estado e tarefa atuais.
 
-`/supabase/homologacao` contém o fluxo local isolado. A flag `SUPABASE_GOOGLE_ENABLED` permanece ausente/false até o provedor e os redirects serem configurados e verificados. A interface informa configuração pendente nesse estado. O login real e a matriz RLS ainda não passaram; manter `SUPABASE_DATA_MODE=disabled`.
+`/supabase/homologacao` contém o fluxo local isolado. Em 25/09/2026, Google OAuth ficou em modo de testes no projeto `limpax-c54d6`, com o callback do Supabase e o retorno local cadastrados. O provedor Google está ativo no projeto Supabase; a conta do proprietário consta como usuária de teste. A flag local `SUPABASE_GOOGLE_ENABLED=true` habilita o botão. No navegador, login real retornou `no_profile` e logout voltou a `signed_out`, inclusive após recarregar. A matriz completa de perfis/RLS ainda não passou; manter `SUPABASE_DATA_MODE=disabled`.
 
 ## Fontes oficiais consultadas
 

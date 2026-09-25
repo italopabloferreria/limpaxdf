@@ -1,14 +1,14 @@
 # LIMPAX — handoff atual
 
-Atualizado em 24/09/2026. Pasta oficial: `C:/Users/italo/Programação/Limpax`.
+Atualizado em 25/09/2026. Pasta oficial: `C:/Users/italo/Programação/Limpax`.
 
 ## Tarefa desta sessão
 
-O usuário pediu revisão geral, remoção de legado sem uso, correção de erros e commit/push no GitHub antes de continuar Supabase. Ver `docs/CURRENT_TASK.md` e `docs/AUDIT_2026-09-24.md`. Alterações anteriores desta conversa estão incluídas na revisão. A cópia `01_PROJETOS/LIMPAX` permanece preservada; não alternar edições entre pastas.
+A revisão geral, limpeza e correções foram entregues ao GitHub no commit `3f3e410`. A tarefa ativa é S01 de homologação Supabase Auth/RLS; ver `docs/CURRENT_TASK.md`. A cópia `01_PROJETOS/LIMPAX` permanece preservada; não alternar edições entre pastas.
 
 ## Estado operacional
 
-Revisão AUDIT-CLEANUP-01 concluída localmente: 78 testes/cenários, TypeScript, lint global, build e cinco rotas HTTP/CSP passaram. Dependências de produção têm zero avisos; quatro moderados persistem apenas na cadeia drizzle-kit/esbuild de desenvolvimento. O relatório detalha a limpeza e as correções. A entrega de código é para `origin/main`, sem deploy; verificar o SHA e a sincronização no Git.
+Revisão AUDIT-CLEANUP-01 concluída: 78 testes/cenários, TypeScript, lint global, build e cinco rotas HTTP/CSP passaram. Dependências de produção têm zero avisos; quatro moderados persistem apenas na cadeia drizzle-kit/esbuild de desenvolvimento. O relatório detalha a limpeza e as correções. O commit `3f3e410` foi enviado para `origin/main`, sem deploy.
 
 - Site e CRM usam React/TypeScript, Vinext/Cloudflare, D1/Drizzle e R2. Identidade do CRM vem do hosting Sites e autorização de perfis D1.
 - CRM local possui clientes, contatos, locais, atendimentos, tarefas, notas, vínculos, lifecycle, auditoria e idempotência. Comercial completo, importador, documentos, agenda/OS, frota, financeiro e fiscal seguem no roadmap.
@@ -21,11 +21,11 @@ Projeto `lkamarbpjqlibxlmcico`, São Paulo `sa-east-1`. Baseline `supabase/migra
 
 Adapter de leitura e ponte JWT existem, mas `SUPABASE_DATA_MODE` permanece `disabled`. O caminho de homologação `/supabase/homologacao` usa Google PKCE, callback, cookies de `@supabase/ssr`, validação `auth.getUser` e perfil ativo pelo UUID. Cookies SSR são acessíveis a JavaScript; `SameSite=Lax`, `Secure` em HTTPS. A integração ainda é isolada do CRM operacional.
 
-Google Provider está desativado. O projeto Google Cloud `limpax-c54d6` está com configuração OAuth incompleta. O erro `Unsupported provider: provider is not enabled` foi observado pelo usuário; não representa login concluído. A interface agora informa configuração pendente e bloqueia o botão enquanto `SUPABASE_GOOGLE_ENABLED` não for `true`.
+Google Provider está ativado no Supabase. No projeto Google Cloud `limpax-c54d6`, o app `Limpax CRM Homologação` e o cliente web estão em modo de testes com callback Supabase configurado; a conta do proprietário é usuária de teste. O e-mail de suporte foi escolhido pelo usuário e o Client ID/secret foram armazenados apenas no provedor Google do Supabase. O retorno local exato está cadastrado no Supabase. `SUPABASE_GOOGLE_ENABLED=true` na `.env.local` ignorada pelo Git. Em 25/09/2026, o navegador concluiu login real e retornou `no_profile`; logout retornou `signed_out`, inclusive após recarregar. A primeira tentativa falhou porque o processo de desenvolvimento estava sem rede; executado com acesso de rede, o callback passou.
 
 ## Retomada OAuth após a revisão
 
-Configuração Google/Supabase, e-mail de suporte e identidades de teste ainda precisam de confirmação. Callback Google: `https://lkamarbpjqlibxlmcico.supabase.co/auth/v1/callback`. Retorno local: `http://localhost:5173/api/supabase/homologation/callback`. Não habilitar a flag local antes de verificar provedor/redirects. Validar login/logout e negações por perfil/RLS com dados sintéticos; não usar service_role como sessão.
+Callbacks configurados: Google → `https://lkamarbpjqlibxlmcico.supabase.co/auth/v1/callback`; Supabase → `http://localhost:5173/api/supabase/homologation/callback`. Login/logout e negação por perfil ausente passaram no navegador. Próximo: preparar perfis controlados e testes RLS negativos/positivos com dados sintéticos. Antes de criar perfis/fixtures ou executar SQL remoto, obter a autorização específica exigida por `AGENTS.md`; não conceder CRM pela identidade Google sozinha. Não usar service_role como sessão.
 
 O verificador remoto exige JWT de usuário, `LIMPAX_SUPABASE_REMOTE_VALIDATION=authorized` e lote `SUPABASE_HOMOLOGATION_BATCH=homologation-...`. Sem isso, só dry-run. Um PASS do script não substitui a matriz OAuth/RLS, Storage e recuperação. Dados reais e cutover dependem de backup, reconciliação, rollback e autorização específica.
 
