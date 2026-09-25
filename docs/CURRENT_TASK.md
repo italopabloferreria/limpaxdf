@@ -16,7 +16,7 @@ Em 25/09/2026, app Google OAuth `Limpax CRM Homologação` criado em modo de tes
 
 ## Próximo passo após concluir a revisão
 
-Revisar a migração incremental local `supabase/migrations/20260925135006_require_bound_crm_user_id.sql` e o runbook `docs/supabase/BOUND_USER_RLS_RUNBOOK.md`. O SQL remove a autorização por e-mail da baseline e exige UUID vinculado; não foi aplicado remotamente. Obter autorização específica e confirmar backup/definições remotas antes de aplicar. Em seguida validar negação RLS com a conta sem perfil; só depois definir perfis controlados e fixtures sintéticas. `SUPABASE_DATA_MODE=disabled` até aceite completo.
+A migração incremental `supabase/migrations/20260925135006_require_bound_crm_user_id.sql` foi aplicada no projeto remoto via SQL Editor em transação única após autorização do usuário. As funções/política agora exigem UUID; o helper por e-mail foi removido, perfis continuam 0 e o navegador confirmou `no_profile` após login real. Ver `docs/supabase/BOUND_USER_RLS_RUNBOOK.md`. Próximo: definir com o proprietário os papéis dos usuários de teste, criar perfis controlados e fixtures sintéticas somente com autorização específica, então executar matriz RLS positiva/negativa e Storage. `SUPABASE_DATA_MODE=disabled` até aceite completo.
 
 ## Bloqueios externos e futuro
 
