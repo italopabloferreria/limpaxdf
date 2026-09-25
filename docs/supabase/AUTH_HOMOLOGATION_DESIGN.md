@@ -1,6 +1,6 @@
 # Autenticação Supabase para homologação do CRM
 
-Estado em 24/09/2026: desenho local para a próxima etapa da tarefa S01. Nenhum provedor Google, usuário ou perfil foi criado nesta etapa. O CRM publicado usa a identidade atual do Sites e perfis D1; D1/R2 continuam sendo a fonte operacional. Este desenho estabelece como validar Auth e RLS antes de ativar qualquer leitura Supabase.
+Estado em 25/09/2026: Google OAuth/Supabase Auth foi configurado em modo de testes. O login real e o logout passaram no navegador; a conta autenticada retornou `no_profile`, sem acesso CRM. Nenhum perfil CRM ou fixture foi criado nesta etapa. O CRM publicado usa a identidade atual do Sites e perfis D1; D1/R2 continuam sendo a fonte operacional. Este desenho estabelece como validar Auth e RLS antes de ativar qualquer leitura Supabase.
 
 ## Escolha de implementação
 
@@ -21,7 +21,7 @@ Até o corte aprovado, preservar a autenticação Sites nas rotas operacionais D
 
 Definir com o proprietário os dois administradores e a atendente para homologação [VALIDAR]. Um administrador já autorizado do projeto cria as primeiras linhas de perfil em operação controlada, associando cada perfil ao UUID real de `auth.users` após o primeiro login. Não conceder admin com base apenas no e-mail recebido no OAuth, `user_metadata` ou na sessão do Dashboard. Registrar quem fez o vínculo e testar alteração de papel, desativação e proteção do último admin antes de automatizar gestão pela UI.
 
-A baseline atual também permite correspondência de perfil por e-mail em funções/policies. Para o gate de homologação deste desenho, exigir `user_id` explícito e revisar a política de fallback por e-mail antes de produção; não editar a migration já aplicada. Eventual mudança usa nova migration incremental e teste de regressão.
+A baseline atual permite correspondência de perfil por e-mail nas funções `is_crm_member` e `is_crm_admin` e na leitura de perfis. Isso poderia autorizar o Data API por e-mail mesmo quando a tela de homologação indica `no_profile`. A migração incremental local `supabase/migrations/20260925135006_require_bound_crm_user_id.sql` remove esse caminho e exige `user_id = auth.uid()` para perfis ativos; perfis legados sem UUID deixam de autorizar. Ela ainda não foi aplicada remotamente. Verificar definições atuais e dependências no projeto Supabase, revisar o SQL, autorizar a aplicação remota e então testar os casos de negação antes de vincular qualquer perfil.
 
 ## Matriz mínima de aceite
 

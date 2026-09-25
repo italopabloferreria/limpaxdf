@@ -8,6 +8,7 @@ O projeto `lkamarbpjqlibxlmcico` existe em São Paulo. A baseline em `supabase/m
 - `MAPPING_D1_TO_SUPABASE.md`: mapeamento entre D1/R2 atual e Supabase PostgreSQL/Storage.
 - `EXECUTION_PLAN.md`: sequencia operacional para criar projeto, testar Auth Google, migrar dados sinteticos, validar backup/exportacao e planejar cutover.
 - `AUTH_HOMOLOGATION_DESIGN.md`: fluxo Google, sessão e matriz de permissão.
+- `BOUND_USER_RLS_RUNBOOK.md`: migração local pendente que exige vínculo de perfil pelo UUID, com preflight e validação.
 - `AUTH_RLS_READINESS.sql`: consultas de revisão; não é uma nova migration.
 - `../AI_HANDOFF.md` e `../CURRENT_TASK.md`: estado e tarefa atuais.
 

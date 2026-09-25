@@ -16,7 +16,7 @@ Em 25/09/2026, app Google OAuth `Limpax CRM Homologação` criado em modo de tes
 
 ## Próximo passo após concluir a revisão
 
-Preparar de forma revisável o vínculo de perfil controlado para o usuário autenticado e os cenários negativos/positivos de RLS com lote sintético. Obter autorização específica antes de criar perfil/fixtures ou aplicar SQL remoto, conforme AGENTS.md. `SUPABASE_DATA_MODE=disabled` até aceite completo.
+Revisar a migração incremental local `supabase/migrations/20260925135006_require_bound_crm_user_id.sql` e o runbook `docs/supabase/BOUND_USER_RLS_RUNBOOK.md`. O SQL remove a autorização por e-mail da baseline e exige UUID vinculado; não foi aplicado remotamente. Obter autorização específica e confirmar backup/definições remotas antes de aplicar. Em seguida validar negação RLS com a conta sem perfil; só depois definir perfis controlados e fixtures sintéticas. `SUPABASE_DATA_MODE=disabled` até aceite completo.
 
 ## Bloqueios externos e futuro
 

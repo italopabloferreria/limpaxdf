@@ -25,7 +25,7 @@ Google Provider está ativado no Supabase. No projeto Google Cloud `limpax-c54d6
 
 ## Retomada OAuth após a revisão
 
-Callbacks configurados: Google → `https://lkamarbpjqlibxlmcico.supabase.co/auth/v1/callback`; Supabase → `http://localhost:5173/api/supabase/homologation/callback`. Login/logout e negação por perfil ausente passaram no navegador. Próximo: preparar perfis controlados e testes RLS negativos/positivos com dados sintéticos. Antes de criar perfis/fixtures ou executar SQL remoto, obter a autorização específica exigida por `AGENTS.md`; não conceder CRM pela identidade Google sozinha. Não usar service_role como sessão.
+Callbacks configurados: Google → `https://lkamarbpjqlibxlmcico.supabase.co/auth/v1/callback`; Supabase → `http://localhost:5173/api/supabase/homologation/callback`. Login/logout e negação por perfil ausente passaram no navegador. A baseline ainda permite RLS por correspondência de e-mail, mesmo sem UUID; a migração local `supabase/migrations/20260925135006_require_bound_crm_user_id.sql` remove o fallback. Ela não foi aplicada. Ver `docs/supabase/BOUND_USER_RLS_RUNBOOK.md` para preflight, testes e parada. Antes de aplicar SQL remoto ou criar perfis/fixtures, obter autorização específica e verificar backup/definições remotas, conforme `AGENTS.md`. Não usar service_role como sessão.
 
 O verificador remoto exige JWT de usuário, `LIMPAX_SUPABASE_REMOTE_VALIDATION=authorized` e lote `SUPABASE_HOMOLOGATION_BATCH=homologation-...`. Sem isso, só dry-run. Um PASS do script não substitui a matriz OAuth/RLS, Storage e recuperação. Dados reais e cutover dependem de backup, reconciliação, rollback e autorização específica.
 
