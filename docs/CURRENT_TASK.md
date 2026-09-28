@@ -12,7 +12,13 @@ Complemento confirmado em 28/09/2026: Ítalo é o único superadministrador, com
 
 Incremento aplicado em 28/09/2026: o proprietário pediu que somente e-mails previamente aprovados possam entrar pelo Google e autorizou especificamente a migração, probe sintético e ativação do hook. `crm_google_approvals` usa RLS por papel; `Before User Created` bloqueia não aprovados; trigger vincula o novo UUID Auth ao perfil; papel e atividade sincronizam; o callback mostra “Usuário não registrado” para sessão sem perfil. A UI de aprovação fica na homologação e a flag `SUPABASE_GOOGLE_APPROVALS_ENABLED=true` foi ligada só na `.env.local`. O CRM D1 continua operacional. O login Google de Ítalo mostrou Superadministrador e lista de aprovações vazia após a ativação. Ver `docs/supabase/GOOGLE_APPROVED_ACCESS_RUNBOOK.md` para preflight, teste, limitações e rollback.
 
-D1/R2, APIs em uso, migrações existentes, fontes de mídia e histórico relevante são preservados. Não há deploy, importação real, alteração de DNS ou remoção da cópia alternativa nesta etapa.
+D1/R2, APIs em uso, migrações existentes, fontes de mídia e histórico relevante são preservados. O pedido posterior do proprietário para subir o projeto autoriza preparar a publicação privada para testes, mas o deploy depende dos critérios de parada do runbook G13. Não houve importação real, alteração de DNS ou remoção da cópia alternativa.
+
+## Publicação privada para testes — preflight de 28/09
+
+O Site privado existente é `https://limpax-fluindo.italopablo.chatgpt.site/`, versão 3 em `98c0bbf`; a versão local atual é `64d7279`. O navegador abriu a tela de login ChatGPT desse Site. O banco D1 remoto lista oito tabelas iniciais, enquanto a versão local contém migrações posteriores. Sites executa migrações D1 antes de publicar e elas podem permanecer mesmo se o upload falhar. Backup integral e restauração isolada não têm evidência; a CLI Cloudflare não está autenticada e o conector Sites não fornece exportação/restauração completa. Por isso a nova versão não foi publicada. A audiência privada, o banco e o ambiente remoto ficaram intactos. O link existente permite visualizar somente a versão anterior, não testar as mudanças locais atuais.
+
+Todas as oito suítes oficiais passaram (50/50 cenários), junto com `qa:supabase-session` (7/7), TypeScript, lint e build. Próxima ação: obter acesso operacional ao backup D1, gerar a cópia fora do repositório, restaurá-la em ambiente isolado, reconciliar migrações e plano de retorno; depois preparar a publicação privada. O ambiente Sites ainda precisa de `CRM_SUPER_ADMIN_EMAIL`. O Google login hospedado também exige cadastrar o retorno HTTPS exato no Supabase e configurar as variáveis de runtime. Manter `SUPABASE_DATA_MODE=disabled` e G13 aberto.
 
 ## Resultado
 
