@@ -19,6 +19,7 @@ O SQL Editor confirmou: `is_crm_member` e `is_crm_admin` sem referência a `p.em
 
 - Confirmado: `pg_get_functiondef` das duas funções e `pg_policies.qual` de `crm_user_profiles_read_own_or_admin` não contêm fallback por e-mail; a interface mostrou `no_profile` após novo login Google.
 - Ainda pendente: testar SELECT em `crm_user_profiles` e contagem em `leads` com JWT de usuário sem perfil e depois com perfis/fixtures sintéticas. Uma consulta como dono do banco não prova a RLS completa.
+- Revisão somente de leitura em 28/09/2026: projeto remoto com 1 usuário Auth, 0 perfis e 0 leads. `authenticated` possui SELECT em `leads`/`crm_user_profiles`, mas não INSERT em `leads`. Em transação com `SET LOCAL ROLE authenticated` e claim `sub` do usuário existente, `auth.uid()` estava presente e as duas contagens visíveis foram 0. Como não havia lead existente, essa contagem não demonstra a negação de uma linha; o teste com fixture transitória está preparado em `RLS_NEGATIVE_PROBE.sql`, ainda não executado.
 - Só depois de confirmar a negação, definir com o proprietário quais UUIDs serão administradores/atendentes. Criar perfis e fixtures sintéticas em etapa autorizada separada; testar usuários inativos e papéis ativo admin/atendente, inclusive Storage privado.
 - Conferir que `SUPABASE_DATA_MODE=disabled` e que D1/R2 continuam operacionais. Não concluir G13 por esta mudança isolada.
 

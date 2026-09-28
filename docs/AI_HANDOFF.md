@@ -1,6 +1,6 @@
 # LIMPAX — handoff atual
 
-Atualizado em 25/09/2026. Pasta oficial: `C:/Users/italo/Programação/Limpax`.
+Atualizado em 28/09/2026. Pasta oficial: `C:/Users/italo/Programação/Limpax`.
 
 ## Tarefa desta sessão
 
@@ -28,6 +28,8 @@ Google Provider está ativado no Supabase. No projeto Google Cloud `limpax-c54d6
 Callbacks configurados: Google → `https://lkamarbpjqlibxlmcico.supabase.co/auth/v1/callback`; Supabase → `http://localhost:5173/api/supabase/homologation/callback`. Login/logout e negação por perfil ausente passaram no navegador. A migração `supabase/migrations/20260925135006_require_bound_crm_user_id.sql` foi aplicada via SQL Editor em 25/09/2026 após autorização específica: funções e política de perfis agora exigem UUID, sem fallback por e-mail. Ver `docs/supabase/BOUND_USER_RLS_RUNBOOK.md` para preflight, resultado e limitações. O painel da CLI ainda não registra a baseline nem esta migração. Perfis continuam 0; antes de criar perfis/fixtures, obter autorização específica conforme `AGENTS.md`. Não usar service_role como sessão.
 
 O verificador remoto exige JWT de usuário, `LIMPAX_SUPABASE_REMOTE_VALIDATION=authorized` e lote `SUPABASE_HOMOLOGATION_BATCH=homologation-...`. Sem isso, só dry-run. Um PASS do script não substitui a matriz OAuth/RLS, Storage e recuperação. Dados reais e cutover dependem de backup, reconciliação, rollback e autorização específica.
+
+Em 28/09, leitura remota confirmou 1 usuário Auth, 0 perfis CRM e 0 leads; `authenticated` possui SELECT em leads/perfis, mas não INSERT em leads. Uma transação no SQL Editor com papel `authenticated` e claim do usuário existente leu 0/0, resultado inconclusivo para negação de lead porque a tabela está vazia. O teste com lead sintético e `ROLLBACK` está preparado em `docs/supabase/RLS_NEGATIVE_PROBE.sql`, ainda sem execução/autorização específica. Readiness e dry-run locais passaram. Papel de teste do proprietário foi solicitado; nenhuma permissão CRM foi concedida.
 
 ## Fontes de continuidade
 
