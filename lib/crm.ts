@@ -7,7 +7,9 @@ export type CrmRole="admin"|"attendant";
 export type CrmActor=ChatGPTUser&{role:CrmRole};
 
 function emailList(value:string|undefined){return (value||"").split(",").map(v=>v.trim().toLowerCase()).filter(Boolean)}
-export function crmRoleFor(email:string,s=settings()):CrmRole|null{const normalized=email.toLowerCase();if(emailList(s.CRM_ADMIN_EMAILS).includes(normalized))return "admin";if(emailList(s.CRM_ATTENDANT_EMAILS).includes(normalized))return "attendant";return null}
+export function crmRoleFor(email:string,s=settings()):CrmRole|null{const normalized=email.toLowerCase();if(normalized===s.CRM_SUPER_ADMIN_EMAIL?.trim().toLowerCase()||emailList(s.CRM_ADMIN_EMAILS).includes(normalized))return "admin";if(emailList(s.CRM_ATTENDANT_EMAILS).includes(normalized))return "attendant";return null}
+export function isCrmSuperAdmin(actor:CrmActor,s=settings()){return actor.role==="admin"&&Boolean(s.CRM_SUPER_ADMIN_EMAIL?.trim())&&actor.email.toLowerCase()===s.CRM_SUPER_ADMIN_EMAIL?.trim().toLowerCase()}
+export function isReservedCrmAdminEmail(email:string,s=settings()){const normalized=email.toLowerCase();return normalized===s.CRM_SUPER_ADMIN_EMAIL?.trim().toLowerCase()||emailList(s.CRM_ADMIN_EMAILS).includes(normalized)}
 
 export async function requireCrmUser():Promise<CrmActor>{
   const user=await getChatGPTUser();

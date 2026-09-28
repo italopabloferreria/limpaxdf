@@ -10,6 +10,8 @@ O projeto `lkamarbpjqlibxlmcico` existe em São Paulo. A baseline em `supabase/m
 - `AUTH_HOMOLOGATION_DESIGN.md`: fluxo Google, sessão e matriz de permissão.
 - `BOUND_USER_RLS_RUNBOOK.md`: aplicação e evidência da migração incremental que exige vínculo de perfil pelo UUID.
 - `RLS_NEGATIVE_PROBE.sql`: teste transacional preparado para provar a negação de um lead sintético sem perfil; depende de autorização específica para execução remota.
+- `../../supabase/migrations/20260928050106_restrict_crm_admin_management.sql`: migração incremental local da hierarquia de gestão; ainda não aplicada remotamente nem habilita escrita via Data API.
+- `SUPER_ADMIN_BOOTSTRAP.sql`: operação administrativa permanente preparada para vincular a única conta superadministradora após a migration; ainda não executada.
 - `AUTH_RLS_READINESS.sql`: consultas de revisão; não é uma nova migration.
 - `../AI_HANDOFF.md` e `../CURRENT_TASK.md`: estado e tarefa atuais.
 

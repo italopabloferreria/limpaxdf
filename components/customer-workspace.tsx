@@ -345,6 +345,7 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
         </div>
         <nav className={styles.nav}>
           <Link href="/crm">Atendimentos</Link>
+          <Link href="/crm/perfil">Meu perfil</Link>
           <Link href="/">Ver site</Link>
         </nav>
       </header>

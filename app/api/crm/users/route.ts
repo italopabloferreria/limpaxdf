@@ -1,4 +1,4 @@
-import {requireCrmAdmin} from "@/lib/crm";
+import {isCrmSuperAdmin,isReservedCrmAdminEmail,requireCrmAdmin} from "@/lib/crm";
 import {database,failure,json,readJson,ApiError} from "@/lib/http";
 import {settings} from "@/lib/config";
 import {z} from "zod";
@@ -31,13 +31,16 @@ export async function GET(){
   }catch(e){return failure(e)}
 }
 
-/** POST /api/crm/users — create or invite a team member (admin only) */
+/** POST /api/crm/users — register a CRM profile; this does not send an invite. */
 export async function POST(req:Request){
   try{
     const actor=await requireCrmAdmin(req);
     const parsed=createSchema.safeParse(await readJson(req));
     if(!parsed.success)throw new ApiError(400,"Dados do membro inválidos.");
     const data=parsed.data;
+    if(!isCrmSuperAdmin(actor)&&(data.role==="admin"||isReservedCrmAdminEmail(data.email))){
+      throw new ApiError(403,"Somente o superadministrador pode cadastrar administradores.");
+    }
     const db=database(settings());
     const existing=await db.prepare("SELECT email FROM crm_user_profiles WHERE email=?").bind(data.email.toLowerCase()).first();
     if(existing)throw new ApiError(409,"Este e-mail já está cadastrado na equipe.");

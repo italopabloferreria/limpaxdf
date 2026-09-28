@@ -19,7 +19,10 @@ Até o corte aprovado, preservar a autenticação Sites nas rotas operacionais D
 
 ## Bootstrap administrativo
 
-Definir com o proprietário os dois administradores e a atendente para homologação [VALIDAR]. Um administrador já autorizado do projeto cria as primeiras linhas de perfil em operação controlada, associando cada perfil ao UUID real de `auth.users` após o primeiro login. Não conceder admin com base apenas no e-mail recebido no OAuth, `user_metadata` ou na sessão do Dashboard. Registrar quem fez o vínculo e testar alteração de papel, desativação e proteção do último admin antes de automatizar gestão pela UI.
+Regra definida pelo proprietário em 28/09/2026: Ítalo é o único superadministrador; só ele pode criar ou promover administradores. Administradores comuns podem cadastrar atendentes, mas não administradores nem alterar o superadministrador. A confirmação fina dessa matriz foi solicitada ao proprietário. O superadministrador terá `is_super_admin=true` em seu perfil administrativo, com índice que permite apenas um, perfil ativo como `admin` e `user_id` vinculado ao UUID real de `auth.users`. Nenhum cliente autenticado receberá grant para alterar essa coluna. Não derivar esse privilégio apenas de e-mail, `user_metadata` ou da sessão do Dashboard. Registrar quem fez cada vínculo e testar alteração de papel, desativação e proteção do proprietário antes de automatizar gestão Supabase pela UI. Os demais usuários de homologação ainda estão [VALIDAR].
+
+A migração local `supabase/migrations/20260928050106_restrict_crm_admin_management.sql` prepara a coluna protegida de superadministrador e restringe as policies de escrita de perfis. Ela **não foi aplicada remotamente** e não cria perfil nem concede privilégios de escrita à Data API. A interface operacional `/crm/perfil` usa, por enquanto, a identidade Sites/D1 e uma configuração local controlada; não cria contas Supabase Auth.
+O bootstrap permanente está preparado em `docs/supabase/SUPER_ADMIN_BOOTSTRAP.sql`; depende da migration aplicada, identidade verificada e confirmação na hora da concessão. Deve ocorrer depois do teste negativo com 0 perfis. Sem bootstrap, login Google continua `no_profile`.
 
 A baseline permitia correspondência de perfil por e-mail nas funções `is_crm_member` e `is_crm_admin` e na leitura de perfis. A migração incremental `supabase/migrations/20260925135006_require_bound_crm_user_id.sql` foi aplicada via SQL Editor em 25/09/2026 após autorização específica; agora exige `user_id = auth.uid()` para perfis ativos. O SQL remoto confirmou a remoção do fallback e o navegador continuou mostrando `no_profile` para a conta sem perfil. A matriz de RLS com perfis e fixtures sintéticas ainda precisa de testes separados antes de ativar o adapter.
 
@@ -32,6 +35,8 @@ A baseline permitia correspondência de perfil por e-mail nas funções `is_crm_
 | Google válido | inativo, mesmo `user_id` | CRM nega acesso |
 | Google válido | atendente ativo, mesmo `user_id` | somente ações permitidas à atendente |
 | Google válido | admin ativo, mesmo `user_id` | ações administrativas previstas, com auditoria |
+| Google válido | superadministrador ativo, mesmo `user_id` e marca administrativa | pode criar/promover administradores após a gestão Supabase ser habilitada |
+| Google válido | admin comum tenta criar/promover admin ou alterar superadmin | negado |
 | Google válido | perfil ativo de outro `user_id` visível ao admin | não substitui o próprio perfil |
 | Token expirado/revogado | qualquer | acesso negado ou renovação válida; nenhuma elevação de papel |
 

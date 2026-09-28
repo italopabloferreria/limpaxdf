@@ -8,10 +8,12 @@ import {setRequestIdentity,withRequestIdentity} from "./request-headers-mock";
 import {requireCrmUser} from "../lib/crm";
 import CrmPage from "../app/crm/page";
 import CustomersPage from "../app/crm/clientes/page";
+import ProfilePage from "../app/crm/perfil/page";
 import {GET as listCustomers} from "../app/api/crm/customers/route";
 import {DELETE as deleteContact} from "../app/api/crm/customers/[id]/contacts/[contactId]/route";
 import {DELETE as deleteLocation} from "../app/api/crm/customers/[id]/locations/[locationId]/route";
 import {PATCH as updateUser} from "../app/api/crm/users/[email]/route";
+import {POST as createUser} from "../app/api/crm/users/route";
 import {PATCH as updateCustomerLifecycle} from "../app/api/crm/customers/[id]/lifecycle/route";
 
 const email = "operator@example.test";
@@ -66,7 +68,7 @@ function noBusinessReads(queries:string[]) {
   assert.equal(queries.some(query=>/\bFROM\s+(leads|customers|customer_contacts|service_locations)\b/i.test(query)),false);
 }
 async function assertPagesDenied(pattern:RegExp) {
-  for(const page of [CrmPage,CustomersPage]) {
+  for(const page of [CrmPage,CustomersPage,ProfilePage]) {
     const html=renderToStaticMarkup(await page());
     assert.doesNotMatch(html,/data-workspace/);
     assert.match(html,pattern);
@@ -85,6 +87,7 @@ test("DB-only user is accepted consistently in pages and API",async()=>{
   assert.equal((await requireCrmUser()).role,"attendant");
   assert.equal((await listCustomers(new Request(origin+"/api/crm/customers"))).status,200);
   for(const page of [CrmPage,CustomersPage]) assert.match(renderToStaticMarkup(await page()),/data-role="attendant"/);
+  assert.match(renderToStaticMarkup(await ProfilePage()),/Atendimento/);
 });
 test("persisted demotion overrides environment admin in SSR and API",async()=>{
   setup({role:"attendant",active:1});
@@ -122,6 +125,14 @@ test("confirmed absence of profile preserves explicit environment bootstrap only
   assert.equal((await requireCrmUser()).role,"admin");
   delete env.CRM_ADMIN_EMAILS;
   await assert.rejects(requireCrmUser(),{status:403});
+});
+test("configured owner boots as admin, but a persisted attendant profile removes that privilege",async()=>{
+  const {sql}=setup(undefined,false);
+  env.CRM_SUPER_ADMIN_EMAIL=email;
+  assert.equal((await requireCrmUser()).role,"admin");
+  sql.prepare("INSERT INTO crm_user_profiles(email,role,active,created_at,updated_at) VALUES(?,'attendant',1,0,0)").run(email);
+  assert.equal((await requireCrmUser()).role,"attendant");
+  assert.equal((await userCreate(email,{email:"other@example.test",role:"admin"})).status,403);
 });
 test("last-seen write failure does not override a successful authorization",async()=>{
   const {sql}=setup({role:"attendant",active:1});
@@ -184,11 +195,18 @@ function userUpdate(actor:string,target:string,data:Record<string,unknown>){
   });
   return withRequestIdentity(actor,()=>updateUser(request,{params:Promise.resolve({email:encodeURIComponent(target)})}));
 }
+function userCreate(actor:string,data:Record<string,unknown>){
+  const request=new Request(origin+"/api/crm/users",{
+    method:"POST",headers:{origin,"content-type":"application/json"},body:JSON.stringify(data)
+  });
+  return withRequestIdentity(actor,()=>createUser(request));
+}
 function addAdmin(sql:DatabaseSync,address:string){
   sql.prepare("INSERT INTO crm_user_profiles(email,role,active,created_at,updated_at) VALUES(?,'admin',1,0,0)").run(address);
 }
 test("bootstrap admin cannot deactivate the only persisted active admin",async()=>{
   const {sql}=setup();
+  env.CRM_SUPER_ADMIN_EMAIL=email;
   const persisted="owner@example.test";
   addAdmin(sql,persisted);
   const response=await userUpdate(email,persisted,{active:false});
@@ -198,13 +216,39 @@ test("bootstrap admin cannot deactivate the only persisted active admin",async()
 });
 test("concurrent cross-deactivation keeps one active admin and audits only the accepted change",async()=>{
   const {sql}=setup({role:"admin",active:1},false);
+  env.CRM_SUPER_ADMIN_EMAIL=email;
   const second="second-admin@example.test";
   addAdmin(sql,second);
   const responses=await Promise.all([
     userUpdate(email,second,{active:false}),
     userUpdate(second,email,{active:false})
   ]);
-  assert.deepEqual(responses.map(response=>response.status).sort(),[200,409]);
+  assert.deepEqual(responses.map(response=>response.status).sort(),[200,403]);
   assert.equal(sql.prepare("SELECT COUNT(*) n FROM crm_user_profiles WHERE role='admin' AND active=1").get()!.n,1);
   assert.equal(sql.prepare("SELECT COUNT(*) n FROM crm_audit_log WHERE action='user_updated'").get()!.n,1);
+});
+test("ordinary admin manages attendants but cannot create or change admins",async()=>{
+  const {sql}=setup({role:"admin",active:1},false);
+  env.CRM_SUPER_ADMIN_EMAIL="owner@example.test";
+  const attendant="member@example.test",otherAdmin="other-admin@example.test";
+  assert.equal((await userCreate(email,{email:otherAdmin,role:"admin"})).status,403);
+  assert.equal((await userCreate(email,{email:"owner@example.test",role:"attendant"})).status,403);
+  assert.equal((await userCreate(email,{email:attendant,role:"attendant"})).status,201);
+  assert.equal((await userUpdate(email,attendant,{displayName:"Atendimento"})).status,200);
+  assert.equal((await userUpdate(email,attendant,{role:"admin"})).status,403);
+  addAdmin(sql,otherAdmin);
+  assert.equal((await userUpdate(email,otherAdmin,{active:false})).status,403);
+  assert.equal(sql.prepare("SELECT role,active FROM crm_user_profiles WHERE email=?").get(attendant)!.role,"attendant");
+  assert.equal(sql.prepare("SELECT active FROM crm_user_profiles WHERE email=?").get(otherAdmin)!.active,1);
+  assert.equal(sql.prepare("SELECT COUNT(*) n FROM crm_audit_log").get()!.n,2);
+});
+test("configured superadmin can create admins and cannot deactivate self",async()=>{
+  const {sql}=setup({role:"admin",active:1},false);
+  env.CRM_SUPER_ADMIN_EMAIL=email;
+  assert.match(renderToStaticMarkup(await ProfilePage()),/Superadministrador/);
+  const otherAdmin="other-admin@example.test";
+  assert.equal((await userCreate(email,{email:otherAdmin,role:"admin"})).status,201);
+  assert.equal((await userUpdate(email,otherAdmin,{active:false})).status,200);
+  assert.equal((await userUpdate(email,email,{active:false})).status,409);
+  assert.equal(sql.prepare("SELECT active FROM crm_user_profiles WHERE email=?").get(email)!.active,1);
 });

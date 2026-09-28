@@ -1,0 +1,4 @@
+.profile h1{font-size:clamp(2.25rem,5vw,4rem);line-height:1.05;letter-spacing:-.055em;text-transform:none;margin:0;overflow-wrap:anywhere}
+.profile h2{font-size:clamp(2rem,4vw,3rem);line-height:1.1;letter-spacing:-.045em;margin:0}
+.profile h3{font-size:1.25rem;line-height:1.25;letter-spacing:-.02em;margin:2.5rem 0 .75rem}
+.profile select:focus-visible{outline:3px solid #b3a800;outline-offset:5px}
