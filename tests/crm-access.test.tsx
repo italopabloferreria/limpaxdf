@@ -68,7 +68,7 @@ function noBusinessReads(queries:string[]) {
   assert.equal(queries.some(query=>/\bFROM\s+(leads|customers|customer_contacts|service_locations)\b/i.test(query)),false);
 }
 async function assertPagesDenied(pattern:RegExp) {
-  for(const page of [()=>CrmPage({}),CustomersPage,ProfilePage]) {
+  for(const page of [()=>CrmPage({}),()=>CustomersPage({}),ProfilePage]) {
     const html=renderToStaticMarkup(await page());
     assert.doesNotMatch(html,/data-workspace/);
     assert.match(html,pattern);
@@ -86,13 +86,13 @@ test("DB-only user is accepted consistently in pages and API",async()=>{
   setup({role:"attendant",active:1},false);
   assert.equal((await requireCrmUser()).role,"attendant");
   assert.equal((await listCustomers(new Request(origin+"/api/crm/customers"))).status,200);
-  for(const page of [()=>CrmPage({}),CustomersPage]) assert.match(renderToStaticMarkup(await page()),/data-role="attendant"/);
+  for(const page of [()=>CrmPage({}),()=>CustomersPage({})]) assert.match(renderToStaticMarkup(await page()),/data-role="attendant"/);
   assert.match(renderToStaticMarkup(await ProfilePage()),/Atendimento/);
 });
 test("persisted demotion overrides environment admin in SSR and API",async()=>{
   setup({role:"attendant",active:1});
   assert.equal((await requireCrmUser()).role,"attendant");
-  for(const page of [()=>CrmPage({}),CustomersPage]) assert.match(renderToStaticMarkup(await page()),/data-role="attendant"/);
+  for(const page of [()=>CrmPage({}),()=>CustomersPage({})]) assert.match(renderToStaticMarkup(await page()),/data-role="attendant"/);
 });
 for(const profile of [{role:"unknown",active:1},{role:"admin",active:2}]) {
   test("invalid persisted profile cannot fall back to environment: "+JSON.stringify(profile),async()=>{

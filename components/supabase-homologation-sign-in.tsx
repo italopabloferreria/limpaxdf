@@ -6,7 +6,7 @@ import {SupabaseApprovedTeam} from "./supabase-approved-team";
 type SessionState={status:"signed_out"|"no_profile"|"inactive"|"authorized";role:string|null};
 const labels:Record<SessionState["status"],string>={signed_out:"Sem sessão Supabase.",no_profile:"Usuário não registrado. Solicite acesso ao administrador.",inactive:"Acesso ao CRM desativado.",authorized:"Perfil CRM ativo."};
 
-export function HomologationSignIn({url,publishableKey,origin,googleEnabled=false,approvalsEnabled=false,loginStatus=""}:{url:string;publishableKey:string;origin:string;googleEnabled?:boolean;approvalsEnabled?:boolean;loginStatus?:string}){
+export function HomologationSignIn({url,publishableKey,origin,googleEnabled=false,approvalsEnabled=false,crmReadEnabled=false,loginStatus=""}:{url:string;publishableKey:string;origin:string;googleEnabled?:boolean;approvalsEnabled?:boolean;crmReadEnabled?:boolean;loginStatus?:string}){
   const [state,setState]=useState<SessionState|null>(null);
   const [error,setError]=useState(loginStatus==="unregistered"?"Usuário não registrado. Solicite acesso ao administrador.":loginStatus==="error"?"Não foi possível concluir o login Google.":"");
   const [busy,setBusy]=useState(false);
@@ -43,6 +43,7 @@ export function HomologationSignIn({url,publishableKey,origin,googleEnabled=fals
     {!googleEnabled&&<p>O login Google está aguardando a conclusão da configuração. Tente novamente após a ativação.</p>}
     {state?.status==="signed_out"&&<button type="button" disabled={busy||!googleEnabled} onClick={signIn} className="rounded-lg bg-black px-4 py-2 text-white focus-visible:outline-2 disabled:opacity-50">Entrar com Google</button>}
     {state&&state.status!=="signed_out"&&<button type="button" disabled={busy} onClick={signOut} className="rounded-lg border px-4 py-2 focus-visible:outline-2">Sair</button>}
+    {crmReadEnabled&&state?.status==="authorized"&&<nav aria-label="Consulta do CRM" className="flex flex-wrap gap-3"><a href="/crm" className="rounded-lg border px-4 py-2 focus-visible:outline-2">Atendimentos</a><a href="/crm/clientes" className="rounded-lg border px-4 py-2 focus-visible:outline-2">Clientes</a></nav>}
   </section>
     {approvalsEnabled&&state?.status==="authorized"&&(state.role==="super_admin"||state.role==="admin")&&
       <SupabaseApprovedTeam url={url} publishableKey={publishableKey} superAdmin={state.role==="super_admin"}/>}

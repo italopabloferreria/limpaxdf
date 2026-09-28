@@ -23,3 +23,7 @@ export function withRequestIdentity<T>(email: string, operation: () => Promise<T
 export async function headers() {
   return requestIdentity.getStore() ?? current;
 }
+
+export async function cookies() {
+  return {getAll: () => []};
+}

@@ -2,11 +2,17 @@
 
 Em 28/09/2026 o proprietário corrigiu o escopo: continuar **apenas o CRM**, até torná-lo funcional; o site institucional deixa de ser trabalho ativo. Prioridade executável: integrar sessão Google aprovada às telas e APIs de atendimentos/clientes, portar a persistência e políticas para Supabase de forma reversível, testar papéis e recuperar dados, e só então liberar escrita na Vercel. O protótipo local de Clientes permanece para visualização enquanto o módulo real é integrado. Não declarar conclusão do CRM por causa da prévia visual.
 
+## Estado da integração de leitura — 28/09
+
+O deployment Preview de `f921234` ficou Ready e o login Google hospedado reconheceu Ítalo como Superadministrador. As páginas reais de atendimentos e clientes agora têm um caminho de leitura por cookie Supabase verificado com `auth.getUser()` e perfil ativo vinculado ao UUID; esse caminho só existe na Vercel Preview com `SUPABASE_DATA_MODE=read_only`. A flag hospedada permanece `disabled`, logo essas telas ainda não estão liberadas. Endpoints de escrita continuam bloqueados pela `proxy`.
+
+O SQL Editor remoto confirmou 0 leads, clientes, contatos e locais, 1 proprietário ativo, RLS nas quatro tabelas e policies SELECT por `app_private.is_crm_member()`. `authenticated` já tem SELECT apenas em leads; clientes/contatos/locais não têm grants. A migração incremental `20260928210000_crm_preview_read_grants.sql` e o procedimento de verificação/reversão em `docs/supabase/CRM_READ_PREVIEW_RUNBOOK.md` estão preparados, sem aplicação remota. Próximo: obter autorização específica para esse grant, executar a matriz JWT real e, se passar, ativar read_only apenas em Preview. Escrita, migração reversível de dados e recuperação continuam etapas separadas. G13 aberto.
+
 ## Atualização de 28/09 — pedido de conclusão integral e visualização
 
 O proprietário pediu concluir o site e todo o CRM na Vercel como uma entrega contínua. Esse pedido amplia o objetivo, mas não transforma os módulos futuros ou o G13 em concluídos. O CRM operacional continua fechado na prévia até haver integração Supabase de escrita, migração reversível, recuperação e validação de papéis. Para visualização imediata, `/crm/prototipo/clientes` foi criado apenas para desenvolvimento local, com dados inteiramente fictícios e sem persistência; a tela foi aberta no navegador. A página de homologação local continua exibindo o perfil de Ítalo como Superadministrador.
 
-O retorno Google passou a usar a origem HTTPS exata configurada no servidor, e a prévia passou a oferecer um link para testar acesso. `qa:supabase-session` passou 7/7; lint, TypeScript e build Next para Vercel passaram. Com autorização específica, as nove variáveis públicas/de homologação foram confirmadas apenas no ambiente Preview da Vercel, e o callback exato foi salvo no Supabase; a lista contém somente localhost e a prévia HTTPS. Gerar novo deployment e testar login hospedado ainda estão pendentes. `SUPABASE_DATA_MODE=disabled` permanece. A visualização local não é o CRM funcional publicado.
+O retorno Google passou a usar a origem HTTPS exata configurada no servidor, e a prévia passou a oferecer um link para testar acesso. `qa:supabase-session` passou 7/7; lint, TypeScript e build Next para Vercel passaram. Com autorização específica, as nove variáveis públicas/de homologação foram confirmadas apenas no ambiente Preview da Vercel, e o callback exato foi salvo no Supabase; a lista contém somente localhost e a prévia HTTPS. O deployment seguinte ficou Ready e o login hospedado do proprietário passou, conforme atualização acima. `SUPABASE_DATA_MODE=disabled` permanece. A visualização local não é o CRM funcional publicado.
 
 ## Autorização e pasta
 
@@ -14,7 +20,7 @@ Pasta oficial: `C:/Users/italo/Programação/Limpax`. A revisão AUDIT-CLEANUP-0
 
 ## Escopo
 
-Concluir o login Google/Supabase isolado, validar login/logout e perfil ausente; preparar a matriz de perfis e RLS com identidades e fixtures sintéticas, sem ligar o adapter operacional.
+O login Google/Supabase isolado e o teste do proprietário estão concluídos. Integrar a leitura protegida, validar a matriz de perfis/RLS com identidades e fixtures sintéticas, depois portar mutações e dados com recuperação verificada. Não ligar o adapter operacional de escrita antes desses gates.
 
 Complemento confirmado em 28/09/2026: Ítalo é o único superadministrador, com exclusividade para criar/promover administradores; administradores comuns cadastram atendentes. A API Sites/D1 e `/crm/perfil` aplicam essa hierarquia. A política equivalente e o perfil do proprietário já foram aplicados no Supabase; a gestão de contas Supabase pela UI continua desativada até a matriz de testes e o desenho de provisionamento.
 

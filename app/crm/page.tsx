@@ -3,17 +3,30 @@ import {database} from "@/lib/http";
 import {CrmWorkspace} from "@/components/crm-workspace";
 import {CrmAccessGate} from "@/components/crm-access-gate";
 import {listCrmLeads} from "@/lib/crm-data";
+import {listCrmLeadsFromSupabase,type SupabaseLeadReadClient} from "@/lib/crm-data";
 import {crmPageAccess} from "@/lib/crm-page-access";
+import {supabaseCrmPageAccess,supabaseCrmReadEnabled} from "@/lib/supabase-crm-access";
+import {SupabaseCrmReadonly} from "@/components/supabase-crm-readonly";
 import {uuidSchema} from "@/lib/validation";
 
 export const dynamic="force-dynamic";
 type CrmPageProps={searchParams?:Promise<{selected?:string|string[]}>};
 export default async function CrmPage({searchParams}:CrmPageProps){
+  const s=settings();
+  if(supabaseCrmReadEnabled(s)){
+    const access=await supabaseCrmPageAccess();
+    if(!access)return <CrmAccessGate status={401} returnTo="/crm"/>;
+    const query=await searchParams;
+    const requested=typeof query?.selected==="string"?query.selected:null;
+    const selectedId=requested&&uuidSchema.safeParse(requested).success?requested:null;
+    const listing=await listCrmLeadsFromSupabase(access.client as unknown as SupabaseLeadReadClient,{page:1,pageSize:50});
+    return <SupabaseCrmReadonly listing={listing} actor={access.actor} selectedId={selectedId}/>;
+  }
   const access=await crmPageAccess();
   if(!access.actor)return <CrmAccessGate status={access.status} returnTo="/crm"/>;
   const query=await searchParams;
   const requested=typeof query?.selected==="string"?query.selected:null;
   const initialSelected=requested&&uuidSchema.safeParse(requested).success?requested:null;
-  const initial=await listCrmLeads(database(settings()),{page:1,pageSize:50});
+  const initial=await listCrmLeads(database(s),{page:1,pageSize:50});
   return <CrmWorkspace initial={initial} initialSelected={initialSelected} operator={access.actor.displayName} role={access.actor.role}/>;
 }

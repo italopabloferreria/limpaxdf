@@ -2,11 +2,11 @@
 
 Atualizado em 28/09/2026. Pasta oficial: `C:/Users/italo/Programação/Limpax`.
 
-Atualização desta retomada: o usuário pediu concluir o CRM e, durante o trabalho, pediu ver a área de clientes. A aba local `http://localhost:5173/crm/prototipo/clientes` está aberta com um protótipo visual, busca/seleção e apenas cadastros fictícios; a rota responde somente em desenvolvimento. O CRM real `/crm/clientes` ainda exige a identidade/D1 do hosting anterior. O login local Supabase mostra Ítalo como Superadministrador. O código passou a direcionar OAuth para a origem homologada e a prévia Vercel ganhou link para teste de acesso. A suíte de sessão Supabase, lint, TypeScript e build Next para Vercel passaram. As nove variáveis de homologação foram confirmadas na Vercel apenas no ambiente Preview após autorização; o callback HTTPS exato foi salvo no Supabase e a lista agora contém dois URLs (localhost e prévia). Ainda faltam novo deployment e teste de login hospedado. Não afirmar que G13 passou ou que o CRM está operacional na Vercel. A última correção do proprietário limita o trabalho ativo ao CRM; não evoluir site institucional nesta tarefa.
+Atualização desta retomada: o proprietário limitou o trabalho ativo ao CRM. A aba local `http://localhost:5173/crm/prototipo/clientes` mostra somente dados fictícios. O novo deployment Vercel da branch `codex/vercel-preview` (`f921234`) está Ready; login Google real no retorno HTTPS exato reconheceu Ítalo como Superadministrador e mostrou zero acessos adicionais. O código local seguinte integra as páginas `/crm` e `/crm/clientes` à sessão Supabase em modo `read_only`, ainda desligado. O preflight remoto confirmou 0 leads/clientes/contatos/locais, 1 proprietário ativo, RLS nas quatro tabelas, somente `leads` com SELECT para `authenticated` e nenhum privilégio para `anon`. A migração incremental de SELECT para as três tabelas de clientes foi preparada, não aplicada. `SUPABASE_DATA_MODE=disabled` na Vercel. Ver `docs/supabase/CRM_READ_PREVIEW_RUNBOOK.md`. G13 e a escrita operacional continuam pendentes; não evoluir o site institucional nesta tarefa.
 
 ## Tarefa desta sessão
 
-A revisão geral, limpeza e correções foram entregues ao GitHub no commit `3f3e410`. A tarefa ativa é S01 de homologação Supabase Auth/RLS; ver `docs/CURRENT_TASK.md`. A cópia `01_PROJETOS/LIMPAX` permanece preservada; não alternar edições entre pastas.
+A revisão geral, limpeza e correções foram entregues ao GitHub no commit `3f3e410`. A tarefa ativa agora é a integração funcional do CRM com Supabase Auth/RLS; ver `docs/CURRENT_TASK.md`. A cópia `01_PROJETOS/LIMPAX` permanece preservada; não alternar edições entre pastas.
 
 ## Estado operacional
 
