@@ -2,6 +2,8 @@
 
 Atualizado em 28/09/2026. Pasta oficial: `C:/Users/italo/Programação/Limpax`.
 
+Atualização desta retomada: o usuário pediu concluir o CRM e, durante o trabalho, pediu ver a área de clientes. A aba local `http://localhost:5173/crm/prototipo/clientes` está aberta com um protótipo visual, busca/seleção e apenas cadastros fictícios; a rota responde somente em desenvolvimento. O CRM real `/crm/clientes` ainda exige a identidade/D1 do hosting anterior. O login local Supabase mostra Ítalo como Superadministrador. O código passou a direcionar OAuth para a origem homologada e a prévia Vercel ganhou link para teste de acesso. A suíte de sessão Supabase, lint, TypeScript e build Next para Vercel passaram. As nove variáveis de homologação foram confirmadas na Vercel apenas no ambiente Preview após autorização; o callback HTTPS exato foi salvo no Supabase e a lista agora contém dois URLs (localhost e prévia). Ainda faltam novo deployment e teste de login hospedado. Não afirmar que G13 passou ou que o CRM está operacional na Vercel. A última correção do proprietário limita o trabalho ativo ao CRM; não evoluir site institucional nesta tarefa.
+
 ## Tarefa desta sessão
 
 A revisão geral, limpeza e correções foram entregues ao GitHub no commit `3f3e410`. A tarefa ativa é S01 de homologação Supabase Auth/RLS; ver `docs/CURRENT_TASK.md`. A cópia `01_PROJETOS/LIMPAX` permanece preservada; não alternar edições entre pastas.

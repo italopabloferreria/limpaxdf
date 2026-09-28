@@ -72,7 +72,7 @@ test('logout denies cross-origin requests and reports provider failure',async()=
   assert.deepEqual(await (await POST(req(origin))).json(),{signedOut:true});
 });
 test('Google setup pending is visible before attempting OAuth',()=>{
-  const html=renderToStaticMarkup(<HomologationSignIn url="https://example.supabase.co" publishableKey="sb_publishable_test"/>);
+  const html=renderToStaticMarkup(<HomologationSignIn url="https://example.supabase.co" publishableKey="sb_publishable_test" origin="http://localhost:5173"/>);
   assert.match(html,/aguardando a conclusão da configuração/);
 });
 test('Supabase browser connections are restricted to the isolated homologation page',()=>{

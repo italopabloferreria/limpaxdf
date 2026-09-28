@@ -1,4 +1,12 @@
-# Tarefa ativa — S01 homologação Supabase Auth/RLS
+# Tarefa ativa — CRM funcional com Supabase Auth/RLS na Vercel
+
+Em 28/09/2026 o proprietário corrigiu o escopo: continuar **apenas o CRM**, até torná-lo funcional; o site institucional deixa de ser trabalho ativo. Prioridade executável: integrar sessão Google aprovada às telas e APIs de atendimentos/clientes, portar a persistência e políticas para Supabase de forma reversível, testar papéis e recuperar dados, e só então liberar escrita na Vercel. O protótipo local de Clientes permanece para visualização enquanto o módulo real é integrado. Não declarar conclusão do CRM por causa da prévia visual.
+
+## Atualização de 28/09 — pedido de conclusão integral e visualização
+
+O proprietário pediu concluir o site e todo o CRM na Vercel como uma entrega contínua. Esse pedido amplia o objetivo, mas não transforma os módulos futuros ou o G13 em concluídos. O CRM operacional continua fechado na prévia até haver integração Supabase de escrita, migração reversível, recuperação e validação de papéis. Para visualização imediata, `/crm/prototipo/clientes` foi criado apenas para desenvolvimento local, com dados inteiramente fictícios e sem persistência; a tela foi aberta no navegador. A página de homologação local continua exibindo o perfil de Ítalo como Superadministrador.
+
+O retorno Google passou a usar a origem HTTPS exata configurada no servidor, e a prévia passou a oferecer um link para testar acesso. `qa:supabase-session` passou 7/7; lint, TypeScript e build Next para Vercel passaram. Com autorização específica, as nove variáveis públicas/de homologação foram confirmadas apenas no ambiente Preview da Vercel, e o callback exato foi salvo no Supabase; a lista contém somente localhost e a prévia HTTPS. Gerar novo deployment e testar login hospedado ainda estão pendentes. `SUPABASE_DATA_MODE=disabled` permanece. A visualização local não é o CRM funcional publicado.
 
 ## Autorização e pasta
 

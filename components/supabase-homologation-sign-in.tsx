@@ -6,7 +6,7 @@ import {SupabaseApprovedTeam} from "./supabase-approved-team";
 type SessionState={status:"signed_out"|"no_profile"|"inactive"|"authorized";role:string|null};
 const labels:Record<SessionState["status"],string>={signed_out:"Sem sessão Supabase.",no_profile:"Usuário não registrado. Solicite acesso ao administrador.",inactive:"Acesso ao CRM desativado.",authorized:"Perfil CRM ativo."};
 
-export function HomologationSignIn({url,publishableKey,googleEnabled=false,approvalsEnabled=false,loginStatus=""}:{url:string;publishableKey:string;googleEnabled?:boolean;approvalsEnabled?:boolean;loginStatus?:string}){
+export function HomologationSignIn({url,publishableKey,origin,googleEnabled=false,approvalsEnabled=false,loginStatus=""}:{url:string;publishableKey:string;origin:string;googleEnabled?:boolean;approvalsEnabled?:boolean;loginStatus?:string}){
   const [state,setState]=useState<SessionState|null>(null);
   const [error,setError]=useState(loginStatus==="unregistered"?"Usuário não registrado. Solicite acesso ao administrador.":loginStatus==="error"?"Não foi possível concluir o login Google.":"");
   const [busy,setBusy]=useState(false);
@@ -23,7 +23,7 @@ export function HomologationSignIn({url,publishableKey,googleEnabled=false,appro
     setBusy(true);setError("");
     try{
       const client=createBrowserClient(url,publishableKey,{auth:{flowType:"pkce"},cookieOptions:{sameSite:"lax",secure:window.location.protocol==="https:"}});
-      const {error:authError}=await client.auth.signInWithOAuth({provider:"google",options:{redirectTo:`${window.location.origin}/api/supabase/homologation/callback`}});
+      const {error:authError}=await client.auth.signInWithOAuth({provider:"google",options:{redirectTo:`${origin}/api/supabase/homologation/callback`}});
       if(authError)throw authError;
     }catch{setError("Não foi possível iniciar o login Google.");setBusy(false)}
   }
