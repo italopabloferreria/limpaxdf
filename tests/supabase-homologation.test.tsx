@@ -5,6 +5,7 @@ import {renderToStaticMarkup} from 'react-dom/server';
 import {env} from './cloudflare-mock';
 import {authFixture} from './supabase-ssr-mock';
 import {GET} from '../app/api/supabase/homologation/session/route';
+import {GET as CALLBACK} from '../app/api/supabase/homologation/callback/route';
 import {POST} from '../app/api/supabase/homologation/logout/route';
 import {HomologationSignIn} from '../components/supabase-homologation-sign-in';
 import {proxy} from '../proxy';
@@ -12,7 +13,7 @@ const origin='http://localhost:5173';
 async function sessionStatus(request:NextRequest){return ((await (await GET(request)).json()) as {status:string}).status}
 beforeEach(()=>{
   Object.assign(env,{SUPABASE_HOMOLOGATION_ENABLED:'true',SUPABASE_HOMOLOGATION_ORIGIN:origin,SUPABASE_URL:'https://example.supabase.co',SUPABASE_PUBLISHABLE_KEY:'sb_publishable_test'});
-  Object.assign(authFixture,{userId:null,profile:null,profileError:false,logoutError:false,logoutCalls:0,queriedUser:null});
+  Object.assign(authFixture,{userId:null,profile:null,profileError:false,logoutError:false,logoutCalls:0,exchangeError:false,queriedUser:null});
 });
 test('homologation is unavailable outside the configured origin or when disabled',async()=>{
   assert.equal((await GET(new NextRequest('https://other.test/api'))).status,404);
@@ -44,6 +45,22 @@ test('profile failure preserves refresh cookies and forbids caching',async()=>{
   assert.equal(response.status,503);
   assert.equal(response.headers.get('cache-control'),'no-store');
   assert.match(response.headers.get('set-cookie')||'',/test-refresh=synthetic/);
+});
+test('OAuth denial gives an unregistered user a safe local message',async()=>{
+  const denied=new NextRequest(origin+'/api/supabase/homologation/callback?error=access_denied&error_description='+encodeURIComponent('Usuário não registrado.'));
+  const response=await CALLBACK(denied);
+  assert.equal(response.status,307);
+  assert.equal(response.headers.get('location'),origin+'/supabase/homologacao?status=unregistered');
+  const generic=await CALLBACK(new NextRequest(origin+'/api/supabase/homologation/callback?error=access_denied'));
+  assert.equal(generic.headers.get('location'),origin+'/supabase/homologacao?status=error');
+  authFixture.userId='synthetic-user';
+  const orphan=await CALLBACK(new NextRequest(origin+'/api/supabase/homologation/callback?code=synthetic-code'));
+  assert.equal(orphan.headers.get('location'),origin+'/supabase/homologacao?status=unregistered');
+  assert.equal(authFixture.logoutCalls,1);
+  authFixture.profile={active:true,role:'attendant'};
+  const approved=await CALLBACK(new NextRequest(origin+'/api/supabase/homologation/callback?code=synthetic-code'));
+  assert.equal(approved.headers.get('location'),origin+'/supabase/homologacao');
+  assert.equal(authFixture.logoutCalls,1);
 });
 test('logout denies cross-origin requests and reports provider failure',async()=>{
   const req=(from:string)=>new NextRequest(origin+'/api',{method:'POST',headers:{origin:from}});

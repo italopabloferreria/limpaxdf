@@ -3,6 +3,7 @@ import {CrmAccessGate} from "@/components/crm-access-gate";
 import {CrmProfileWorkspace} from "@/components/crm-profile-workspace";
 import {isCrmSuperAdmin} from "@/lib/crm";
 import {crmPageAccess} from "@/lib/crm-page-access";
+import {settings} from "@/lib/config";
 
 export const dynamic="force-dynamic";
 
@@ -18,6 +19,6 @@ export default async function CrmProfilePage(){
         <Link href="/crm/clientes" className="outline-button">Clientes</Link>
       </nav>
     </header>
-    <CrmProfileWorkspace email={actor.email} displayName={actor.displayName} role={actor.role} superAdmin={isCrmSuperAdmin(actor)}/>
+    <CrmProfileWorkspace email={actor.email} displayName={actor.displayName} role={actor.role} superAdmin={isCrmSuperAdmin(actor)} googleAccessEnabled={settings().SUPABASE_GOOGLE_APPROVALS_ENABLED==="true"}/>
   </main>;
 }

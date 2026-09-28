@@ -5,6 +5,7 @@ export const authFixture={
   profileError:false,
   logoutError:false,
   logoutCalls:0,
+  exchangeError:false,
   queriedUser:null as string|null,
 };
 export function createServerClient(_url:string,_key:string,options:{cookies:{setAll:(items:{name:string;value:string;options:Record<string,unknown>}[])=>void}}){
@@ -15,6 +16,7 @@ export function createServerClient(_url:string,_key:string,options:{cookies:{set
         return {data:{user:authFixture.userId?{id:authFixture.userId}:null},error:null};
       },
       async signOut(){authFixture.logoutCalls++;return {error:authFixture.logoutError?{message:'synthetic failure'}:null}},
+      async exchangeCodeForSession(){return {error:authFixture.exchangeError?{message:'synthetic failure'}:null}},
     },
     from(){return {select(){return {eq(_column:string,value:string){authFixture.queriedUser=value;return {async maybeSingle(){return {data:authFixture.profile,error:authFixture.profileError?{message:'synthetic failure'}:null}}}}}}}},
   };

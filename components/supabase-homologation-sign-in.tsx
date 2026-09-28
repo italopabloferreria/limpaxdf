@@ -1,13 +1,14 @@
 "use client";
 import {useEffect,useState} from "react";
 import {createBrowserClient} from "@supabase/ssr";
+import {SupabaseApprovedTeam} from "./supabase-approved-team";
 
 type SessionState={status:"signed_out"|"no_profile"|"inactive"|"authorized";role:string|null};
-const labels:Record<SessionState["status"],string>={signed_out:"Sem sessão Supabase.",no_profile:"Conta autenticada, sem perfil CRM vinculado.",inactive:"Perfil CRM desativado.",authorized:"Perfil CRM ativo."};
+const labels:Record<SessionState["status"],string>={signed_out:"Sem sessão Supabase.",no_profile:"Usuário não registrado. Solicite acesso ao administrador.",inactive:"Acesso ao CRM desativado.",authorized:"Perfil CRM ativo."};
 
-export function HomologationSignIn({url,publishableKey,googleEnabled=false}:{url:string;publishableKey:string;googleEnabled?:boolean}){
+export function HomologationSignIn({url,publishableKey,googleEnabled=false,approvalsEnabled=false,loginStatus=""}:{url:string;publishableKey:string;googleEnabled?:boolean;approvalsEnabled?:boolean;loginStatus?:string}){
   const [state,setState]=useState<SessionState|null>(null);
-  const [error,setError]=useState("");
+  const [error,setError]=useState(loginStatus==="unregistered"?"Usuário não registrado. Solicite acesso ao administrador.":loginStatus==="error"?"Não foi possível concluir o login Google.":"");
   const [busy,setBusy]=useState(false);
   useEffect(()=>{
     const controller=new AbortController();
@@ -35,12 +36,15 @@ export function HomologationSignIn({url,publishableKey,googleEnabled=false}:{url
     }catch{setError("Não foi possível sair da sessão.")}
     finally{setBusy(false)}
   }
-  return <section className="space-y-4 rounded-xl border p-6" aria-live="polite">
+  return <div className="space-y-6"><section className="space-y-4 rounded-xl border p-6" aria-live="polite">
     <p>{state?labels[state.status]:"Verificando sessão…"}</p>
     {state?.role&&<p>Papel: {state.role==="super_admin"?"Superadministrador":state.role==="admin"?"Administrador":"Atendente"}</p>}
     {error&&<p role="alert">{error}</p>}
     {!googleEnabled&&<p>O login Google está aguardando a conclusão da configuração. Tente novamente após a ativação.</p>}
     {state?.status==="signed_out"&&<button type="button" disabled={busy||!googleEnabled} onClick={signIn} className="rounded-lg bg-black px-4 py-2 text-white focus-visible:outline-2 disabled:opacity-50">Entrar com Google</button>}
     {state&&state.status!=="signed_out"&&<button type="button" disabled={busy} onClick={signOut} className="rounded-lg border px-4 py-2 focus-visible:outline-2">Sair</button>}
-  </section>;
+  </section>
+    {approvalsEnabled&&state?.status==="authorized"&&(state.role==="super_admin"||state.role==="admin")&&
+      <SupabaseApprovedTeam url={url} publishableKey={publishableKey} superAdmin={state.role==="super_admin"}/>}
+  </div>;
 }

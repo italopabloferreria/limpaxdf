@@ -5,7 +5,7 @@ import styles from "./crm-profile-workspace.module.css";
 type Role="admin"|"attendant";
 type Member={email:string;displayName:string|null;role:Role;active:boolean};
 
-export function CrmProfileWorkspace({email,displayName,role,superAdmin}:{email:string;displayName:string;role:Role;superAdmin:boolean}){
+export function CrmProfileWorkspace({email,displayName,role,superAdmin,googleAccessEnabled=false}:{email:string;displayName:string;role:Role;superAdmin:boolean;googleAccessEnabled?:boolean}){
   const [members,setMembers]=useState<Member[]>([]);
   const [loading,setLoading]=useState(role==="admin");
   const [busy,setBusy]=useState(false);
@@ -60,6 +60,7 @@ export function CrmProfileWorkspace({email,displayName,role,superAdmin}:{email:s
     {role==="admin"&&<section aria-labelledby="team-title" className="border border-black/20 bg-[#f8f7f2] p-6 sm:p-8">
       <h2 id="team-title" className="text-2xl font-bold">Equipe</h2>
       <p className="mt-1 text-sm text-[#4e4d49]">{superAdmin?"Você pode cadastrar administradores e atendentes.":"Você pode cadastrar atendentes. Apenas o superadministrador cadastra administradores."} O cadastro do perfil não envia convite; a pessoa também precisa de acesso ao site.</p>
+      {googleAccessEnabled&&<p className="mt-3 text-sm"><a href="/supabase/homologacao" className="underline focus-visible:outline-2">Gerenciar acesso Google de homologação</a>. Esse cadastro é separado do perfil operacional acima.</p>}
       <form onSubmit={createMember} className="mt-6 grid gap-4 sm:grid-cols-2">
         <label className="grid gap-1 text-sm font-semibold">E-mail da pessoa
           <input type="email" required maxLength={200} autoComplete="off" value={newEmail} onChange={event=>setNewEmail(event.target.value)} className="min-h-11 min-w-0 rounded border border-black/40 bg-white px-3 font-normal"/>

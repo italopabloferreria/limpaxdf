@@ -10,6 +10,8 @@ Concluir o login Google/Supabase isolado, validar login/logout e perfil ausente;
 
 Complemento confirmado em 28/09/2026: Ítalo é o único superadministrador, com exclusividade para criar/promover administradores; administradores comuns cadastram atendentes. A API Sites/D1 e `/crm/perfil` aplicam essa hierarquia. A política equivalente e o perfil do proprietário já foram aplicados no Supabase; a gestão de contas Supabase pela UI continua desativada até a matriz de testes e o desenho de provisionamento.
 
+Incremento aplicado em 28/09/2026: o proprietário pediu que somente e-mails previamente aprovados possam entrar pelo Google e autorizou especificamente a migração, probe sintético e ativação do hook. `crm_google_approvals` usa RLS por papel; `Before User Created` bloqueia não aprovados; trigger vincula o novo UUID Auth ao perfil; papel e atividade sincronizam; o callback mostra “Usuário não registrado” para sessão sem perfil. A UI de aprovação fica na homologação e a flag `SUPABASE_GOOGLE_APPROVALS_ENABLED=true` foi ligada só na `.env.local`. O CRM D1 continua operacional. O login Google de Ítalo mostrou Superadministrador e lista de aprovações vazia após a ativação. Ver `docs/supabase/GOOGLE_APPROVED_ACCESS_RUNBOOK.md` para preflight, teste, limitações e rollback.
+
 D1/R2, APIs em uso, migrações existentes, fontes de mídia e histórico relevante são preservados. Não há deploy, importação real, alteração de DNS ou remoção da cópia alternativa nesta etapa.
 
 ## Resultado
@@ -26,4 +28,4 @@ A hierarquia D1 foi implementada localmente: `CRM_SUPER_ADMIN_EMAIL` em `.env.lo
 
 ## Bloqueios externos e futuro
 
-Próximo: desenhar e testar provisionamento de Auth/perfis pela interface sob guardas de servidor, com papéis dos demais usuários de homologação [VALIDAR] e lote de leads 100% sintético. A validação remota de outros papéis e Storage depende de identidades de teste autorizadas. G13 depende de migrações, backup/restauração, configuração e desempenho remotos. Importador, comercial, documentos, agenda/OS, frota, financeiro e fiscal são fases futuras em `docs/ROADMAP.md`.
+Próximo: validar no navegador, com identidades de teste autorizadas, o primeiro login aprovado e a recusa de um e-mail não aprovado; acrescentar a matriz completa admin comum/atendente/inativo, lead sintético positivo e Storage privado. No modo de testes Google, a identidade aprovada precisa estar também na audiência de testes do Google Cloud. Não criar ou convidar pessoas reais sem autorização específica. G13 depende de migrações, backup/restauração, configuração e desempenho remotos. Importador, comercial, documentos, agenda/OS, frota, financeiro e fiscal são fases futuras em `docs/ROADMAP.md`.
