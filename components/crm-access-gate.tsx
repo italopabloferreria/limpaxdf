@@ -1,10 +1,12 @@
 import {chatGPTSignInPath} from "@/app/chatgpt-auth";
 
-export function CrmAccessGate({status, returnTo}: {
+export function CrmAccessGate({status, returnTo, previewReadEnabled=false}: {
   status: 401 | 403 | 503;
   returnTo: string;
+  previewReadEnabled?: boolean;
 }) {
   if (process.env.LIMPAX_DEPLOYMENT_TARGET === "vercel-preview") {
+    if(previewReadEnabled)return <main id="conteudo" className="crm-gate"><p className="eyebrow">LIMPAX / CRM</p><h1>Acesso da equipe.</h1><p>Entre com uma conta Google cadastrada para consultar o CRM. Se a conta não estiver aprovada ou estiver desativada, a página de acesso mostrará o motivo.</p><a className="button" href="/supabase/homologacao">Verificar meu acesso</a></main>;
     return <main id="conteudo" className="crm-gate"><p className="eyebrow">LIMPAX / CRM</p><h1>CRM em preparação</h1><p>Esta prévia permite revisar o site. O acesso ao CRM será habilitado quando a migração de autenticação e dados estiver concluída.</p><a className="button" href="/supabase/homologacao">Testar acesso com Google</a></main>;
   }
   const title = status === 401 ? "Acesso da equipe." : status === 403 ? "CRM protegido." : "CRM temporariamente indisponível.";

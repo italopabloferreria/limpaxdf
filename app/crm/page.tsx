@@ -15,7 +15,7 @@ export default async function CrmPage({searchParams}:CrmPageProps){
   const s=settings();
   if(supabaseCrmReadEnabled(s)){
     const access=await supabaseCrmPageAccess();
-    if(!access)return <CrmAccessGate status={401} returnTo="/crm"/>;
+    if(!access)return <CrmAccessGate status={401} returnTo="/crm" previewReadEnabled/>;
     const query=await searchParams;
     const requested=typeof query?.selected==="string"?query.selected:null;
     const selectedId=requested&&uuidSchema.safeParse(requested).success?requested:null;

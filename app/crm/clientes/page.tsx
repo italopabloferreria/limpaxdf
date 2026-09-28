@@ -16,7 +16,7 @@ export default async function CustomersPage({searchParams}:CustomersPageProps){
   const s=settings();
   if(supabaseCrmReadEnabled(s)){
     const access=await supabaseCrmPageAccess();
-    if(!access)return <CrmAccessGate status={401} returnTo="/crm/clientes"/>;
+    if(!access)return <CrmAccessGate status={401} returnTo="/crm/clientes" previewReadEnabled/>;
     const {customers,total}=await listSupabaseCustomers(access.client);
     const query=await searchParams;
     const requested=typeof query?.selected==="string"?query.selected:null;
