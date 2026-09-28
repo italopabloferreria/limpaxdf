@@ -9,13 +9,13 @@ O projeto `lkamarbpjqlibxlmcico` existe em São Paulo. A baseline em `supabase/m
 - `EXECUTION_PLAN.md`: sequencia operacional para criar projeto, testar Auth Google, migrar dados sinteticos, validar backup/exportacao e planejar cutover.
 - `AUTH_HOMOLOGATION_DESIGN.md`: fluxo Google, sessão e matriz de permissão.
 - `BOUND_USER_RLS_RUNBOOK.md`: aplicação e evidência da migração incremental que exige vínculo de perfil pelo UUID.
-- `RLS_NEGATIVE_PROBE.sql`: teste transacional preparado para provar a negação de um lead sintético sem perfil; depende de autorização específica para execução remota.
-- `../../supabase/migrations/20260928050106_restrict_crm_admin_management.sql`: migração incremental local da hierarquia de gestão; ainda não aplicada remotamente nem habilita escrita via Data API.
-- `SUPER_ADMIN_BOOTSTRAP.sql`: operação administrativa permanente preparada para vincular a única conta superadministradora após a migration; ainda não executada.
+- `RLS_NEGATIVE_PROBE.sql`: teste transacional executado em 28/09/2026; o lead sintético foi negado ao papel autenticado sem perfil e removido por `ROLLBACK`.
+- `../../supabase/migrations/20260928050106_restrict_crm_admin_management.sql`: hierarquia aplicada em 28/09/2026; não habilita escrita via Data API.
+- `SUPER_ADMIN_BOOTSTRAP.sql`: bootstrap executado em 28/09/2026 para vincular a única conta superadministradora ao UUID Auth.
 - `AUTH_RLS_READINESS.sql`: consultas de revisão; não é uma nova migration.
 - `../AI_HANDOFF.md` e `../CURRENT_TASK.md`: estado e tarefa atuais.
 
-`/supabase/homologacao` contém o fluxo local isolado. Em 25/09/2026, Google OAuth ficou em modo de testes no projeto `limpax-c54d6`, com o callback do Supabase e o retorno local cadastrados. O provedor Google está ativo no projeto Supabase; a conta do proprietário consta como usuária de teste. A flag local `SUPABASE_GOOGLE_ENABLED=true` habilita o botão. No navegador, login real retornou `no_profile` e logout voltou a `signed_out`, inclusive após recarregar. A matriz completa de perfis/RLS ainda não passou; manter `SUPABASE_DATA_MODE=disabled`.
+`/supabase/homologacao` contém o fluxo local isolado. Em 25/09/2026, Google OAuth ficou em modo de testes no projeto `limpax-c54d6`, com callbacks cadastrados. O provedor Google está ativo; a conta do proprietário consta como usuária de teste. Em 28/09/2026, o teste negativo de RLS passou com `ROLLBACK`, a hierarquia foi aplicada e o único perfil superadministrador foi vinculado ao UUID Auth. O navegador mostrou `Papel: Superadministrador` após login Google real e recarga. Os testes de atendente/admin comum, Storage e leads sintéticos positivos seguem pendentes; manter `SUPABASE_DATA_MODE=disabled`.
 
 ## Fontes oficiais consultadas
 

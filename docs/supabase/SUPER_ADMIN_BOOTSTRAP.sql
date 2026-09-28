@@ -1,5 +1,6 @@
 -- S01: bootstrap permanente do único superadministrador Supabase.
--- NÃO executar sem confirmação na hora da ação. Projeto lkamarbpjqlibxlmcico.
+-- Executado em 28/09/2026 com confirmação específica no projeto
+-- lkamarbpjqlibxlmcico. NÃO executar novamente.
 -- Pré-requisito: aplicar e verificar a migration
 -- 20260928050106_restrict_crm_admin_management.sql.
 -- Isto concede acesso administrativo ao CRM de homologação à conta indicada.

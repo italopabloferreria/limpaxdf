@@ -37,7 +37,7 @@ export function HomologationSignIn({url,publishableKey,googleEnabled=false}:{url
   }
   return <section className="space-y-4 rounded-xl border p-6" aria-live="polite">
     <p>{state?labels[state.status]:"Verificando sessão…"}</p>
-    {state?.role&&<p>Papel: {state.role==="admin"?"Administrador":"Atendente"}</p>}
+    {state?.role&&<p>Papel: {state.role==="super_admin"?"Superadministrador":state.role==="admin"?"Administrador":"Atendente"}</p>}
     {error&&<p role="alert">{error}</p>}
     {!googleEnabled&&<p>O login Google está aguardando a conclusão da configuração. Tente novamente após a ativação.</p>}
     {state?.status==="signed_out"&&<button type="button" disabled={busy||!googleEnabled} onClick={signIn} className="rounded-lg bg-black px-4 py-2 text-white focus-visible:outline-2 disabled:opacity-50">Entrar com Google</button>}

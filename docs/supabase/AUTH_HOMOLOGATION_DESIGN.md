@@ -1,6 +1,6 @@
 # Autenticação Supabase para homologação do CRM
 
-Estado em 25/09/2026: Google OAuth/Supabase Auth foi configurado em modo de testes. O login real e o logout passaram no navegador; a conta autenticada retornou `no_profile`, sem acesso CRM. Nenhum perfil CRM ou fixture foi criado nesta etapa. O CRM publicado usa a identidade atual do Sites e perfis D1; D1/R2 continuam sendo a fonte operacional. Este desenho estabelece como validar Auth e RLS antes de ativar qualquer leitura Supabase.
+Estado em 28/09/2026: Google OAuth/Supabase Auth está em modo de testes. O teste transitório negou ao usuário sem perfil a leitura de um lead sintético e terminou em `ROLLBACK`. A migração de hierarquia e o bootstrap do único superadministrador foram aplicados no projeto de homologação; o login Google real mostrou esse papel após recarga. O CRM publicado usa a identidade atual do Sites e perfis D1; D1/R2 continuam sendo a fonte operacional. A matriz completa de RLS e Storage ainda antecede qualquer leitura Supabase operacional.
 
 ## Escolha de implementação
 
@@ -19,12 +19,11 @@ Até o corte aprovado, preservar a autenticação Sites nas rotas operacionais D
 
 ## Bootstrap administrativo
 
-Regra definida pelo proprietário em 28/09/2026: Ítalo é o único superadministrador; só ele pode criar ou promover administradores. Administradores comuns podem cadastrar atendentes, mas não administradores nem alterar o superadministrador. A confirmação fina dessa matriz foi solicitada ao proprietário. O superadministrador terá `is_super_admin=true` em seu perfil administrativo, com índice que permite apenas um, perfil ativo como `admin` e `user_id` vinculado ao UUID real de `auth.users`. Nenhum cliente autenticado receberá grant para alterar essa coluna. Não derivar esse privilégio apenas de e-mail, `user_metadata` ou da sessão do Dashboard. Registrar quem fez cada vínculo e testar alteração de papel, desativação e proteção do proprietário antes de automatizar gestão Supabase pela UI. Os demais usuários de homologação ainda estão [VALIDAR].
+Regra confirmada pelo proprietário em 28/09/2026: Ítalo é o único superadministrador; só ele pode criar ou promover administradores. Administradores comuns podem cadastrar atendentes, mas não administradores nem alterar o superadministrador. O perfil `admin` ativo tem `is_super_admin=true` e `user_id` ligado ao UUID real de `auth.users`; um índice permite apenas um. Clientes autenticados têm apenas `SELECT` nessa tabela, sem grant para alterar a coluna. Não derivar esse privilégio apenas de e-mail, `user_metadata` ou da sessão do Dashboard. Registrar quem fez cada vínculo e testar alteração de papel, desativação e proteção do proprietário antes de automatizar gestão Supabase pela UI. Os demais usuários de homologação ainda estão [VALIDAR].
 
-A migração local `supabase/migrations/20260928050106_restrict_crm_admin_management.sql` prepara a coluna protegida de superadministrador e restringe as policies de escrita de perfis. Ela **não foi aplicada remotamente** e não cria perfil nem concede privilégios de escrita à Data API. A interface operacional `/crm/perfil` usa, por enquanto, a identidade Sites/D1 e uma configuração local controlada; não cria contas Supabase Auth.
-O bootstrap permanente está preparado em `docs/supabase/SUPER_ADMIN_BOOTSTRAP.sql`; depende da migration aplicada, identidade verificada e confirmação na hora da concessão. Deve ocorrer depois do teste negativo com 0 perfis. Sem bootstrap, login Google continua `no_profile`.
+A migração `supabase/migrations/20260928050106_restrict_crm_admin_management.sql` foi aplicada remotamente em transação única, após o teste negativo com 0 perfis. A auditoria confirmou coluna, índice, função, três policies e apenas `SELECT` para `authenticated`. O bootstrap `docs/supabase/SUPER_ADMIN_BOOTSTRAP.sql` criou um perfil único vinculado ao UUID verificado; não criou outro usuário Auth. A interface operacional `/crm/perfil` ainda usa a identidade Sites/D1 e uma configuração local controlada; não cria contas Supabase Auth.
 
-A baseline permitia correspondência de perfil por e-mail nas funções `is_crm_member` e `is_crm_admin` e na leitura de perfis. A migração incremental `supabase/migrations/20260925135006_require_bound_crm_user_id.sql` foi aplicada via SQL Editor em 25/09/2026 após autorização específica; agora exige `user_id = auth.uid()` para perfis ativos. O SQL remoto confirmou a remoção do fallback e o navegador continuou mostrando `no_profile` para a conta sem perfil. A matriz de RLS com perfis e fixtures sintéticas ainda precisa de testes separados antes de ativar o adapter.
+A baseline permitia correspondência de perfil por e-mail nas funções `is_crm_member` e `is_crm_admin` e na leitura de perfis. A migração incremental `supabase/migrations/20260925135006_require_bound_crm_user_id.sql` foi aplicada via SQL Editor em 25/09/2026 após autorização específica; agora exige `user_id = auth.uid()` para perfis ativos. O teste negativo transitório e a leitura positiva do próprio perfil com login real passaram. A matriz de RLS para outros papéis e fixtures sintéticas ainda precisa de testes separados antes de ativar o adapter.
 
 ## Matriz mínima de aceite
 
@@ -55,9 +54,9 @@ RLS deve ser testada com usuário sem perfil e usuário inativo, incluindo leitu
 - QA: testes sintéticos de callback, redirecionamento, perfil ausente/inativo, refresh, logout, RLS de usuário sem perfil e matriz de papéis.
 - Migração incremental: somente se a revisão das policies ou do vínculo exigir mudança de schema; nunca alterar a baseline aplicada.
 
-## Configuração externa necessária antes de executar OAuth
+## Configuração externa pendente
 
-Confirmar domínio/origin de homologação, redirect URLs do Supabase, projeto Google Cloud da empresa, consent screen e client ID/secret Google [VALIDAR]. Definir os endereços e a titularidade dos três usuários de teste [VALIDAR]. Criar perfis e fixtures sintéticas em lote identificado apenas após preparação e autorização específicas para essas operações remotas. Não usar dados reais nesta validação.
+O origin `http://localhost:5173`, os callbacks, o projeto Google Cloud e o cliente OAuth de testes foram configurados e usados com sucesso. Para ampliar a matriz, definir os endereços e a titularidade dos demais usuários de teste [VALIDAR]. Criar seus perfis e fixtures sintéticas em lote identificado apenas após preparação e autorização específicas para essas operações remotas. Não usar dados reais nesta validação.
 
 ## Critério de passagem
 

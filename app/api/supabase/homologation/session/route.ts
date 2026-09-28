@@ -12,11 +12,15 @@ export async function GET(req:NextRequest){
   let role:string|null=null;
   let profileUnavailable=false;
   if(!error&&data.user){
-    const profile=await session.client.from("crm_user_profiles").select("user_id,role,active").eq("user_id",data.user.id).maybeSingle();
+    const profile=await session.client.from("crm_user_profiles").select("user_id,role,active,is_super_admin").eq("user_id",data.user.id).maybeSingle();
     if(profile.error)profileUnavailable=true;
     else if(!profile.data)status="no_profile";
     else if(!profile.data.active)status="inactive";
-    else if(["admin","attendant"].includes(profile.data.role)){status="authorized";role=profile.data.role}
+    else if(profile.data.is_super_admin&&profile.data.role!=="admin")status="no_profile";
+    else if(["admin","attendant"].includes(profile.data.role)){
+      status="authorized";
+      role=profile.data.is_super_admin?"super_admin":profile.data.role;
+    }
     else status="no_profile";
   }
   const response=profileUnavailable

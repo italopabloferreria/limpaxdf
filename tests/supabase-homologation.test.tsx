@@ -30,6 +30,12 @@ test('session requires its own active profile and known role',async()=>{
   assert.equal(await sessionStatus(request),'no_profile');
   authFixture.profile={active:true,role:'attendant'};
   assert.deepEqual(await (await GET(request)).json(),{status:'authorized',role:'attendant'});
+  authFixture.profile={active:true,role:'admin',is_super_admin:false};
+  assert.deepEqual(await (await GET(request)).json(),{status:'authorized',role:'admin'});
+  authFixture.profile={active:true,role:'admin',is_super_admin:true};
+  assert.deepEqual(await (await GET(request)).json(),{status:'authorized',role:'super_admin'});
+  authFixture.profile={active:true,role:'attendant',is_super_admin:true};
+  assert.equal(await sessionStatus(request),'no_profile');
   assert.equal(authFixture.queriedUser,'synthetic-user');
 });
 test('profile failure preserves refresh cookies and forbids caching',async()=>{

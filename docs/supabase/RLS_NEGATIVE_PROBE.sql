@@ -1,4 +1,5 @@
--- S01: teste transitório de negação RLS. NÃO executar sem autorização específica.
+-- S01: teste transitório de negação RLS. Executado em 28/09/2026.
+-- NÃO executar novamente sem autorização específica e novo preflight.
 -- Projeto: lkamarbpjqlibxlmcico. Executar o arquivo inteiro no SQL Editor.
 -- Pré-condições: exatamente um auth.users, nenhum perfil CRM e nenhum lead.
 -- A transação insere um lead 100% sintético e o remove com ROLLBACK.

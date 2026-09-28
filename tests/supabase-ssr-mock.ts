@@ -1,7 +1,7 @@
 export function createBrowserClient(){throw new Error('OAuth is not executed by the SSR unit tests')}
 export const authFixture={
   userId:null as string|null,
-  profile:null as {active:boolean;role:string}|null,
+  profile:null as {active:boolean;role:string;is_super_admin?:boolean}|null,
   profileError:false,
   logoutError:false,
   logoutCalls:0,
