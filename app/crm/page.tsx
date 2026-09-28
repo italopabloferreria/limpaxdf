@@ -8,7 +8,7 @@ import {uuidSchema} from "@/lib/validation";
 
 export const dynamic="force-dynamic";
 type CrmPageProps={searchParams?:Promise<{selected?:string|string[]}>};
-export default async function CrmPage({searchParams}:CrmPageProps={}){
+export default async function CrmPage({searchParams}:CrmPageProps){
   const access=await crmPageAccess();
   if(!access.actor)return <CrmAccessGate status={access.status} returnTo="/crm"/>;
   const query=await searchParams;

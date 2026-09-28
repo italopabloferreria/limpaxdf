@@ -2,6 +2,9 @@ import {NextResponse,type NextRequest} from "next/server";
 import {settings} from "./lib/config";
 
 export function proxy(req:NextRequest){
+  if(process.env.LIMPAX_DEPLOYMENT_TARGET==="vercel-preview"&&/^\/api\/(?:crm(?:\/|$)|check(?:\/|$)|uploads(?:\/|$)|events(?:\/|$))/.test(req.nextUrl.pathname)){
+    return NextResponse.json({error:"Operação indisponível nesta prévia."},{status:503,headers:{"Cache-Control":"no-store"}});
+  }
   let connectSrc="'self'";
   if(req.nextUrl.pathname==="/supabase/homologacao"){
     const s=settings();

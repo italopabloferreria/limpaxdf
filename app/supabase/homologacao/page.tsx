@@ -7,7 +7,7 @@ export const dynamic="force-dynamic";
 
 type HomologationPageProps={searchParams?:Promise<{status?:string|string[]}>};
 
-export default async function HomologationPage({searchParams}:HomologationPageProps={}){
+export default async function HomologationPage({searchParams}:HomologationPageProps){
   const s=settings();
   const config=getSupabaseConfig(s);
   const query=await searchParams;
