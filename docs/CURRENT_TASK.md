@@ -1,5 +1,7 @@
 # Tarefa ativa — CRM funcional com Supabase Auth/RLS na Vercel
 
+Retomada de 29/09: o proprietário decidiu continuar o CRM próprio. A rota de criação/edição de cliente passou 5/5 testes diretos de autorização, validação, criação e conflito; TypeScript, lint, build Vinext e build Next/Vercel exato passaram, assim como adaptador 9/9, sessão 7/7 e acesso 18/18. Isso verifica somente o código da API: falta executar a função SQL em transação com `ROLLBACK`, aplicar migração após autorização específica, publicar os commits locais após autorização de envio ao repositório público, ativar `write_preview` somente em Preview e validar cliente persistente com login/logout no navegador. Nenhuma dessas ações remotas ocorreu nesta retomada. G13 continua aberto.
+
 29/09, escrita de cliente preparada somente no código: formulário de revisão, rota protegida e `20260929042443_crm_preview_customer_write.sql` atômica/auditada. Build Vercel, TypeScript, lint, adaptador 9/9, sessão 7/7 e acesso 18/18 passaram. A migração nova não foi aplicada e `SUPABASE_DATA_MODE=disabled` continua na Vercel; nenhum cliente real ou fictício foi persistido remotamente. Próximo gate: validar a função em transação com `ROLLBACK`, obter autorização específica para aplicação remota, testar no navegador o fluxo completo do proprietário e recusa de acesso antes de ligar `write_preview` apenas em Preview. D1/R2 intactos; G13 aberto.
 
 ## Correção de execução — 29/09/2026

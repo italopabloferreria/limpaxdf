@@ -23,7 +23,8 @@
     "qa:remote-evidence": "node scripts/remote-evidence-check.mjs",
     "qa:remote-checks": "node --test scripts/test-remote-g13-checks.mjs",
     "qa:supabase-local": "node scripts/check-supabase-local.mjs",
-    "qa:supabase-session": "node scripts/test-supabase-homologation.mjs"
+    "qa:supabase-session": "node scripts/test-supabase-homologation.mjs",
+    "qa:supabase-customer-write": "node scripts/test-supabase-customer-write.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",
