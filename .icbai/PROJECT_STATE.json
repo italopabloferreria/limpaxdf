@@ -4,15 +4,17 @@
   "status": "active",
   "mode": "supabase-auth-rls-homologation",
   "crm_read_grant_2026_09_29": {
-    "status": "preflight_passed_awaiting_browser_action_confirmation",
+    "status": "applied_verified_pending_second_real_jwt",
     "preflight": "4 tables RLS enabled; anon SELECT false; authenticated SELECT only on leads; customer member SELECT policies true; operational row counts 0/0/0/0",
-    "grant": "SQL prepared in Supabase Editor but not executed; Preview SUPABASE_DATA_MODE remains disabled"
+    "grant": "SELECT applied in Supabase SQL Editor to authenticated on customers, customer_contacts, service_locations; postflight all four tables RLS true, anon read false, authenticated read true/write false",
+    "probes": "Anonymous Data API 42501; transactional synthetic owner claim reads all 3 customer rows and unprofiled claim reads none; ROLLBACK restored 0 rows; owner Google session/profile verified on hosted Preview",
+    "remaining_gate": "Second real Google JWT for unprofiled/inactive denial is not available; Preview SUPABASE_DATA_MODE remains disabled; G13 open"
   },
   "crm_preview_increment_2026_09_28": {
-    "status": "preview_profile_verified_pending_remote_read_grants",
+    "status": "preview_profile_verified_read_grants_applied",
     "scope": "Supabase read-only customer/lead search and pagination; Google-approved team management in protected CRM profile",
     "checks": "adapter 9/9, CRM access 18/18, Supabase session 7/7, TypeScript, lint, Vercel Next build",
-    "remote_state": "Vercel Preview 1b76717 Ready and owner profile verified in browser; SUPABASE_DATA_MODE remains disabled; customer SELECT grants prepared but not applied; G13 remains open"
+    "remote_state": "Vercel Preview owner profile verified in browser; customer SELECT grants applied and audited; SUPABASE_DATA_MODE remains disabled pending second real JWT; G13 remains open"
   },
   "phases": {
     "intake": {

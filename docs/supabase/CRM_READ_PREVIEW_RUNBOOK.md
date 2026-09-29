@@ -1,5 +1,7 @@
 # Consulta protegida do CRM na prévia Vercel
 
+Atualização de 29/09/2026: o grant `20260928210000_crm_preview_read_grants.sql` foi aplicado no SQL Editor após confirmação do proprietário. Postflight confirmou RLS nas quatro tabelas, `anon` sem SELECT, `authenticated` com SELECT e sem escrita nas quatro; 0 dados operacionais e 1 superadministrador ativo vinculado. O Data API anônimo retornou `42501`. `CRM_READ_RLS_PROBE.sql` passou com claim simulada de proprietário e negação sem perfil, terminando em `ROLLBACK` e 0 registros. Não substitui a matriz com JWT Google real de outra identidade. A Vercel Preview continua `SUPABASE_DATA_MODE=disabled`; não repetir o grant nem executar `db push` para reconciliar histórico da CLI.
+
 Escopo: habilitar somente leitura de atendimentos e clientes com Google/Supabase na branch `codex/vercel-preview`. Não habilita escrita, importação, captação ou produção. D1/R2 continuam intactos.
 
 ## Preflight observado em 28/09/2026
@@ -12,9 +14,9 @@ Escopo: habilitar somente leitura de atendimentos e clientes com Google/Supabase
 
 ## Aplicação controlada
 
-1. Após autorização específica do proprietário, aplicar `supabase/migrations/20260928210000_crm_preview_read_grants.sql` no SQL Editor como uma transação. Não usar `db push`: o histórico da CLI ainda não foi reconciliado com as migrações já aplicadas pelo SQL Editor.
-2. Conferir novamente `has_table_privilege` e RLS: `authenticated` deve ter somente SELECT nas quatro tabelas; `anon` deve continuar sem SELECT. Confirmar contagens e ausência de alteração de dados.
-3. Fazer prova de JWT real: proprietário lê listas vazias; sessão sem perfil ou inativa não lê. A prova SQL com `SET ROLE` anterior não substitui essa matriz. Antes de cadastrar qualquer outra pessoa, obter autorização para o cadastro e inclusão na audiência de teste Google.
+1. **Concluído em 29/09:** após confirmação específica, `supabase/migrations/20260928210000_crm_preview_read_grants.sql` foi aplicada no SQL Editor como uma transação. Não usar `db push`: o histórico da CLI ainda não foi reconciliado.
+2. **Concluído em 29/09:** `has_table_privilege` e RLS auditados: `authenticated` tem somente SELECT nas quatro tabelas; `anon` continua sem SELECT. Contagens operacionais 0/0/0/0, sem alteração de dados.
+3. **Parcial:** claim simulada do proprietário leu as três linhas sintéticas e claim sem perfil não leu; `ROLLBACK` confirmado. Ainda falta prova de JWT real com outra identidade sem perfil/inativa e leitura das listas pelo proprietário. A prova SQL com `SET ROLE` não substitui essa matriz. Antes de cadastrar qualquer outra pessoa, obter autorização para o cadastro e inclusão na audiência de teste Google.
 4. Só depois, definir `SUPABASE_DATA_MODE=read_only` **apenas** no ambiente Preview do projeto Vercel `limpaxdf` e gerar nova prévia. Confirmar `/crm`, `/crm/clientes`, ausência de escrita nos `/api/crm/*` e status de login/logout. Production e `main` permanecem fora do escopo.
 
 ## Reversão
