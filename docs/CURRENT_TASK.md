@@ -1,5 +1,7 @@
 # Tarefa ativa — CRM funcional com Supabase Auth/RLS na Vercel
 
+29/09, escrita de cliente preparada somente no código: formulário de revisão, rota protegida e `20260929042443_crm_preview_customer_write.sql` atômica/auditada. Build Vercel, TypeScript, lint, adaptador 9/9, sessão 7/7 e acesso 18/18 passaram. A migração nova não foi aplicada e `SUPABASE_DATA_MODE=disabled` continua na Vercel; nenhum cliente real ou fictício foi persistido remotamente. Próximo gate: validar a função em transação com `ROLLBACK`, obter autorização específica para aplicação remota, testar no navegador o fluxo completo do proprietário e recusa de acesso antes de ligar `write_preview` apenas em Preview. D1/R2 intactos; G13 aberto.
+
 ## Correção de execução — 29/09/2026
 
 O proprietário apontou que duas semanas de trabalho ainda não produziram um CRM utilizável na Vercel. A medida de progresso passa a ser um fluxo completo, visível e persistente, não quantidade de migrações, documentos ou testes isolados. O primeiro resultado a entregar é: Ítalo entra com Google, abre `/crm/clientes`, cadastra um cliente fictício, reencontra-o após recarregar, edita-o e encerra a sessão; um usuário não aprovado não acessa os dados. Depois, repetir o fluxo para atendimentos. Não iniciar módulos do roadmap enquanto esses fluxos não estiverem usáveis.

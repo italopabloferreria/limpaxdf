@@ -4,6 +4,12 @@
   "status": "active",
   "mode": "supabase-auth-rls-homologation",
   "delivery_focus_2026_09_29": "First complete hosted customer flow: owner Google login, synthetic customer create/read/update across reload, logout and denied unapproved access; then hosted lead flow. Current hosted writes blocked and data mode disabled. Do not count infrastructure-only checks as CRM delivery.",
+  "customer_write_preview_2026_09_29": {
+    "status": "local_code_prepared_not_remotely_applied",
+    "scope": "Owner-only review customer create/update form, same-origin server route and atomic audited SQL function with idempotent create and optimistic update",
+    "checks": "Next Vercel build, TypeScript, lint, Supabase adapter 9/9, session 7/7, CRM access 18/18 passed; SQL and hosted browser flow not yet executed",
+    "remote_state": "New migration not applied; Vercel SUPABASE_DATA_MODE remains disabled; D1/R2 untouched; G13 open"
+  },
   "crm_read_grant_2026_09_29": {
     "status": "applied_verified_pending_second_real_jwt",
     "preflight": "4 tables RLS enabled; anon SELECT false; authenticated SELECT only on leads; customer member SELECT policies true; operational row counts 0/0/0/0",
@@ -233,7 +239,7 @@
   ],
   "accepted_risks": [],
   "last_updated": "2026-09-28",
-  "next_action": "CRM-only scope. Hosted Vercel Preview owner Google login passed as Superadministrador. Supabase-backed /crm and /crm/clientes read-only code and incremental customer SELECT grant are prepared, but SUPABASE_DATA_MODE remains disabled. Obtain specific approval to apply the grant, validate JWT/RLS matrix, then enable read_only only in Preview. Continue CRM write persistence, storage, reversible data migration and recovery before operational release. D1/R2 intact; G13 open.",
+  "next_action": "CRM-only scope. Customer review write code and atomic SQL are prepared locally. Verify new SQL in an isolated transaction, obtain specific authorization before remote application, then test owner Google create/read/update/reload/logout and denied access in Vercel Preview. SUPABASE_DATA_MODE remains disabled; D1/R2 intact; G13 open.",
   "baseline": {
     "head": "15149f1",
     "working_tree": "Canonical path confirmed C:/Users/italo/Programação/Limpax; existing baseline SQL and documentation changes preserved. Alternate 01_PROJETOS/LIMPAX is clean at 1bf9702, 14 commits behind.",

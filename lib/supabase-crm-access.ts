@@ -10,9 +10,13 @@ export type SupabaseCrmPageAccess={client:SupabaseClient;actor:SupabaseCrmActor}
 
 export function supabaseCrmReadEnabled(s:Settings){
   return process.env.LIMPAX_DEPLOYMENT_TARGET==="vercel-preview"
-    &&s.SUPABASE_DATA_MODE==="read_only"
+    &&["read_only","write_preview"].includes(s.SUPABASE_DATA_MODE||"")
     &&Boolean(homologationOrigin(s))
     &&Boolean(getSupabaseConfig(s));
+}
+
+export function supabaseCrmWriteEnabled(s:Settings){
+  return supabaseCrmReadEnabled(s)&&s.SUPABASE_DATA_MODE==="write_preview";
 }
 
 export function supabaseCrmProfileEnabled(s:Settings){
@@ -22,9 +26,9 @@ export function supabaseCrmProfileEnabled(s:Settings){
     &&Boolean(getSupabaseConfig(s));
 }
 
-export async function supabaseCrmPageAccess(mode:"read"|"profile"="read"):Promise<SupabaseCrmPageAccess>{
+export async function supabaseCrmPageAccess(mode:"read"|"profile"|"write"="read"):Promise<SupabaseCrmPageAccess>{
   const s=settings();
-  if(mode==="profile"?!supabaseCrmProfileEnabled(s):!supabaseCrmReadEnabled(s))return null;
+  if(mode==="profile"?!supabaseCrmProfileEnabled(s):mode==="write"?!supabaseCrmWriteEnabled(s):!supabaseCrmReadEnabled(s))return null;
   const config=getSupabaseConfig(s);
   if(!config)return null;
   const cookieStore=await cookies();

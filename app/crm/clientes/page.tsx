@@ -5,7 +5,7 @@ import {listCustomers} from "@/lib/crm-customers";
 import {CustomerWorkspace} from "@/components/customer-workspace";
 import {CrmAccessGate} from "@/components/crm-access-gate";
 import {crmPageAccess} from "@/lib/crm-page-access";
-import {supabaseCrmPageAccess,supabaseCrmReadEnabled} from "@/lib/supabase-crm-access";
+import {supabaseCrmPageAccess,supabaseCrmReadEnabled,supabaseCrmWriteEnabled} from "@/lib/supabase-crm-access";
 import {getSupabaseCustomerDetail,listSupabaseCustomers} from "@/lib/supabase-crm-customers";
 import {SupabaseCustomersReadonly} from "@/components/supabase-customers-readonly";
 import {uuidSchema} from "@/lib/validation";
@@ -26,7 +26,7 @@ export default async function CustomersPage({searchParams}:CustomersPageProps){
     const selectedId=requested&&uuidSchema.safeParse(requested).success?requested:null;
     const selected=customers.find(item=>item.id===selectedId)||customers[0]||null;
     const detail=selected?await getSupabaseCustomerDetail(access.client,selected.id):null;
-    return <SupabaseCustomersReadonly actor={access.actor} customers={customers} total={total} page={currentPage} pages={pages} search={search} selected={selected} detail={detail}/>;
+    return <SupabaseCustomersReadonly actor={access.actor} customers={customers} total={total} page={currentPage} pages={pages} search={search} selected={selected} detail={detail} writeEnabled={supabaseCrmWriteEnabled(s)&&access.actor.isSuperAdmin}/>;
   }
   const access=await crmPageAccess();
   if(!access.actor)return <CrmAccessGate status={access.status} returnTo="/crm/clientes"/>;
