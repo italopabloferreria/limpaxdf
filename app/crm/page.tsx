@@ -5,7 +5,7 @@ import {CrmAccessGate} from "@/components/crm-access-gate";
 import {listCrmLeads} from "@/lib/crm-data";
 import {listCrmLeadsFromSupabase,type SupabaseLeadReadClient} from "@/lib/crm-data";
 import {crmPageAccess} from "@/lib/crm-page-access";
-import {supabaseCrmPageAccess,supabaseCrmReadEnabled} from "@/lib/supabase-crm-access";
+import {supabaseCrmPageAccess,supabaseCrmReadEnabled,supabaseCrmWriteEnabled} from "@/lib/supabase-crm-access";
 import {SupabaseCrmReadonly} from "@/components/supabase-crm-readonly";
 import {uuidSchema} from "@/lib/validation";
 import {crmStatuses} from "@/lib/crm-shared";
@@ -25,7 +25,7 @@ export default async function CrmPage({searchParams}:CrmPageProps){
     const requested=typeof query?.selected==="string"?query.selected:null;
     const selectedId=requested&&uuidSchema.safeParse(requested).success?requested:null;
     const listing=await listCrmLeadsFromSupabase(access.client as unknown as SupabaseLeadReadClient,{page,pageSize:50,search,status});
-    return <SupabaseCrmReadonly listing={listing} actor={access.actor} selectedId={selectedId} search={search} status={status}/>;
+    return <SupabaseCrmReadonly listing={listing} actor={access.actor} selectedId={selectedId} search={search} status={status} writeEnabled={supabaseCrmWriteEnabled(s)&&access.actor.isSuperAdmin}/>;
   }
   const access=await crmPageAccess();
   if(!access.actor)return <CrmAccessGate status={access.status} returnTo="/crm"/>;
