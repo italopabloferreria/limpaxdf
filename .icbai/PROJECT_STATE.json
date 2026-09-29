@@ -3,6 +3,11 @@
   "current_phase": "verification",
   "status": "active",
   "mode": "supabase-auth-rls-homologation",
+  "crm_read_grant_2026_09_29": {
+    "status": "preflight_passed_awaiting_browser_action_confirmation",
+    "preflight": "4 tables RLS enabled; anon SELECT false; authenticated SELECT only on leads; customer member SELECT policies true; operational row counts 0/0/0/0",
+    "grant": "SQL prepared in Supabase Editor but not executed; Preview SUPABASE_DATA_MODE remains disabled"
+  },
   "crm_preview_increment_2026_09_28": {
     "status": "preview_profile_verified_pending_remote_read_grants",
     "scope": "Supabase read-only customer/lead search and pagination; Google-approved team management in protected CRM profile",

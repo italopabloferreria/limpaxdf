@@ -1,6 +1,8 @@
 # LIMPAX — handoff atual
 
-Atualizado em 28/09/2026. Pasta oficial: `C:/Users/italo/Programação/Limpax`.
+Atualizado em 29/09/2026. Pasta oficial: `C:/Users/italo/Programação/Limpax`.
+
+Retomada de 29/09: o proprietário disse “faça” para o próximo passo do grant de leitura. O preflight remoto no SQL Editor do projeto `lkamarbpjqlibxlmcico` confirmou RLS nas quatro tabelas, `anon` sem SELECT, `authenticated` com SELECT apenas em `leads`, as três policies de clientes por `is_crm_member()` e 0 registros em leads/clientes/contatos/locais. A transação exata de `20260928210000_crm_preview_read_grants.sql` foi colocada no editor, sem executar. A confirmação no momento do clique exigida pela política de uso do navegador está pendente. `SUPABASE_DATA_MODE=disabled`; não houve mudança remota nem ativação das listas. Depois da confirmação: executar, reauditar grants/contagens, testar a matriz JWT real e só então considerar Preview `read_only`.
 
 Incremento seguinte: a leitura Supabase de atendimentos e clientes agora aceita busca/filtro e paginação com total exato; `/crm/perfil` na Vercel Preview usa a sessão Google verificada e mostra a gestão de contas aprovadas ao superadministrador/administrador, mantendo o atendente apenas no próprio perfil. A tela de homologação aponta para o perfil. O adaptador passou 9/9, acesso CRM 18/18, sessão Supabase 7/7, TypeScript, lint e build Vercel passaram. Commit `1b76717` foi enviado à branch `codex/vercel-preview`; deployment Vercel ficou Ready, e o navegador confirmou o perfil hospedado de Ítalo como Superadministrador com a gestão de acessos. O grant remoto de SELECT para clientes/contatos/locais continua sem aplicação e `SUPABASE_DATA_MODE=disabled`; logo as listas reais seguem fechadas. A gestão de acessos já existente no Supabase não equivale à migração de dados nem libera escrita operacional. G13 permanece aberto.
 
