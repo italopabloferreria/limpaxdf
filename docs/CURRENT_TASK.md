@@ -1,6 +1,12 @@
 # Tarefa ativa — CRM funcional com Supabase Auth/RLS na Vercel
 
-## Próxima etapa executável — 29/09/2026
+## Próxima etapa executável após os fluxos hospedados — 29/09/2026
+
+Os fluxos de clientes e atendimentos fictícios do proprietário passaram na prévia Vercel. Para atendimentos, a migração SQL passou em transação com `ROLLBACK` após correção do probe de leitura da auditoria, foi aplicada e auditada no Supabase; a branch foi publicada até `23e0c8f`, deployment Preview `65pPrXrbhJjCXzJyqRoiBHSzAUCG` Ready. A sessão Google real de Ítalo criou um atendimento de revisão, encontrou-o pela busca, editou nome e situação, releu após recarga, saiu e viu o bloqueio em `/crm`. Um atendimento e um cliente fictícios permanecem para inspeção. Dados reais, D1/R2 e produção não foram alterados. G13 continua aberto.
+
+Agora validar, com identidades de teste especificamente autorizadas, recusa de login Google não aprovado e matriz de papéis superadministrador/administrador/atendente/inativo. Em seguida, planejar e testar migração reversível dos dados, Storage privado e recuperação antes de abrir G13. Não cadastrar outra pessoa real nem chamar a prévia de produção. O histórico de migrações da CLI continua sem reconciliação; não usar `db push`.
+
+## Histórico da preparação de 29/09/2026
 
 O fluxo de atendimento de revisão foi preparado e testado **localmente** no commit `f7a8ff3`: formulário, rota restrita ao proprietário e SQL incremental atômico/auditado. A prova transacional está pronta em `docs/supabase/CRM_LEAD_WRITE_PROBE.sql`, mas não foi executada remotamente. Testes da rota 5/5, adaptador 9/9, cliente 5/5, TypeScript, lint e builds Vinext/Next passaram. A migração de atendimentos não foi aplicada, o código novo não foi enviado ao GitHub e a Vercel ainda não mostra o formulário de atendimentos. Próximo passo imediato: autorização específica para probe SQL com `ROLLBACK`, aplicação da migração e publicação da prévia, seguida do teste real no navegador. Não confundir essa preparação com atendimento funcional hospedado.
 

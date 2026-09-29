@@ -1,6 +1,14 @@
 # LIMPAX — handoff atual
 
-## Estado confirmado em 29/09/2026 — prévia Vercel
+## Resultado atual em 29/09/2026 — clientes e atendimentos na prévia
+
+O incremento de atendimentos passou na prévia Vercel. A prova SQL transacional falhou inicialmente apenas ao tentar ler o log de auditoria com o papel `authenticated`, que não tem SELECT direto; o probe foi corrigido para conferir esse log com o papel do editor, sem ampliar privilégios. Na repetição, criação, repetição idempotente, edição, conflito de versão, auditoria e negação a UUID sem perfil passaram. O `ROLLBACK` deixou zero leads, zero auditorias sintéticas e nenhuma função. A migração `20260929120000_crm_preview_lead_write.sql` foi então aplicada no Supabase `lkamarbpjqlibxlmcico`. Postflight: função presente, `anon` sem EXECUTE, `authenticated` com EXECUTE, sem INSERT/UPDATE direto em `leads`, RLS ativo e zero leads de revisão antes do teste.
+
+Commits até `23e0c8f` enviados a `codex/vercel-preview`; deployment Vercel `65pPrXrbhJjCXzJyqRoiBHSzAUCG` Ready, URL estável `https://limpaxdf-git-codex-vercel-preview-italopablo01-3350s-projects.vercel.app`. No Chrome, a conta Google real de Ítalo abriu `/crm`, criou `Atendimento Fictício CRM` em modo revisão, encontrou-o pela busca, editou para `Atendimento Fictício Atualizado` com situação `Em contato` e confirmou persistência após reload. Logout mostrou ausência de sessão e `/crm` voltou à porta de acesso. O atendimento fictício permanece para inspeção. Cliente fictício da etapa anterior também permanece. São fluxos de homologação do proprietário, não liberação de produção. Nenhum dado real foi importado; D1/R2 intactos. G13 aberto.
+
+Próximo gate: login Google real não aprovado e matriz superadministrador/administrador/atendente/inativo com identidades de teste especificamente autorizadas, seguido de plano de migração reversível, Storage privado e recuperação. Logout do proprietário e JWT simulado não substituem a prova com segunda identidade real. O histórico da CLI ainda não foi reconciliado; não usar `db push`.
+
+## Histórico da preparação de 29/09/2026
 
 O próximo incremento de atendimentos já está **preparado somente localmente** no commit `f7a8ff3`: formulário de criação/edição fictícia, rota protegida por origem, sessão e superadministrador, e migração incremental `20260929120000_crm_preview_lead_write.sql` com criação idempotente, atualização por versão e auditoria. `docs/supabase/CRM_LEAD_WRITE_PROBE.sql` prepara a prova transacional de criação, repetição, edição, conflito, auditoria e negação por perfil, com `ROLLBACK`; ainda não foi executada remotamente. Não há envio automático, outbox nem captação pública. Testes da rota 5/5, adaptador 9/9, cliente 5/5, TypeScript, lint e builds Vinext/Next passaram. Essa migração NÃO foi aplicada, o código NÃO foi enviado nem implantado; a prévia atualmente publicada continua com o fluxo de cliente, sem escrita de atendimentos. Próximo gate: executar a prova SQL após autorização específica, aplicar a migração/publicar a prévia se passar, então fazer o fluxo no navegador.
 

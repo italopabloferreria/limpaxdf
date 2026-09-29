@@ -3,7 +3,7 @@
   "current_phase": "verification",
   "status": "active",
   "mode": "supabase-auth-rls-homologation",
-  "delivery_focus_2026_09_29": "Hosted customer flow passed for owner Google session: synthetic customer create/read/update persisted across reload, logout returned CRM to access gate. Next implement hosted lead flow. Actual second unapproved Google identity denial remains untested; do not count owner logout as this test or call CRM production-ready.",
+  "delivery_focus_2026_09_29": "Hosted customer and lead review flows passed for owner Google session: synthetic create/read/update persisted across reload; lead search and logout access gate passed. Actual second unapproved Google identity denial and role matrix remain untested; no real-data import, recovery or production release. G13 open.",
   "customer_write_preview_2026_09_29": {
     "status": "preview_applied_and_owner_browser_flow_verified",
     "scope": "Owner-only review customer create/update form, same-origin server route and atomic audited SQL function with idempotent create and optimistic update",
@@ -11,10 +11,10 @@
     "remote_state": "Migration 20260929042443 applied through Supabase SQL Editor; Vercel SUPABASE_DATA_MODE=write_preview only in Preview, deployment 6mqV8oMmjyfTaDc4prk8eDdqv2cn Ready; one fictional review customer remains for visual verification; D1/R2 untouched; G13 open"
   },
   "lead_write_preview_2026_09_29": {
-    "status": "local_code_prepared_not_remotely_applied",
+    "status": "preview_applied_and_owner_browser_flow_verified",
     "scope": "Owner-only fictional review lead create/update, same-origin route, form and atomic audited SQL function with idempotent create and optimistic update; no public intake or outbox",
-    "checks": "Protected route 5/5, Supabase adapter 9/9, customer route 5/5, TypeScript, lint, Vinext and exact Next/Vercel build passed; transactional SQL probe prepared but not run remotely",
-    "remote_state": "Migration 20260929120000 not applied; code not pushed or deployed; existing Preview still runs customer-only build; G13 open"
+    "checks": "Protected route 5/5, Supabase adapter 9/9, customer route 5/5, TypeScript, lint, Vinext and exact Next/Vercel build passed. SQL probe passed after correcting audit inspection to editor role; ROLLBACK left no lead/audit/function. Postflight: function exists, anon EXECUTE false, authenticated EXECUTE true, direct INSERT/UPDATE false, leads RLS true. Owner browser create/search/edit/reload/logout and signed-out gate passed.",
+    "remote_state": "Migration 20260929120000 applied through Supabase SQL Editor; commits through 23e0c8f pushed to codex/vercel-preview; Vercel Preview deployment 65pPrXrbhJjCXzJyqRoiBHSzAUCG Ready. One fictional review lead remains for visual verification; D1/R2 untouched; G13 open"
   },
   "crm_read_grant_2026_09_29": {
     "status": "applied_verified_pending_second_real_jwt",
@@ -245,7 +245,7 @@
   ],
   "accepted_risks": [],
   "last_updated": "2026-09-28",
-  "next_action": "CRM-only scope. Validate lead SQL with a rollback probe, obtain specific approval to apply it to Supabase and publish the tested branch, then verify hosted synthetic lead create/read/update/reload. Test real denied Google identity and role matrix with authorized test accounts. Preserve D1/R2; G13 open.",
+  "next_action": "CRM-only scope. Validate real denied Google login and admin/attendant/inactive RLS matrix with specifically authorized test identities; then plan reversible data migration, private Storage and recovery before G13. Owner customer and lead review flows work on Vercel Preview; preserve D1/R2, no production cutover.",
   "baseline": {
     "head": "15149f1",
     "working_tree": "Canonical path confirmed C:/Users/italo/Programação/Limpax; existing baseline SQL and documentation changes preserved. Alternate 01_PROJETOS/LIMPAX is clean at 1bf9702, 14 commits behind.",
@@ -257,6 +257,7 @@
     "source_change_note": "Audit itself was documentation-only; subsequent authorized increment corrected A01/A02."
   },
   "checks": {
+    "crm_lead_hosted_2026_09_29": "PASS Preview: migration applied after transaction/ROLLBACK probe; postflight function/RLS/grants/zero probe residue verified. Deployment 65pPrXrbhJjCXzJyqRoiBHSzAUCG Ready from 23e0c8f. Chrome owner Google session created fictional review lead, search found it, edit changed name/status to Em contato, reload retained it, logout showed no session and /crm rendered access gate. Second real denied identity/role matrix not tested; G13 open.",
     "crm_lead_write_local_2026_09_29": "PASS local: protected route 5/5, adapter 9/9, customer route 5/5, TypeScript, lint, Vinext and exact Next/Vercel build. SQL migration remains unapplied; new lead form is not deployed. No remote data or production changes.",
     "crm_customer_hosted_2026_09_29": "PASS Preview: commit 9828b02 pushed; SQL migration applied after transaction/ROLLBACK probe. Postflight function exists, anon EXECUTE=false, authenticated EXECUTE=true, direct table INSERT/UPDATE=false, customers RLS=true. Vercel Preview deployment 6mqV8oMmjyfTaDc4prk8eDdqv2cn Ready with write_preview Preview-only. Chrome owner Google session created fictional review customer, reload retained it, edit persisted after reload, logout showed no Supabase session and /crm/clientes rendered access gate. Second real unapproved Google identity and role matrix not tested; G13 remains open.",
     "crm_customer_write_route_2026_09_29": "PASS local: protected POST route 5/5 covers disabled mode, invalid origin/input, missing profile, non-owner denial, owner create/update and stale-version conflict; TypeScript, lint, Vinext and exact Vercel Next build pass. Database function and hosted flow remain unverified. No remote change or push; branch remains two commits ahead before this uncommitted test increment.",
