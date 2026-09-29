@@ -1,5 +1,11 @@
 # Tarefa ativa — CRM funcional com Supabase Auth/RLS na Vercel
 
+## Correção de execução — 29/09/2026
+
+O proprietário apontou que duas semanas de trabalho ainda não produziram um CRM utilizável na Vercel. A medida de progresso passa a ser um fluxo completo, visível e persistente, não quantidade de migrações, documentos ou testes isolados. O primeiro resultado a entregar é: Ítalo entra com Google, abre `/crm/clientes`, cadastra um cliente fictício, reencontra-o após recarregar, edita-o e encerra a sessão; um usuário não aprovado não acessa os dados. Depois, repetir o fluxo para atendimentos. Não iniciar módulos do roadmap enquanto esses fluxos não estiverem usáveis.
+
+Estado honesto no momento desta correção: o perfil Google hospedado funciona, mas as listas Supabase estão desligadas, a escrita na Vercel é bloqueada e não existe cliente operacional no Supabase. O teste sintético de RLS não equivale ao fluxo completo. A execução deve concentrar-se na integração de escrita, autorização e recuperação, preservando D1/R2 até uma migração reversível. Alteração remota de dados ou publicação ainda exige a autorização específica prevista nas regras do projeto.
+
 29/09, etapa de leitura: o grant remoto `20260928210000_crm_preview_read_grants.sql` foi aplicado e auditado após confirmação. RLS continua ativo, `anon` sem SELECT, `authenticated` somente com SELECT nas quatro tabelas. Data API anônima negou (`42501`); probe sintético transacional provou leitura para claim do proprietário e invisibilidade para claim sem perfil, com `ROLLBACK` e zero dados remanescentes. Perfil Google real do proprietário segue verificado na Vercel. Falta um segundo JWT Google real para testar negação de usuário sem perfil/inativo; não cadastrar outra pessoa sem autorização específica. `SUPABASE_DATA_MODE=disabled` continua na Vercel Preview até essa matriz e a leitura real das listas passarem. G13 segue aberto.
 
 Preflight de 29/09: RLS nas quatro tabelas, `anon` sem SELECT, `authenticated` somente com SELECT preexistente em `leads`, policies de clientes por `is_crm_member()` e zero registros operacionais. A transação de grant foi aplicada após a confirmação, conforme registro acima.

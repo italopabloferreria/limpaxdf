@@ -3,6 +3,7 @@
   "current_phase": "verification",
   "status": "active",
   "mode": "supabase-auth-rls-homologation",
+  "delivery_focus_2026_09_29": "First complete hosted customer flow: owner Google login, synthetic customer create/read/update across reload, logout and denied unapproved access; then hosted lead flow. Current hosted writes blocked and data mode disabled. Do not count infrastructure-only checks as CRM delivery.",
   "crm_read_grant_2026_09_29": {
     "status": "applied_verified_pending_second_real_jwt",
     "preflight": "4 tables RLS enabled; anon SELECT false; authenticated SELECT only on leads; customer member SELECT policies true; operational row counts 0/0/0/0",
