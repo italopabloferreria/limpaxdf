@@ -4,10 +4,10 @@
   "status": "active",
   "mode": "supabase-auth-rls-homologation",
   "crm_preview_increment_2026_09_28": {
-    "status": "locally_verified_pending_remote_read_grants",
+    "status": "preview_profile_verified_pending_remote_read_grants",
     "scope": "Supabase read-only customer/lead search and pagination; Google-approved team management in protected CRM profile",
     "checks": "adapter 9/9, CRM access 18/18, Supabase session 7/7, TypeScript, lint, Vercel Next build",
-    "remote_state": "SUPABASE_DATA_MODE remains disabled; customer SELECT grants prepared but not applied; G13 remains open"
+    "remote_state": "Vercel Preview 1b76717 Ready and owner profile verified in browser; SUPABASE_DATA_MODE remains disabled; customer SELECT grants prepared but not applied; G13 remains open"
   },
   "phases": {
     "intake": {
