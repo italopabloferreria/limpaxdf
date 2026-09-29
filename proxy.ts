@@ -6,7 +6,7 @@ export function proxy(req:NextRequest){
     return NextResponse.json({error:"Operação indisponível nesta prévia."},{status:503,headers:{"Cache-Control":"no-store"}});
   }
   let connectSrc="'self'";
-  if(req.nextUrl.pathname==="/supabase/homologacao"){
+  if(req.nextUrl.pathname==="/supabase/homologacao"||req.nextUrl.pathname==="/crm/perfil"){
     const s=settings();
     try{
       const url=new URL(s.SUPABASE_URL||s.NEXT_PUBLIC_SUPABASE_URL||"");

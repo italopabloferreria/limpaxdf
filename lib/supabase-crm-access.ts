@@ -15,9 +15,16 @@ export function supabaseCrmReadEnabled(s:Settings){
     &&Boolean(getSupabaseConfig(s));
 }
 
-export async function supabaseCrmPageAccess():Promise<SupabaseCrmPageAccess>{
+export function supabaseCrmProfileEnabled(s:Settings){
+  return process.env.LIMPAX_DEPLOYMENT_TARGET==="vercel-preview"
+    &&s.SUPABASE_GOOGLE_APPROVALS_ENABLED==="true"
+    &&Boolean(homologationOrigin(s))
+    &&Boolean(getSupabaseConfig(s));
+}
+
+export async function supabaseCrmPageAccess(mode:"read"|"profile"="read"):Promise<SupabaseCrmPageAccess>{
   const s=settings();
-  if(!supabaseCrmReadEnabled(s))return null;
+  if(mode==="profile"?!supabaseCrmProfileEnabled(s):!supabaseCrmReadEnabled(s))return null;
   const config=getSupabaseConfig(s);
   if(!config)return null;
   const cookieStore=await cookies();

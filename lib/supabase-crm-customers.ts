@@ -3,18 +3,33 @@ import {ApiError} from "./http";
 
 export type SupabaseCustomer={id:string;kind:"person"|"organization";name:string;tradeName:string|null;sourceMode:string;updatedAt:number};
 export type SupabaseCustomerDetail={contacts:Array<{id:string;name:string;phone:string|null;email:string|null}>;locations:Array<{id:string;label:string;address:string|null;city:string|null;state:string|null}>};
+export type SupabaseCustomerListOptions={page?:number;pageSize?:number;search?:string};
 
-export async function listSupabaseCustomers(client:SupabaseClient){
-  const {data,error,count}=await client.from("customers")
-    .select("id,kind,name,trade_name,source_mode,updated_at",{count:"exact"})
-    .is("archived_at",null).order("updated_at",{ascending:false}).limit(50);
+export async function listSupabaseCustomers(client:SupabaseClient,{page=1,pageSize=30,search=""}:SupabaseCustomerListOptions={}){
+  const size=Math.min(100,Math.max(10,Math.trunc(pageSize)));
+  const wanted=Math.max(1,Math.trunc(page));
+  const filter=<T extends {is:(column:string,value:null)=>T;or:(value:string)=>T}>(query:T)=>{
+    let current=query.is("archived_at",null);
+    if(search){
+      const pattern=("%"+search.replace(/[\\%_]/g,match=>"\\"+match)+"%").replace(/\\/g,"\\\\").replace(/"/g,'\\"');
+      current=current.or(`name.ilike."${pattern}",trade_name.ilike."${pattern}"`);
+    }
+    return current;
+  };
+  const countResult=await filter(client.from("customers").select("id",{count:"exact",head:true}));
+  if(countResult.error)throw new ApiError(503,"Não foi possível consultar os clientes.");
+  const total=Number(countResult.count||0),pages=Math.max(1,Math.ceil(total/size)),currentPage=Math.min(wanted,pages);
+  const {data,error}=await filter(client.from("customers")
+    .select("id,kind,name,trade_name,source_mode,updated_at"))
+    .order("updated_at",{ascending:false}).order("id",{ascending:false})
+    .range((currentPage-1)*size,currentPage*size-1);
   if(error)throw new ApiError(503,"Não foi possível consultar os clientes.");
   const customers:SupabaseCustomer[]=(data||[]).map(row=>({
     id:String(row.id),kind:row.kind==="organization"?"organization":"person",
     name:String(row.name),tradeName:row.trade_name?String(row.trade_name):null,
     sourceMode:String(row.source_mode),updatedAt:Number(row.updated_at)
   }));
-  return {customers,total:Number(count||0)};
+  return {customers,total,page:currentPage,pageSize:size,pages};
 }
 
 export async function getSupabaseCustomerDetail(client:SupabaseClient,id:string):Promise<SupabaseCustomerDetail>{

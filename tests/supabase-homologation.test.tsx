@@ -75,10 +75,12 @@ test('Google setup pending is visible before attempting OAuth',()=>{
   const html=renderToStaticMarkup(<HomologationSignIn url="https://example.supabase.co" publishableKey="sb_publishable_test" origin="http://localhost:5173"/>);
   assert.match(html,/aguardando a conclusão da configuração/);
 });
-test('Supabase browser connections are restricted to the isolated homologation page',()=>{
+test('Supabase browser connections are restricted to homologation and the protected profile',()=>{
   const header=(path:string)=>proxy(new NextRequest(origin+path)).headers.get('content-security-policy')||'';
   assert.match(header('/supabase/homologacao'),/connect-src 'self' https:\/\/example.supabase.co;/);
+  assert.match(header('/crm/perfil'),/connect-src 'self' https:\/\/example.supabase.co;/);
   assert.match(header('/crm'),/connect-src 'self';/);
   env.SUPABASE_URL='https://untrusted.test';
   assert.match(header('/supabase/homologacao'),/connect-src 'self';/);
+  assert.match(header('/crm/perfil'),/connect-src 'self';/);
 });

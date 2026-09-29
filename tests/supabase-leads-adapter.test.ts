@@ -1,6 +1,7 @@
 import {test} from "node:test";
 import assert from "node:assert/strict";
 import {listCrmLeadsFromSupabase,listCrmWorkspaceLeads,type SupabaseLeadReadClient} from "../lib/crm-data";
+import {listSupabaseCustomers} from "../lib/supabase-crm-customers";
 import {createSupabaseUserClient,isSupabasePublicKey} from "../lib/supabase";
 import {normalizeSupabaseAccessToken,readSupabaseAccessToken} from "../lib/supabase-session";
 
@@ -162,3 +163,23 @@ function jwt(seed:string){
   const part=Buffer.from(seed).toString("base64url");
   return [part,part,part].join(".");
 }
+
+test("customer search stays quoted and pagination uses an exact count",async()=>{
+  const previous=globalThis.fetch;
+  const requests:{url:URL;method:string}[]=[];
+  try{
+    globalThis.fetch=async(input,init)=>{
+      requests.push({url:new URL(String(input)),method:init?.method||"GET"});
+      return new Response(init?.method==="HEAD"?null:"[]",{headers:{"content-type":"application/json","content-range":"0-0/31"}});
+    };
+    const client=createSupabaseUserClient({SUPABASE_URL:"https://example.supabase.co",SUPABASE_PUBLISHABLE_KEY:"sb_publishable_test"},jwt("customer-search"));
+    assert(client);
+    const result=await listSupabaseCustomers(client,{search:'Ana, ("Sul")',page:2,pageSize:10});
+    assert.deepEqual({page:result.page,pages:result.pages,total:result.total},{page:2,pages:4,total:31});
+    assert.equal(requests.length,2);
+    assert.equal(requests[0].method,"HEAD");
+    assert.equal(requests[1].url.searchParams.get("offset"),"10");
+    assert.equal(requests[1].url.searchParams.get("limit"),"10");
+    assert.match(requests[0].url.searchParams.get("or")||"",/^\(name\.ilike\."%Ana, \(\\"Sul\\"\)%",trade_name\.ilike\./);
+  }finally{globalThis.fetch=previous}
+});
