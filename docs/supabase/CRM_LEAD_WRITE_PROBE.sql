@@ -15,7 +15,6 @@ do $probe$
 declare
   v_id constant uuid := '123e4567-e89b-42d3-a456-426614174099';
   v_version bigint;
-  v_audits integer;
   v_denied boolean := false;
 begin
   if public.crm_save_review_lead('create',v_id,'Atendimento Fictício Probe','','',
@@ -38,9 +37,6 @@ begin
   exception when sqlstate 'P0002' then v_denied := true;
   end;
   if not v_denied then raise exception 'Stale update was accepted'; end if;
-  select count(*) into v_audits from public.crm_audit_log
-  where entity_type = 'lead' and entity_id = v_id::text;
-  if v_audits <> 2 then raise exception 'Expected two audit events, got %',v_audits; end if;
   if not exists (select 1 from public.leads where id = v_id::text
     and mode = 'review'::public.data_mode and origin = 'crm_preview'
     and status = 'em_contato'::public.crm_status) then
@@ -49,6 +45,18 @@ begin
 end
 $probe$;
 
+-- The authenticated role intentionally has no direct SELECT on the audit log.
+reset role;
+do $probe$
+declare v_audits integer;
+begin
+  select count(*) into v_audits from public.crm_audit_log
+  where entity_type = 'lead' and entity_id = '123e4567-e89b-42d3-a456-426614174099';
+  if v_audits <> 2 then raise exception 'Expected two audit events, got %',v_audits; end if;
+end
+$probe$;
+
+set local role authenticated;
 select set_config('request.jwt.claim.sub','123e4567-e89b-42d3-a456-426614174098',true);
 do $probe$
 declare v_denied boolean := false;
