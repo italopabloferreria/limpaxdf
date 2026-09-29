@@ -7,6 +7,9 @@ import {settings} from "@/lib/config";
 import {SupabaseApprovedTeam} from "@/components/supabase-approved-team";
 import {supabaseCrmPageAccess,supabaseCrmProfileEnabled} from "@/lib/supabase-crm-access";
 import {getSupabaseConfig} from "@/lib/supabase";
+import {SupabaseCrmSignOut} from "@/components/supabase-crm-sign-out";
+import {chatGPTSignOutPath} from "@/app/chatgpt-auth";
+import {redirect} from "next/navigation";
 
 export const dynamic="force-dynamic";
 
@@ -14,7 +17,7 @@ export default async function CrmProfilePage(){
   const s=settings();
   if(supabaseCrmProfileEnabled(s)){
     const access=await supabaseCrmPageAccess("profile");
-    if(!access)return <CrmAccessGate status={401} returnTo="/crm/perfil" previewReadEnabled/>;
+    if(!access)redirect("/supabase/homologacao");
     const config=getSupabaseConfig(s);
     if(!config)return <CrmAccessGate status={503} returnTo="/crm/perfil" previewReadEnabled/>;
     const {actor}=access;
@@ -22,9 +25,9 @@ export default async function CrmProfilePage(){
       <header className="crm-top">
         <div><Link href="/crm" className="crm-brand">Limpax <span>CRM</span></Link><p>Conta e equipe</p></div>
         <nav className="crm-top-actions" aria-label="Navegação do CRM">
-          <Link href="/supabase/homologacao" className="outline-button">Acesso Google</Link>
           <Link href="/crm" className="outline-button">Atendimentos</Link>
           <Link href="/crm/clientes" className="outline-button">Clientes</Link>
+          <SupabaseCrmSignOut className="outline-button"/>
         </nav>
       </header>
       <section className="space-y-4 rounded-xl border p-6" aria-labelledby="profile-title">
@@ -45,8 +48,9 @@ export default async function CrmProfilePage(){
       <nav className="crm-top-actions" aria-label="Navegação do CRM">
         <Link href="/crm" className="outline-button">Atendimentos</Link>
         <Link href="/crm/clientes" className="outline-button">Clientes</Link>
+        <a href={chatGPTSignOutPath("/crm")} className="outline-button">Sair</a>
       </nav>
     </header>
-    <CrmProfileWorkspace email={actor.email} displayName={actor.displayName} role={actor.role} superAdmin={isCrmSuperAdmin(actor)} googleAccessEnabled={settings().SUPABASE_GOOGLE_APPROVALS_ENABLED==="true"}/>
+    <CrmProfileWorkspace email={actor.email} displayName={actor.displayName} role={actor.role} superAdmin={isCrmSuperAdmin(actor)} googleAccessEnabled={settings().SUPABASE_GOOGLE_APPROVALS_ENABLED==="true"} localDevelopment={process.env.NODE_ENV==="development"}/>
   </main>;
 }

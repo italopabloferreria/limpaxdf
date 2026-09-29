@@ -5,7 +5,7 @@ import styles from "./crm-profile-workspace.module.css";
 type Role="admin"|"attendant";
 type Member={email:string;displayName:string|null;role:Role;active:boolean};
 
-export function CrmProfileWorkspace({email,displayName,role,superAdmin,googleAccessEnabled=false}:{email:string;displayName:string;role:Role;superAdmin:boolean;googleAccessEnabled?:boolean}){
+export function CrmProfileWorkspace({email,displayName,role,superAdmin,googleAccessEnabled=false,localDevelopment=false}:{email:string;displayName:string;role:Role;superAdmin:boolean;googleAccessEnabled?:boolean;localDevelopment?:boolean}){
   const [members,setMembers]=useState<Member[]>([]);
   const [loading,setLoading]=useState(role==="admin");
   const [busy,setBusy]=useState(false);
@@ -56,6 +56,7 @@ export function CrmProfileWorkspace({email,displayName,role,superAdmin,googleAcc
         <div><dt className="font-semibold">E-mail</dt><dd className="break-all">{email}</dd></div>
         <div><dt className="font-semibold">Permissão</dt><dd>{superAdmin?"Superadministrador":role==="admin"?"Administrador":"Atendimento"}</dd></div>
       </dl>
+      {localDevelopment&&<p className="mt-6 border-l-4 border-[#b6a800] bg-white p-3 text-sm">Esta é a conta local de desenvolvimento, separada do login Google. Perfis cadastrados aqui não liberam acesso ao CRM Google da prévia Vercel.</p>}
     </section>
     {role==="admin"&&<section aria-labelledby="team-title" className="border border-black/20 bg-[#f8f7f2] p-6 sm:p-8">
       <h2 id="team-title" className="text-2xl font-bold">Equipe</h2>

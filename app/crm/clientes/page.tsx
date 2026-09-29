@@ -9,6 +9,7 @@ import {supabaseCrmPageAccess,supabaseCrmReadEnabled,supabaseCrmWriteEnabled} fr
 import {getSupabaseCustomerDetail,listSupabaseCustomers} from "@/lib/supabase-crm-customers";
 import {SupabaseCustomersReadonly} from "@/components/supabase-customers-readonly";
 import {uuidSchema} from "@/lib/validation";
+import {redirect} from "next/navigation";
 
 export const dynamic="force-dynamic";
 type CustomersPageProps={searchParams?:Promise<{selected?:string|string[];page?:string|string[];search?:string|string[]}>};
@@ -16,7 +17,7 @@ export default async function CustomersPage({searchParams}:CustomersPageProps){
   const s=settings();
   if(supabaseCrmReadEnabled(s)){
     const access=await supabaseCrmPageAccess();
-    if(!access)return <CrmAccessGate status={401} returnTo="/crm/clientes" previewReadEnabled/>;
+    if(!access)redirect("/supabase/homologacao");
     const query=await searchParams;
     const pageValue=typeof query?.page==="string"?Number(query.page):1;
     const page=Number.isSafeInteger(pageValue)&&pageValue>0?pageValue:1;

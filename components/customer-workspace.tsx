@@ -346,7 +346,7 @@ export function CustomerWorkspace({initial,operator,role,dataMode}:{initial:List
         <nav className={styles.nav}>
           <Link href="/crm">Atendimentos</Link>
           <Link href="/crm/perfil">Meu perfil</Link>
-          <Link href="/">Ver site</Link>
+          <a href="/signout-with-chatgpt?return_to=%2Fcrm">Sair</a>
         </nav>
       </header>
 

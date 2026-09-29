@@ -9,6 +9,7 @@ import {supabaseCrmPageAccess,supabaseCrmReadEnabled,supabaseCrmWriteEnabled} fr
 import {SupabaseCrmReadonly} from "@/components/supabase-crm-readonly";
 import {uuidSchema} from "@/lib/validation";
 import {crmStatuses} from "@/lib/crm-shared";
+import {redirect} from "next/navigation";
 
 export const dynamic="force-dynamic";
 type CrmPageProps={searchParams?:Promise<{selected?:string|string[];page?:string|string[];search?:string|string[];status?:string|string[]}>};
@@ -16,7 +17,7 @@ export default async function CrmPage({searchParams}:CrmPageProps){
   const s=settings();
   if(supabaseCrmReadEnabled(s)){
     const access=await supabaseCrmPageAccess();
-    if(!access)return <CrmAccessGate status={401} returnTo="/crm" previewReadEnabled/>;
+    if(!access)redirect("/supabase/homologacao");
     const query=await searchParams;
     const pageValue=typeof query?.page==="string"?Number(query.page):1;
     const page=Number.isSafeInteger(pageValue)&&pageValue>0?pageValue:1;

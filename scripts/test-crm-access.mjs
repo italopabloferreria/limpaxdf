@@ -13,6 +13,10 @@ await build({
     "@/components/crm-workspace": path.resolve("tests/crm-workspace-stub.tsx"),
     "@/components/customer-workspace": path.resolve("tests/crm-workspace-stub.tsx"),
   },
+  plugins:[{name:"login-css-module-mock",setup(build){
+    build.onResolve({filter:/supabase-login\.module\.css$/},args=>({path:args.path,namespace:"login-css-module-mock"}));
+    build.onLoad({filter:/.*/,namespace:"login-css-module-mock"},()=>({contents:'export default new Proxy({}, {get:(_,key)=>String(key)});',loader:"js"}));
+  }}],
 });
 const result = spawnSync(process.execPath, ["--test", ".sites-runtime/crm-access.test.mjs"], {stdio: "inherit"});
 process.exitCode = result.status ?? 1;

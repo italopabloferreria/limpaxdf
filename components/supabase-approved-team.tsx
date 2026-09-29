@@ -84,8 +84,8 @@ export function SupabaseApprovedTeam({url,publishableKey,superAdmin}:{url:string
   }
 
   return <section className="space-y-5 rounded-xl border p-6" aria-labelledby="google-team-title">
-    <div><h2 id="google-team-title" className="text-xl font-semibold">Acesso Google da equipe</h2>
-      <p className="text-sm">Cadastre o e-mail antes do primeiro login. {superAdmin?"Você pode aprovar administradores e atendentes.":"Você pode aprovar atendentes."}</p></div>
+    <div><h2 id="google-team-title" className="text-xl font-semibold">Usuários do CRM</h2>
+      <p className="text-sm">Cadastre o e-mail Google antes do primeiro acesso. {superAdmin?"Usuário de atendimento é o acesso comum ao CRM; administrador também gerencia usuários. Só você pode criar administradores.":"Você pode cadastrar usuários de atendimento; somente o superadministrador cria administradores."}</p></div>
     <form onSubmit={add} className="grid gap-3 sm:grid-cols-2">
       <label className="grid gap-1 text-sm">E-mail Google
         <input type="email" required maxLength={200} autoComplete="off" value={email} onChange={event=>setEmail(event.target.value)} className="min-h-11 rounded border px-3"/>
@@ -93,25 +93,25 @@ export function SupabaseApprovedTeam({url,publishableKey,superAdmin}:{url:string
       <label className="grid gap-1 text-sm">Nome de exibição
         <input type="text" maxLength={180} value={name} onChange={event=>setName(event.target.value)} className="min-h-11 rounded border px-3"/>
       </label>
-      {superAdmin&&<label className="grid gap-1 text-sm">Papel
+      {superAdmin&&<label className="grid gap-1 text-sm">Tipo de usuário
         <select value={role} onChange={event=>setRole(event.target.value as Role)} className="min-h-11 rounded border px-3">
-          <option value="attendant">Atendimento</option><option value="admin">Administrador</option>
+          <option value="attendant">Usuário de atendimento</option><option value="admin">Administrador</option>
         </select>
       </label>}
-      <div className="flex items-end"><button type="submit" disabled={busy} className="min-h-11 rounded border px-4 font-semibold focus-visible:outline-2 disabled:opacity-50">{busy?"Salvando…":"Aprovar acesso"}</button></div>
+      <div className="flex items-end"><button type="submit" disabled={busy} className="min-h-11 rounded border px-4 font-semibold focus-visible:outline-2 disabled:opacity-50">{busy?"Salvando…":"Cadastrar usuário"}</button></div>
     </form>
     {error&&<p role="alert">{error}</p>}
     {message&&<p role="status">{message}</p>}
-    <div><h3 className="font-semibold">Pessoas aprovadas</h3>
+    <div><h3 className="font-semibold">Usuários cadastrados</h3>
       {loading?<p>Carregando…</p>:members.length===0?<p>Nenhum acesso adicional cadastrado.</p>:<ul className="divide-y">
         {members.map(member=><li key={member.email} className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">
           <span><strong className="block">{member.display_name||member.email}</strong><span className="break-all">{member.email}</span><span className="block">{member.active?"Ativo":"Inativo"}</span></span>
           <span className="flex flex-wrap items-center gap-2">
-            {superAdmin?<label className="grid gap-1">Papel
+            {superAdmin?<label className="grid gap-1">Tipo de usuário
               <select aria-label={`Papel de ${member.email}`} value={member.role} disabled={busy} onChange={event=>changeRole(member,event.target.value as Role)} className="min-h-11 rounded border px-2 focus-visible:outline-2 disabled:opacity-50">
-                <option value="attendant">Atendimento</option><option value="admin">Administrador</option>
+                <option value="attendant">Usuário de atendimento</option><option value="admin">Administrador</option>
               </select>
-            </label>:<span>Atendimento</span>}
+            </label>:<span>Usuário de atendimento</span>}
             <button type="button" disabled={busy} onClick={()=>changeActive(member)} className="min-h-11 rounded border px-3 focus-visible:outline-2 disabled:opacity-50">{member.active?"Desativar":"Reativar"}</button>
           </span>
         </li>)}

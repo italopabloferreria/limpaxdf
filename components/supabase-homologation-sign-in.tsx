@@ -1,6 +1,7 @@
 "use client";
 import {useEffect,useState} from "react";
 import {createBrowserClient} from "@supabase/ssr";
+import {SupabaseApprovedTeam} from "./supabase-approved-team";
 import styles from "./supabase-login.module.css";
 
 type SessionState={status:"signed_out"|"no_profile"|"inactive"|"authorized";role:string|null};
@@ -43,6 +44,9 @@ export function HomologationSignIn({url,publishableKey,origin,googleEnabled=fals
     {!googleEnabled&&<p className={styles.notice}>O login Google está aguardando a conclusão da configuração. Tente novamente após a ativação.</p>}
     {state?.status==="signed_out"&&<button type="button" disabled={busy||!googleEnabled} onClick={signIn} className={styles.googleButton}><span className={styles.googleMark} aria-hidden="true">G</span><span>{busy?"Abrindo Google…":"Continuar com Google"}</span><span aria-hidden="true">↗</span></button>}
     {state&&state.status!=="signed_out"&&<button type="button" disabled={busy} onClick={signOut} className={styles.signOutButton}>Sair da conta</button>}
-    {state?.status==="authorized"&&<nav aria-label="CRM" className={styles.crmLinks}>{crmReadEnabled&&<a className={styles.primaryLink} href="/crm">Abrir atendimentos <span aria-hidden="true">↗</span></a>}{crmReadEnabled&&<a href="/crm/clientes">Clientes</a>}{approvalsEnabled&&<a href="/crm/perfil">Meu perfil</a>}</nav>}
+    {state?.status==="authorized"&&crmReadEnabled&&<nav aria-label="CRM" className={styles.crmLinks}><a className={styles.primaryLink} href="/crm">Abrir atendimentos <span aria-hidden="true">↗</span></a><a href="/crm/clientes">Clientes</a>{approvalsEnabled&&<a href="/crm/perfil">Meu perfil</a>}</nav>}
+    {state?.status==="authorized"&&!crmReadEnabled&&<p className={styles.notice}>Este login Google é da homologação. O CRM em localhost usa uma conta local de teste separada; acesse o CRM Google pela prévia Vercel.</p>}
+    {approvalsEnabled&&!crmReadEnabled&&state?.status==="authorized"&&(state.role==="super_admin"||state.role==="admin")&&
+      <SupabaseApprovedTeam url={url} publishableKey={publishableKey} superAdmin={state.role==="super_admin"}/>}
   </div>;
 }
