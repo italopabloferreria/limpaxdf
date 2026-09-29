@@ -13,7 +13,7 @@
   "lead_write_preview_2026_09_29": {
     "status": "local_code_prepared_not_remotely_applied",
     "scope": "Owner-only fictional review lead create/update, same-origin route, form and atomic audited SQL function with idempotent create and optimistic update; no public intake or outbox",
-    "checks": "Protected route 5/5, Supabase adapter 9/9, customer route 5/5, TypeScript, lint, Vinext and exact Next/Vercel build passed",
+    "checks": "Protected route 5/5, Supabase adapter 9/9, customer route 5/5, TypeScript, lint, Vinext and exact Next/Vercel build passed; transactional SQL probe prepared but not run remotely",
     "remote_state": "Migration 20260929120000 not applied; code not pushed or deployed; existing Preview still runs customer-only build; G13 open"
   },
   "crm_read_grant_2026_09_29": {
