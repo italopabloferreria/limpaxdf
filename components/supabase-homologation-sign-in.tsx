@@ -1,7 +1,7 @@
 "use client";
 import {useEffect,useState} from "react";
 import {createBrowserClient} from "@supabase/ssr";
-import {SupabaseApprovedTeam} from "./supabase-approved-team";
+import styles from "./supabase-login.module.css";
 
 type SessionState={status:"signed_out"|"no_profile"|"inactive"|"authorized";role:string|null};
 const labels:Record<SessionState["status"],string>={signed_out:"Sem sessão Supabase.",no_profile:"Usuário não registrado. Solicite acesso ao administrador.",inactive:"Acesso ao CRM desativado.",authorized:"Perfil CRM ativo."};
@@ -36,16 +36,13 @@ export function HomologationSignIn({url,publishableKey,origin,googleEnabled=fals
     }catch{setError("Não foi possível sair da sessão.")}
     finally{setBusy(false)}
   }
-  return <div className="space-y-6"><section className="space-y-4 rounded-xl border p-6" aria-live="polite">
-    <p>{state?labels[state.status]:"Verificando sessão…"}</p>
-    {state?.role&&<p>Papel: {state.role==="super_admin"?"Superadministrador":state.role==="admin"?"Administrador":"Atendente"}</p>}
-    {error&&<p role="alert">{error}</p>}
-    {!googleEnabled&&<p>O login Google está aguardando a conclusão da configuração. Tente novamente após a ativação.</p>}
-    {state?.status==="signed_out"&&<button type="button" disabled={busy||!googleEnabled} onClick={signIn} className="rounded-lg bg-black px-4 py-2 text-white focus-visible:outline-2 disabled:opacity-50">Entrar com Google</button>}
-    {state&&state.status!=="signed_out"&&<button type="button" disabled={busy} onClick={signOut} className="rounded-lg border px-4 py-2 focus-visible:outline-2">Sair</button>}
-    {state?.status==="authorized"&&<nav aria-label="CRM" className="flex flex-wrap gap-3">{approvalsEnabled&&<a href="/crm/perfil" className="rounded-lg border px-4 py-2 focus-visible:outline-2">Meu perfil</a>}{crmReadEnabled&&<><a href="/crm" className="rounded-lg border px-4 py-2 focus-visible:outline-2">Atendimentos</a><a href="/crm/clientes" className="rounded-lg border px-4 py-2 focus-visible:outline-2">Clientes</a></>}</nav>}
-  </section>
-    {approvalsEnabled&&state?.status==="authorized"&&(state.role==="super_admin"||state.role==="admin")&&
-      <SupabaseApprovedTeam url={url} publishableKey={publishableKey} superAdmin={state.role==="super_admin"}/>}
+  return <div className={styles.session} aria-live="polite">
+    <div className={styles.sessionStatus}><span className={styles.statusDot} data-state={state?.status||"loading"}/><span>{state?labels[state.status]:"Verificando sessão…"}</span></div>
+    {state?.role&&<p className={styles.role}>Papel: {state.role==="super_admin"?"Superadministrador":state.role==="admin"?"Administrador":"Atendente"}</p>}
+    {error&&<p className={styles.error} role="alert">{error}</p>}
+    {!googleEnabled&&<p className={styles.notice}>O login Google está aguardando a conclusão da configuração. Tente novamente após a ativação.</p>}
+    {state?.status==="signed_out"&&<button type="button" disabled={busy||!googleEnabled} onClick={signIn} className={styles.googleButton}><span className={styles.googleMark} aria-hidden="true">G</span><span>{busy?"Abrindo Google…":"Continuar com Google"}</span><span aria-hidden="true">↗</span></button>}
+    {state&&state.status!=="signed_out"&&<button type="button" disabled={busy} onClick={signOut} className={styles.signOutButton}>Sair da conta</button>}
+    {state?.status==="authorized"&&<nav aria-label="CRM" className={styles.crmLinks}>{crmReadEnabled&&<a className={styles.primaryLink} href="/crm">Abrir atendimentos <span aria-hidden="true">↗</span></a>}{crmReadEnabled&&<a href="/crm/clientes">Clientes</a>}{approvalsEnabled&&<a href="/crm/perfil">Meu perfil</a>}</nav>}
   </div>;
 }
