@@ -1,4 +1,4 @@
-import {isCrmSuperAdmin,isReservedCrmAdminEmail,requireCrmAdmin} from "@/lib/crm";
+import {requireCrmSuperAdmin} from "@/lib/crm";
 import {database,failure,json,readJson,ApiError} from "@/lib/http";
 import {settings} from "@/lib/config";
 import {z} from "zod";
@@ -16,10 +16,10 @@ type UserProfileRow={
   active:number;
 };
 
-/** PATCH /api/crm/users/[email] — update a team member (admin only) */
+/** PATCH /api/crm/users/[email] — update a team member (superadmin only) */
 export async function PATCH(req:Request,{params}:{params:Promise<{email:string}>}){
   try{
-    const actor=await requireCrmAdmin(req);
+    const actor=await requireCrmSuperAdmin(req);
     const {email}=await params;
     const target=decodeURIComponent(email).toLowerCase();
     const parsed=updateSchema.safeParse(await readJson(req));
@@ -35,9 +35,6 @@ export async function PATCH(req:Request,{params}:{params:Promise<{email:string}>
     const nextActive=data.active===undefined?current.active:(data.active?1:0);
     const ownerEmail=settings().CRM_SUPER_ADMIN_EMAIL?.trim().toLowerCase();
     const isOwner=Boolean(ownerEmail)&&target===ownerEmail;
-    if(!isCrmSuperAdmin(actor)&&(current.role==="admin"||nextRole==="admin"||isReservedCrmAdminEmail(target))){
-      throw new ApiError(403,"Somente o superadministrador pode alterar administradores.");
-    }
     if(isOwner&&(nextRole!=="admin"||nextActive!==1)){
       throw new ApiError(409,"O superadministrador deve permanecer ativo.");
     }

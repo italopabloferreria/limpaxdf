@@ -5,7 +5,7 @@ import {createBrowserClient} from "@supabase/ssr";
 type Role="admin"|"attendant";
 type Approval={email:string;display_name:string|null;role:Role;active:boolean};
 
-export function SupabaseApprovedTeam({url,publishableKey,superAdmin}:{url:string;publishableKey:string;superAdmin:boolean}){
+export function SupabaseApprovedTeam({url,publishableKey}:{url:string;publishableKey:string}){
   const [members,setMembers]=useState<Approval[]>([]);
   const [loading,setLoading]=useState(true);
   const [busy,setBusy]=useState(false);
@@ -46,9 +46,8 @@ export function SupabaseApprovedTeam({url,publishableKey,superAdmin}:{url:string
     event.preventDefault();setBusy(true);setError("");setMessage("");
     try{
       const normalized=email.trim().toLowerCase();
-      const selectedRole=superAdmin?role:"attendant";
       const {error:writeError}=await client().from("crm_google_approvals").insert({
-        email:normalized,display_name:name.trim()||null,role:selectedRole,active:true
+        email:normalized,display_name:name.trim()||null,role,active:true
       });
       if(writeError)throw new Error(writeError.code==="23505"?"Este e-mail já está cadastrado.":"Não foi possível cadastrar o acesso Google.");
       await refresh();
@@ -85,7 +84,7 @@ export function SupabaseApprovedTeam({url,publishableKey,superAdmin}:{url:string
 
   return <section className="space-y-5 rounded-xl border p-6" aria-labelledby="google-team-title">
     <div><h2 id="google-team-title" className="text-xl font-semibold">Usuários do CRM</h2>
-      <p className="text-sm">Cadastre o e-mail Google antes do primeiro acesso. {superAdmin?"Usuário de atendimento é o acesso comum ao CRM; administrador também gerencia usuários. Só você pode criar administradores.":"Você pode cadastrar usuários de atendimento; somente o superadministrador cria administradores."}</p></div>
+      <p className="text-sm">Cadastre o e-mail Google antes do primeiro acesso. Somente Ítalo, o superadministrador, pode cadastrar ou alterar usuários. Escolha atendimento para acesso comum ou administrador para gestão do CRM.</p></div>
     <form onSubmit={add} className="grid gap-3 sm:grid-cols-2">
       <label className="grid gap-1 text-sm">E-mail Google
         <input type="email" required maxLength={200} autoComplete="off" value={email} onChange={event=>setEmail(event.target.value)} className="min-h-11 rounded border px-3"/>
@@ -93,11 +92,11 @@ export function SupabaseApprovedTeam({url,publishableKey,superAdmin}:{url:string
       <label className="grid gap-1 text-sm">Nome de exibição
         <input type="text" maxLength={180} value={name} onChange={event=>setName(event.target.value)} className="min-h-11 rounded border px-3"/>
       </label>
-      {superAdmin&&<label className="grid gap-1 text-sm">Tipo de usuário
+      <label className="grid gap-1 text-sm">Tipo de usuário
         <select value={role} onChange={event=>setRole(event.target.value as Role)} className="min-h-11 rounded border px-3">
           <option value="attendant">Usuário de atendimento</option><option value="admin">Administrador</option>
         </select>
-      </label>}
+      </label>
       <div className="flex items-end"><button type="submit" disabled={busy} className="min-h-11 rounded border px-4 font-semibold focus-visible:outline-2 disabled:opacity-50">{busy?"Salvando…":"Cadastrar usuário"}</button></div>
     </form>
     {error&&<p role="alert">{error}</p>}
@@ -107,11 +106,11 @@ export function SupabaseApprovedTeam({url,publishableKey,superAdmin}:{url:string
         {members.map(member=><li key={member.email} className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">
           <span><strong className="block">{member.display_name||member.email}</strong><span className="break-all">{member.email}</span><span className="block">{member.active?"Ativo":"Inativo"}</span></span>
           <span className="flex flex-wrap items-center gap-2">
-            {superAdmin?<label className="grid gap-1">Tipo de usuário
+            <label className="grid gap-1">Tipo de usuário
               <select aria-label={`Papel de ${member.email}`} value={member.role} disabled={busy} onChange={event=>changeRole(member,event.target.value as Role)} className="min-h-11 rounded border px-2 focus-visible:outline-2 disabled:opacity-50">
                 <option value="attendant">Usuário de atendimento</option><option value="admin">Administrador</option>
               </select>
-            </label>:<span>Usuário de atendimento</span>}
+            </label>
             <button type="button" disabled={busy} onClick={()=>changeActive(member)} className="min-h-11 rounded border px-3 focus-visible:outline-2 disabled:opacity-50">{member.active?"Desativar":"Reativar"}</button>
           </span>
         </li>)}

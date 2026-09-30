@@ -7,7 +7,7 @@ type Member={email:string;displayName:string|null;role:Role;active:boolean};
 
 export function CrmProfileWorkspace({email,displayName,role,superAdmin,googleAccessEnabled=false,localDevelopment=false}:{email:string;displayName:string;role:Role;superAdmin:boolean;googleAccessEnabled?:boolean;localDevelopment?:boolean}){
   const [members,setMembers]=useState<Member[]>([]);
-  const [loading,setLoading]=useState(role==="admin");
+  const [loading,setLoading]=useState(superAdmin);
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
   const [message,setMessage]=useState("");
@@ -16,7 +16,7 @@ export function CrmProfileWorkspace({email,displayName,role,superAdmin,googleAcc
   const [newRole,setNewRole]=useState<Role>("attendant");
 
   useEffect(()=>{
-    if(role!=="admin")return;
+    if(!superAdmin)return;
     const controller=new AbortController();
     fetch("/api/crm/users",{cache:"no-store",signal:controller.signal})
       .then(async response=>{if(!response.ok)throw new Error();return response.json() as Promise<{users:Member[]}>})
@@ -24,7 +24,7 @@ export function CrmProfileWorkspace({email,displayName,role,superAdmin,googleAcc
       .catch(()=>{if(!controller.signal.aborted)setError("Não foi possível carregar a equipe.")})
       .finally(()=>{if(!controller.signal.aborted)setLoading(false)});
     return ()=>controller.abort();
-  },[role]);
+  },[superAdmin]);
 
   async function createMember(event:FormEvent<HTMLFormElement>){
     event.preventDefault();
@@ -32,7 +32,7 @@ export function CrmProfileWorkspace({email,displayName,role,superAdmin,googleAcc
     try{
       const response=await fetch("/api/crm/users",{
         method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({email:newEmail.trim(),displayName:newName.trim(),role:superAdmin?newRole:"attendant"})
+        body:JSON.stringify({email:newEmail.trim(),displayName:newName.trim(),role:newRole})
       });
       if(!response.ok){
         const payload=await response.json().catch(()=>null) as {error?:string}|null;
@@ -58,9 +58,9 @@ export function CrmProfileWorkspace({email,displayName,role,superAdmin,googleAcc
       </dl>
       {localDevelopment&&<p className="mt-6 border-l-4 border-[#b6a800] bg-white p-3 text-sm">Esta é a conta local de desenvolvimento, separada do login Google. Perfis cadastrados aqui não liberam acesso ao CRM Google da prévia Vercel.</p>}
     </section>
-    {role==="admin"&&<section aria-labelledby="team-title" className="border border-black/20 bg-[#f8f7f2] p-6 sm:p-8">
+    {superAdmin&&<section aria-labelledby="team-title" className="border border-black/20 bg-[#f8f7f2] p-6 sm:p-8">
       <h2 id="team-title" className="text-2xl font-bold">Equipe</h2>
-      <p className="mt-1 text-sm text-[#4e4d49]">{superAdmin?"Você pode cadastrar administradores e atendentes.":"Você pode cadastrar atendentes. Apenas o superadministrador cadastra administradores."} O cadastro do perfil não envia convite; a pessoa também precisa de acesso ao site.</p>
+      <p className="mt-1 text-sm text-[#4e4d49]">Somente o superadministrador cadastra e altera usuários. O cadastro do perfil não envia convite; a pessoa também precisa de acesso ao site.</p>
       {googleAccessEnabled&&<p className="mt-3 text-sm"><a href="/supabase/homologacao" className="underline focus-visible:outline-2">Gerenciar acesso Google de homologação</a>. Esse cadastro é separado do perfil operacional acima.</p>}
       <form onSubmit={createMember} className="mt-6 grid gap-4 sm:grid-cols-2">
         <label className="grid gap-1 text-sm font-semibold">E-mail da pessoa

@@ -1,4 +1,4 @@
-import {isCrmSuperAdmin,isReservedCrmAdminEmail,requireCrmAdmin} from "@/lib/crm";
+import {requireCrmSuperAdmin} from "@/lib/crm";
 import {database,failure,json,readJson,ApiError} from "@/lib/http";
 import {settings} from "@/lib/config";
 import {z} from "zod";
@@ -11,10 +11,10 @@ const createSchema=z.object({
 
 type UserRow={email:string;display_name:string|null;role:"admin"|"attendant";active:number;last_seen_at:number|null;created_at:number;updated_at:number};
 
-/** GET /api/crm/users — list team members (admin only) */
+/** GET /api/crm/users — list team members (superadmin only) */
 export async function GET(){
   try{
-    await requireCrmAdmin();
+    await requireCrmSuperAdmin();
     const db=database(settings());
     const rows=await db.prepare(
       "SELECT email,display_name,role,active,last_seen_at,created_at,updated_at FROM crm_user_profiles ORDER BY active DESC,role,email"
@@ -34,12 +34,12 @@ export async function GET(){
 /** POST /api/crm/users — register a CRM profile; this does not send an invite. */
 export async function POST(req:Request){
   try{
-    const actor=await requireCrmAdmin(req);
+    const actor=await requireCrmSuperAdmin(req);
     const parsed=createSchema.safeParse(await readJson(req));
     if(!parsed.success)throw new ApiError(400,"Dados do membro inválidos.");
     const data=parsed.data;
-    if(!isCrmSuperAdmin(actor)&&(data.role==="admin"||isReservedCrmAdminEmail(data.email))){
-      throw new ApiError(403,"Somente o superadministrador pode cadastrar administradores.");
+    if(data.email.trim().toLowerCase()===settings().CRM_SUPER_ADMIN_EMAIL?.trim().toLowerCase()){
+      throw new ApiError(409,"O superadministrador já possui acesso ao CRM.");
     }
     const db=database(settings());
     const existing=await db.prepare("SELECT email FROM crm_user_profiles WHERE email=?").bind(data.email.toLowerCase()).first();

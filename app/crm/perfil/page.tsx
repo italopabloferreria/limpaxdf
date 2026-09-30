@@ -36,7 +36,7 @@ export default async function CrmProfilePage(){
         <p>{actor.email}</p>
         <p>Papel: {actor.isSuperAdmin?"Superadministrador":actor.role==="admin"?"Administrador":"Atendente"}</p>
       </section>
-      {actor.role==="admin"&&<SupabaseApprovedTeam url={config.url} publishableKey={config.publishableKey} superAdmin={actor.isSuperAdmin}/>}
+      {actor.isSuperAdmin&&<SupabaseApprovedTeam url={config.url} publishableKey={config.publishableKey}/>}
     </main>;
   }
   const access=await crmPageAccess();

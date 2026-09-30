@@ -55,6 +55,7 @@ export async function requireCrmUser():Promise<CrmActor>{
 
 export async function requireCrmMutation(req:Request){const s=settings();requireOrigin(req,s);return requireCrmUser()}
 export async function requireCrmAdmin(req?:Request){const user=req?await requireCrmMutation(req):await requireCrmUser();if(user.role!=="admin")throw new ApiError(403,"Ação disponível apenas para administradores.");return user}
+export async function requireCrmSuperAdmin(req?:Request){const user=await requireCrmAdmin(req);if(!isCrmSuperAdmin(user))throw new ApiError(403,"Somente o superadministrador pode gerenciar usuários.");return user}
 
 export function toDateTime(value:string|undefined){
   if(!value)return null;

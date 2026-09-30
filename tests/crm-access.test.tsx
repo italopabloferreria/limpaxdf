@@ -13,7 +13,7 @@ import {GET as listCustomers} from "../app/api/crm/customers/route";
 import {DELETE as deleteContact} from "../app/api/crm/customers/[id]/contacts/[contactId]/route";
 import {DELETE as deleteLocation} from "../app/api/crm/customers/[id]/locations/[locationId]/route";
 import {PATCH as updateUser} from "../app/api/crm/users/[email]/route";
-import {POST as createUser} from "../app/api/crm/users/route";
+import {GET as listUsers,POST as createUser} from "../app/api/crm/users/route";
 import {PATCH as updateCustomerLifecycle} from "../app/api/crm/customers/[id]/lifecycle/route";
 
 const email = "operator@example.test";
@@ -227,26 +227,32 @@ test("concurrent cross-deactivation keeps one active admin and audits only the a
   assert.equal(sql.prepare("SELECT COUNT(*) n FROM crm_user_profiles WHERE role='admin' AND active=1").get()!.n,1);
   assert.equal(sql.prepare("SELECT COUNT(*) n FROM crm_audit_log WHERE action='user_updated'").get()!.n,1);
 });
-test("ordinary admin manages attendants but cannot create or change admins",async()=>{
+test("ordinary admin cannot list, create or change any user",async()=>{
   const {sql}=setup({role:"admin",active:1},false);
   env.CRM_SUPER_ADMIN_EMAIL="owner@example.test";
   const attendant="member@example.test",otherAdmin="other-admin@example.test";
+  assert.doesNotMatch(renderToStaticMarkup(await ProfilePage()),/Cadastrar perfil/);
+  assert.equal((await listUsers()).status,403);
   assert.equal((await userCreate(email,{email:otherAdmin,role:"admin"})).status,403);
   assert.equal((await userCreate(email,{email:"owner@example.test",role:"attendant"})).status,403);
-  assert.equal((await userCreate(email,{email:attendant,role:"attendant"})).status,201);
-  assert.equal((await userUpdate(email,attendant,{displayName:"Atendimento"})).status,200);
+  assert.equal((await userCreate(email,{email:attendant,role:"attendant"})).status,403);
+  sql.prepare("INSERT INTO crm_user_profiles(email,role,active,created_at,updated_at) VALUES(?,'attendant',1,0,0)").run(attendant);
+  assert.equal((await userUpdate(email,attendant,{displayName:"Atendimento"})).status,403);
   assert.equal((await userUpdate(email,attendant,{role:"admin"})).status,403);
   addAdmin(sql,otherAdmin);
   assert.equal((await userUpdate(email,otherAdmin,{active:false})).status,403);
   assert.equal(sql.prepare("SELECT role,active FROM crm_user_profiles WHERE email=?").get(attendant)!.role,"attendant");
   assert.equal(sql.prepare("SELECT active FROM crm_user_profiles WHERE email=?").get(otherAdmin)!.active,1);
-  assert.equal(sql.prepare("SELECT COUNT(*) n FROM crm_audit_log").get()!.n,2);
+  assert.equal(sql.prepare("SELECT COUNT(*) n FROM crm_audit_log").get()!.n,0);
 });
 test("configured superadmin can create admins and cannot deactivate self",async()=>{
   const {sql}=setup({role:"admin",active:1},false);
   env.CRM_SUPER_ADMIN_EMAIL=email;
   assert.match(renderToStaticMarkup(await ProfilePage()),/Superadministrador/);
   const otherAdmin="other-admin@example.test";
+  assert.equal((await listUsers()).status,200);
+  assert.equal((await userCreate(email,{email,role:"attendant"})).status,409);
+  assert.equal((await userCreate(email,{email:"attendant@example.test",role:"attendant"})).status,201);
   assert.equal((await userCreate(email,{email:otherAdmin,role:"admin"})).status,201);
   assert.equal((await userUpdate(email,otherAdmin,{active:false})).status,200);
   assert.equal((await userUpdate(email,email,{active:false})).status,409);

@@ -46,7 +46,7 @@ export function HomologationSignIn({url,publishableKey,origin,googleEnabled=fals
     {state&&state.status!=="signed_out"&&<button type="button" disabled={busy} onClick={signOut} className={styles.signOutButton}>Sair da conta</button>}
     {state?.status==="authorized"&&crmReadEnabled&&<nav aria-label="CRM" className={styles.crmLinks}><a className={styles.primaryLink} href="/crm">Abrir atendimentos <span aria-hidden="true">↗</span></a><a href="/crm/clientes">Clientes</a>{approvalsEnabled&&<a href="/crm/perfil">Meu perfil</a>}</nav>}
     {state?.status==="authorized"&&!crmReadEnabled&&<p className={styles.notice}>Este login Google é da homologação. O CRM em localhost usa uma conta local de teste separada; acesse o CRM Google pela prévia Vercel.</p>}
-    {approvalsEnabled&&!crmReadEnabled&&state?.status==="authorized"&&(state.role==="super_admin"||state.role==="admin")&&
-      <SupabaseApprovedTeam url={url} publishableKey={publishableKey} superAdmin={state.role==="super_admin"}/>}
+    {approvalsEnabled&&!crmReadEnabled&&state?.status==="authorized"&&state.role==="super_admin"&&
+      <SupabaseApprovedTeam url={url} publishableKey={publishableKey}/>}
   </div>;
 }
